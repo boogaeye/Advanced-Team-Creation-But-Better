@@ -10,6 +10,7 @@ using Exiled.Events.Handlers;
 using HarmonyLib;
 using ATCBB.TeamAPI.Events;
 using System.Reflection;
+using Exiled.API.Enums;
 
 namespace ATCBB
 {
@@ -18,10 +19,12 @@ namespace ATCBB
         public static TeamPlugin Singleton;
         public TeamEventHandler TeamEventHandler;
         public Harmony Harmony;
+        public override PluginPriority Priority => PluginPriority.Last;
 
         public static Assembly assemblyTimer;
         public override void OnEnabled()
         {
+            Config.LoadTeamConfigs();
             Harmony = new Harmony("BoogaEye.TeamStuff.Bruh");
             Singleton = this;
             TeamEventHandler = new TeamEventHandler(this);
@@ -49,6 +52,8 @@ namespace ATCBB
             TeamEvents.ReferancingTeam -= TeamEventHandler.ReferancingTeam;
             Exiled.Events.Handlers.Server.RoundEnded -= TeamEventHandler.RoundEnd;
             Harmony.UnpatchAll("BoogaEye.TeamStuff.Bruh");
+            TeamEventHandler = null;
+            Harmony = null;
             base.OnDisabled();
         }
 
@@ -62,7 +67,7 @@ namespace ATCBB
         {
             foreach (IPlugin<IConfig> plugin in Exiled.Loader.Loader.Plugins)
             {
-                if (plugin.Name == "RespawnTimer" && plugin.Config.IsEnabled && assemblyTimer == null)
+                if (assemblyTimer == null && plugin.Name == "RespawnTimer" && plugin.Config.IsEnabled)
                 {
                     assemblyTimer = plugin.Assembly;
                     StartRT();
@@ -76,10 +81,17 @@ namespace ATCBB
 
         public void StartRT()
         {
-            var cfg = RespawnTimer.RespawnTimer.Singleton.Translation;
-            Log.Debug("Got respawn timer configs", Config.Debug);
-            mtfTrans = cfg.Ntf;
-            chaosTrans = cfg.Ci;
+            try
+            {
+                var cfg = RespawnTimer.RespawnTimer.Singleton.Translation;
+                Log.Debug("Got respawn timer configs", Config.Debug);
+                mtfTrans = cfg.Ntf;
+                chaosTrans = cfg.Ci;
+            } catch (Exception e)
+            {
+                Log.Error(e.Message);
+                Log.Error(e.StackTrace);
+            }
         }
     }
 }

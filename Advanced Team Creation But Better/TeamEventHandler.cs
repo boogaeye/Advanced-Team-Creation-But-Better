@@ -18,7 +18,7 @@ namespace ATCBB
     {
         private Plugin<TeamConfig> plugin;
         public LeaderboardHelper Leaderboard = new LeaderboardHelper();
-        public AdvancedTeam ReferancedTeam;
+        public AdvancedTeam ReferancedTeam, CassieHelper;
 
         public TeamEventHandler(Plugin<TeamConfig> Plugin)
         {
@@ -30,8 +30,8 @@ namespace ATCBB
             
             if (ev.Reason != Exiled.API.Enums.SpawnReason.Respawn)
             {
-                ev.Player.CustomInfo = String.Empty;
                 ev.Player.InfoArea |= PlayerInfoArea.Role;
+                ev.Player.CustomInfo = String.Empty;
                 Leaderboard.ClearPlayerFromLeaderBoards(ev.Player);
                 ev.Player.ChangeAdvancedTeam(plugin.Config.FindAT(ev.NewRole.GetTeam().ToString()));
             }
@@ -49,25 +49,21 @@ namespace ATCBB
 
         public void MtfRespawnCassie(AnnouncingNtfEntranceEventArgs ev)
         {
-            if (ReferancedTeam != null && ReferancedTeam.CassieAnnouncement != AdvancedTeam.DEFAULTAnnounce)
+            if (CassieHelper != null && CassieHelper.CassieAnnouncement != AdvancedTeam.DEFAULTAnnounce)
             {
                 ev.IsAllowed = false;
-                if (ReferancedTeam.CassieAnnouncement != String.Empty)
+                if (CassieHelper.CassieAnnouncement != String.Empty)
                 {
-                    if (!ReferancedTeam.PlayBeforeSpawning)
-                        Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement, ReferancedTeam.CassieAnnouncementSubtitles);
+                    if (!CassieHelper.PlayBeforeSpawning)
+                        Cassie.MessageTranslated(CassieHelper.CassieAnnouncement.Replace("{SCPLeft}", ev.ScpsLeft.ToString()), CassieHelper.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ev.ScpsLeft.ToString()));
                 }
             }
+            CassieHelper = null;
         }
-
+        bool PlayedAlready = false;
         public void TeamSpawning(RespawningTeamEventArgs ev)
         {
-            if (ReferancedTeam == null)
-            {
-                Log.Warn($"Admin Spawned Respawn switching to default argument {ev.NextKnownTeam}");
-                return;
-            }
-            if (ReferancedTeam.VanillaTeam)
+            if (ReferancedTeam.VanillaTeam || ReferancedTeam == null)
             {
                 RespawnTimer.RespawnTimer.Singleton.Translation.Ci = TeamPlugin.chaosTrans;
                 RespawnTimer.RespawnTimer.Singleton.Translation.Ntf = TeamPlugin.mtfTrans;
@@ -77,8 +73,7 @@ namespace ATCBB
                     {
                         case Respawning.SpawnableTeamType.ChaosInsurgency:
                             p.ChangeAdvancedTeam(plugin.Config.FindAT("CHI"));
-                            if (!ReferancedTeam.PlayBeforeSpawning)
-                                Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement, ReferancedTeam.CassieAnnouncementSubtitles);
+                            
                             break;
                         case Respawning.SpawnableTeamType.NineTailedFox:
                             p.ChangeAdvancedTeam(plugin.Config.FindAT("MTF"));
@@ -89,6 +84,8 @@ namespace ATCBB
                 ReferancedTeam = null;
                 return;
             }
+            if (!ReferancedTeam.PlayBeforeSpawning && !ReferancedTeam.VanillaTeam && !PlayedAlready && ev.NextKnownTeam != Respawning.SpawnableTeamType.NineTailedFox)
+                Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement, ReferancedTeam.CassieAnnouncementSubtitles);
             Dictionary<string, int> Helper = new Dictionary<string, int>();
             foreach (string t in ReferancedTeam.SpawnOrder)
             {
@@ -97,7 +94,11 @@ namespace ATCBB
             foreach (Player p in ev.Players)
             {
                 p.ChangeAdvancedRole(ReferancedTeam, TeamPlugin.Singleton.Config.FindAST(ReferancedTeam.Name, Helper.First().Key), true, true);
-                if (Helper.First().Value - 1 < 1) 
+                if (Helper.Values.Count == 0)
+                {
+                    p.SetRole(RoleType.Spectator, Exiled.API.Enums.SpawnReason.None);
+                }
+                else if (Helper.First().Value - 1 < 1) 
                 {
                     
                     Helper.Remove(Helper.First().Key);
@@ -113,6 +114,7 @@ namespace ATCBB
                 RespawnTimer.RespawnTimer.Singleton.Translation.Ci = TeamPlugin.chaosTrans;
                 RespawnTimer.RespawnTimer.Singleton.Translation.Ntf = TeamPlugin.mtfTrans;
             }
+            PlayedAlready = false;
         }
 
         public void ReferancingTeam(TeamEvents.ReferancingTeamEventArgs ev)
@@ -127,10 +129,13 @@ namespace ATCBB
                 return;
             }
             ReferancedTeam = ev.AdvancedTeam;
-            if (!ev.AdvancedTeam.VanillaTeam && Player.List.Any(e => e.Role.Type == RoleType.Spectator))
+            if (ReferancedTeam.PlayBeforeSpawning && !ReferancedTeam.VanillaTeam && !PlayedAlready)
             {
                 Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement, ReferancedTeam.CassieAnnouncementSubtitles);
+                PlayedAlready = true;
             }
+            CassieHelper = ReferancedTeam;
+
             if (TeamPlugin.assemblyTimer != null && !ev.AdvancedTeam.VanillaTeam && ev.SupposedTeam != Respawning.SpawnableTeamType.None)
             {
                 switch (ev.SupposedTeam)
