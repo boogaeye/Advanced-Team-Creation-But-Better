@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Exiled.API.Enums;
 using Exiled.API;
 using Exiled.API.Features;
+using System.ComponentModel;
 
 namespace ATCBB.TeamAPI
 {
@@ -16,6 +17,8 @@ namespace ATCBB.TeamAPI
         public RoomType SpawnRoom { get; set; } = RoomType.Surface;
         public int Chance { get; set; } = 75;
         public string[] SpawnOrder { get; set; } = { "Commander:1", "Officer:3", "Cadet:5" };
+        [Description("Does the CASSIE Announcement play before spawning")]
+        public bool PlayBeforeSpawning { get; set; } = false;
         public string CassieAnnouncement { get; set; } = DEFAULTAnnounce;
         public string CassieAnnouncementSubtitles { get; set; } = DEFAULTAnnounce;
         public bool VanillaTeam;

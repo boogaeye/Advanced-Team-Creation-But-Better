@@ -44,7 +44,7 @@ namespace ATCBB.TeamAPI.Extentions
                         }
                     }
                 ply.InfoArea &= ~PlayerInfoArea.Role;
-                ply.CustomInfo = ast.Name;
+                ply.CustomInfo = ast.RoleDisplay;
                 ply.SetRole(ast.Model, SpawnReason.Respawn, true);
                 ply.MaxHealth = ast.MaxHP;
                 ply.Health = ast.HP;

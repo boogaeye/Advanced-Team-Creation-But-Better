@@ -54,7 +54,8 @@ namespace ATCBB
                 ev.IsAllowed = false;
                 if (ReferancedTeam.CassieAnnouncement != String.Empty)
                 {
-                    Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement, ReferancedTeam.CassieAnnouncementSubtitles);
+                    if (!ReferancedTeam.PlayBeforeSpawning)
+                        Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement, ReferancedTeam.CassieAnnouncementSubtitles);
                 }
             }
         }
@@ -76,6 +77,8 @@ namespace ATCBB
                     {
                         case Respawning.SpawnableTeamType.ChaosInsurgency:
                             p.ChangeAdvancedTeam(plugin.Config.FindAT("CHI"));
+                            if (!ReferancedTeam.PlayBeforeSpawning)
+                                Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement, ReferancedTeam.CassieAnnouncementSubtitles);
                             break;
                         case Respawning.SpawnableTeamType.NineTailedFox:
                             p.ChangeAdvancedTeam(plugin.Config.FindAT("MTF"));
@@ -124,6 +127,10 @@ namespace ATCBB
                 return;
             }
             ReferancedTeam = ev.AdvancedTeam;
+            if (!ev.AdvancedTeam.VanillaTeam && Player.List.Any(e => e.Role.Type == RoleType.Spectator))
+            {
+                Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement, ReferancedTeam.CassieAnnouncementSubtitles);
+            }
             if (TeamPlugin.assemblyTimer != null && !ev.AdvancedTeam.VanillaTeam && ev.SupposedTeam != Respawning.SpawnableTeamType.None)
             {
                 switch (ev.SupposedTeam)
