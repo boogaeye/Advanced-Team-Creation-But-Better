@@ -26,7 +26,7 @@ namespace ATCBB.TeamAPI.Extentions
             {
                 if (ChangeInventory)
                     ply.ClearInventory();
-                if (ChangePosition)
+                if (ChangePosition && at.SpawnRoom != RoomType.Surface)
                     foreach (Room r in Room.List)
                     {
                         if (r.Type == at.SpawnRoom)

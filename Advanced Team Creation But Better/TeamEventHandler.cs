@@ -30,8 +30,8 @@ namespace ATCBB
             
             if (ev.Reason != Exiled.API.Enums.SpawnReason.Respawn)
             {
-                ev.Player.InfoArea &= ~PlayerInfoArea.Role;
                 ev.Player.CustomInfo = String.Empty;
+                ev.Player.InfoArea |= PlayerInfoArea.Role;
                 Leaderboard.ClearPlayerFromLeaderBoards(ev.Player);
                 ev.Player.ChangeAdvancedTeam(plugin.Config.FindAT(ev.NewRole.GetTeam().ToString()));
             }
@@ -47,10 +47,29 @@ namespace ATCBB
             Leaderboard.DestroyTeamLeaders();
         }
 
+        public void MtfRespawnCassie(AnnouncingNtfEntranceEventArgs ev)
+        {
+            if (ReferancedTeam != null && ReferancedTeam.CassieAnnouncement != AdvancedTeam.DEFAULTAnnounce)
+            {
+                ev.IsAllowed = false;
+                if (ReferancedTeam.CassieAnnouncement != String.Empty)
+                {
+                    Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement, ReferancedTeam.CassieAnnouncementSubtitles);
+                }
+            }
+        }
+
         public void TeamSpawning(RespawningTeamEventArgs ev)
         {
+            if (ReferancedTeam == null)
+            {
+                Log.Warn($"Admin Spawned Respawn switching to default argument {ev.NextKnownTeam}");
+                return;
+            }
             if (ReferancedTeam.VanillaTeam)
             {
+                RespawnTimer.RespawnTimer.Singleton.Translation.Ci = TeamPlugin.chaosTrans;
+                RespawnTimer.RespawnTimer.Singleton.Translation.Ntf = TeamPlugin.mtfTrans;
                 foreach (Player p in ev.Players)
                 {
                     switch (ev.NextKnownTeam)

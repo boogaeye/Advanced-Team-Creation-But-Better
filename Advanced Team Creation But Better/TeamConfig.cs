@@ -17,6 +17,7 @@ namespace ATCBB
     {
         public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; } = true;
+        public bool FriendlyFire { get; set; } = true;
         public string ConfigsFolder { get; set; } = Path.Combine(Paths.Configs, "AdvancedTeamCreation");
         public List<AdvancedTeam> Teams = new List<AdvancedTeam>();
         public List<AdvancedTeamSubclass> SubTeams = new List<AdvancedTeamSubclass>();

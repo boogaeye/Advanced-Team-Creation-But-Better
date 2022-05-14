@@ -28,13 +28,12 @@ namespace ATCBB
             Exiled.Events.Handlers.Map.Generated += TeamEventHandler.MapGenerated;
             Exiled.Events.Handlers.Server.RespawningTeam += TeamEventHandler.TeamSpawning;
             Exiled.Events.Handlers.Server.RoundEnded += TeamEventHandler.RoundEnd;
+            Exiled.Events.Handlers.Map.AnnouncingNtfEntrance += TeamEventHandler.MtfRespawnCassie;
             Exiled.Events.Handlers.Player.ChangingRole += TeamEventHandler.RoleChange;
             TeamEvents.ReferancingTeam += TeamEventHandler.ReferancingTeam;
             if (!Exiled.API.Features.Server.FriendlyFire)
             {
                 Log.Warn("Friendly Fire Is heavily recommended to be enabled on server config as it can lead to problems with people not being able to finish around because a person is supposed to be their enemy");
-                Exiled.API.Features.Server.FriendlyFire = true;
-                Log.Warn("Friendly Fire is now enabled automatically (if you want friendly fire disabled please enable the corrisponding config)");
             }
             Harmony.PatchAll();
             CheckPlugins();
@@ -46,6 +45,7 @@ namespace ATCBB
             Exiled.Events.Handlers.Map.Generated -= TeamEventHandler.MapGenerated;
             Exiled.Events.Handlers.Player.ChangingRole -= TeamEventHandler.RoleChange;
             Exiled.Events.Handlers.Server.RespawningTeam -= TeamEventHandler.TeamSpawning;
+            Exiled.Events.Handlers.Map.AnnouncingNtfEntrance -= TeamEventHandler.MtfRespawnCassie;
             TeamEvents.ReferancingTeam -= TeamEventHandler.ReferancingTeam;
             Exiled.Events.Handlers.Server.RoundEnded -= TeamEventHandler.RoundEnd;
             Harmony.UnpatchAll("BoogaEye.TeamStuff.Bruh");
@@ -62,7 +62,7 @@ namespace ATCBB
         {
             foreach (IPlugin<IConfig> plugin in Exiled.Loader.Loader.Plugins)
             {
-                if (plugin.Name == "RespawnTimer" && plugin.Config.IsEnabled)
+                if (plugin.Name == "RespawnTimer" && plugin.Config.IsEnabled && assemblyTimer == null)
                 {
                     assemblyTimer = plugin.Assembly;
                     StartRT();

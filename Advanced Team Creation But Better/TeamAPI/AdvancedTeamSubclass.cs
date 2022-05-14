@@ -10,6 +10,7 @@ namespace ATCBB.TeamAPI
     {
         public string AdvancedTeam;
         public string Name { get; set; }
+        public string RoleDisplay { get; set; }
         public int HP { get; set; }
         public int MaxHP { get; set; }
         public RoleType Model { get; set; }
