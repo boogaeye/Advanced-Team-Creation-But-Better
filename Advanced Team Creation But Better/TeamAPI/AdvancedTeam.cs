@@ -21,6 +21,11 @@ namespace ATCBB.TeamAPI
         public bool PlayBeforeSpawning { get; set; } = false;
         public string CassieAnnouncement { get; set; } = DEFAULTAnnounce;
         public string CassieAnnouncementSubtitles { get; set; } = DEFAULTAnnounce;
+        public string Color { get; set; } = "yellow";
+        [Description("Defines what class an escapee will become when escaping")]
+        public string EscapeClass { get; set; } = "Cadet";
+        [Description("Defines what classes are able to escape if they are not then they will become whatever teams escape default is (Chaos, NTF Specialist)")]
+        public RoleType[] EscapableClasses { get; set; } = { RoleType.Scientist, RoleType.ClassD };
         public bool VanillaTeam;
     }
 }

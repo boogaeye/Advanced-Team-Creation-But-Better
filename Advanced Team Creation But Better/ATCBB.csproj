@@ -112,10 +112,11 @@
     <Compile Include="Commands\ChangeTeam.cs" />
     <Compile Include="Commands\CreateTeam.cs" />
     <Compile Include="Commands\ATC.cs" />
+    <Compile Include="Patches\EndRoundSpeech.cs" />
+    <Compile Include="TeamAPI\CustomEventHelpers\CustomRoundEnder.cs" />
     <Compile Include="TeamAPI\Events\TeamEvents.cs" />
     <Compile Include="Patches\RefNextTeam.cs" />
     <Compile Include="TeamAPI\AdvancedTeam.cs" />
-    <Compile Include="TeamAPI\AdvancedTeamPair.cs" />
     <Compile Include="TeamAPI\AdvancedTeamSubclass.cs" />
     <Compile Include="TeamAPI\Extentions.cs" />
     <Compile Include="TeamAPI\ItemConversionHelper.cs" />

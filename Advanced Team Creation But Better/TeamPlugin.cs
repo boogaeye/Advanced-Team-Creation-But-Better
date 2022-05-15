@@ -19,7 +19,6 @@ namespace ATCBB
         public static TeamPlugin Singleton;
         public TeamEventHandler TeamEventHandler;
         public Harmony Harmony;
-        public override PluginPriority Priority => PluginPriority.Last;
 
         public static Assembly assemblyTimer;
         public override void OnEnabled()
@@ -46,11 +45,11 @@ namespace ATCBB
         public override void OnDisabled()
         {
             Exiled.Events.Handlers.Map.Generated -= TeamEventHandler.MapGenerated;
-            Exiled.Events.Handlers.Player.ChangingRole -= TeamEventHandler.RoleChange;
             Exiled.Events.Handlers.Server.RespawningTeam -= TeamEventHandler.TeamSpawning;
-            Exiled.Events.Handlers.Map.AnnouncingNtfEntrance -= TeamEventHandler.MtfRespawnCassie;
-            TeamEvents.ReferancingTeam -= TeamEventHandler.ReferancingTeam;
             Exiled.Events.Handlers.Server.RoundEnded -= TeamEventHandler.RoundEnd;
+            Exiled.Events.Handlers.Map.AnnouncingNtfEntrance -= TeamEventHandler.MtfRespawnCassie;
+            Exiled.Events.Handlers.Player.ChangingRole -= TeamEventHandler.RoleChange;
+            TeamEvents.ReferancingTeam -= TeamEventHandler.ReferancingTeam;
             Harmony.UnpatchAll("BoogaEye.TeamStuff.Bruh");
             TeamEventHandler = null;
             Harmony = null;
@@ -67,11 +66,11 @@ namespace ATCBB
         {
             foreach (IPlugin<IConfig> plugin in Exiled.Loader.Loader.Plugins)
             {
-                if (assemblyTimer == null && plugin.Name == "RespawnTimer" && plugin.Config.IsEnabled)
+                if (plugin.Name == "RespawnTimer" && plugin.Config.IsEnabled)
                 {
                     assemblyTimer = plugin.Assembly;
-                    StartRT();
                     Log.Debug("RespawnTimer assembly found", this.Config.Debug);
+                    StartRT();
                 }
             }
         }
@@ -81,17 +80,21 @@ namespace ATCBB
 
         public void StartRT()
         {
-            try
+            MEC.Timing.CallDelayed(1, () =>
             {
-                var cfg = RespawnTimer.RespawnTimer.Singleton.Translation;
-                Log.Debug("Got respawn timer configs", Config.Debug);
-                mtfTrans = cfg.Ntf;
-                chaosTrans = cfg.Ci;
-            } catch (Exception e)
-            {
-                Log.Error(e.Message);
-                Log.Error(e.StackTrace);
-            }
+                try
+                {
+                    Log.Debug($"Does translation Exist? => {RespawnTimer.RespawnTimer.Singleton.Translation}", Config.Debug);
+                    mtfTrans = RespawnTimer.RespawnTimer.Singleton.Translation.Ntf;
+                    chaosTrans = RespawnTimer.RespawnTimer.Singleton.Translation.Ci;
+                    Log.Debug("Got respawn timer configs", Config.Debug);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e.Message);
+                    Log.Error(e.StackTrace);
+                }
+            });
         }
     }
 }

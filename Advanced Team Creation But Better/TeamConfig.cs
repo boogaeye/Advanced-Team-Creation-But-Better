@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,9 @@ namespace ATCBB
         public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; } = true;
         public bool FriendlyFire { get; set; } = true;
+        public int TeleportRetries { get; set; } = 15;
+        [Description("Recommended to keep this on this provides a custom handler to custom teams so they can win or you can switch it off to turn it back to the default round ender")]
+        public bool CustomRoundEnder { get; set; } = true;
         public string ConfigsFolder { get; set; } = Path.Combine(Paths.Configs, "AdvancedTeamCreation");
         public List<AdvancedTeam> Teams = new List<AdvancedTeam>();
         public List<AdvancedTeamSubclass> SubTeams = new List<AdvancedTeamSubclass>();

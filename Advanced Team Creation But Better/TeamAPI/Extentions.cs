@@ -13,29 +13,31 @@ namespace ATCBB.TeamAPI.Extentions
 {
     public static class Extentions
     {
-        public static AdvancedTeamPair GetAsAdvancedTeamPair(this Team team)
+        public enum InventoryDestroyType
         {
-            return new AdvancedTeamPair();
+            None,
+            Drop,
+            Destroy
         }
-
-        public static void ChangeAdvancedRole(this Player ply, AdvancedTeam at, AdvancedTeamSubclass ast, bool ChangeInventory = false, bool ChangePosition = false)
+        public static void ChangeAdvancedRole(this Player ply, AdvancedTeam at, AdvancedTeamSubclass ast, InventoryDestroyType ChangeInventory = InventoryDestroyType.None, bool ChangePosition = false)
         {
             TeamPlugin.Singleton.TeamEventHandler.Leaderboard.ClearPlayerFromLeaderBoards(ply);
-            TeamPlugin.Singleton.TeamEventHandler.Leaderboard.GetTeamLeaderboard(at.Name).AddPlayer(ply);
+            TeamPlugin.Singleton.TeamEventHandler.Leaderboard.GetTeamLeaderboard(at.Name).AddPlayer(ply, ast);
             Timing.CallDelayed(0.5f, () =>
             {
-                if (ChangeInventory)
-                    ply.ClearInventory();
-                if (ChangePosition && at.SpawnRoom != RoomType.Surface)
+                if (ChangePosition && at.SpawnRoom != RoomType.Surface && !Warhead.IsInProgress && !Warhead.IsDetonated)
                     foreach (Room r in Room.List)
                     {
                         if (r.Type == at.SpawnRoom)
                         {
                             if (PlayerMovementSync.FindSafePosition((r.Doors.First().Position + (Vector3.forward * 1.5f)) + Vector3.up * 1.5f, out Vector3 vec))
                             {
-                                ply.Teleport(vec);
-                                
                                 r.Doors.First().IsOpen = true;
+                                for (var i = 0; i < TeamPlugin.Singleton.Config.TeleportRetries && ply.Position != vec; i++)
+                                {
+                                    ply.Teleport(vec);
+                                }
+                                
                             }
                             else
                             {
@@ -43,11 +45,18 @@ namespace ATCBB.TeamAPI.Extentions
                             }
                         }
                     }
-                ply.InfoArea &= ~PlayerInfoArea.Role;
-                ply.CustomInfo = ast.RoleDisplay;
+                if (ChangeInventory == InventoryDestroyType.Destroy)
+                    ply.ClearInventory();
+                else if (ChangeInventory == InventoryDestroyType.Drop)
+                {
+                    ply.DropItems();
+                }
                 ply.SetRole(ast.Model, SpawnReason.Respawn, true);
+                ply.InfoArea &= ~PlayerInfoArea.Role;
+                ply.CustomInfo = $"<color={ast.Color}>{ast.RoleDisplay}</color>";
                 ply.MaxHealth = ast.MaxHP;
                 ply.Health = ast.HP;
+                ply.ShowHint(ast.Hint.Replace("{Team}", $"<color={at.Color}>{at.Name}</color>").Replace("{Role}", $"<color={ast.Color}>{ast.RoleDisplay}</color>"), 10);
                 foreach (string item in ast.Inventory)
                 {
                     try

@@ -29,10 +29,10 @@ namespace ATCBB.Commands
             string RHelper = "- Teams List -\n";
             foreach (TeamLeaderboard tb in TeamPlugin.Singleton.TeamEventHandler.Leaderboard.TeamLeaderboards)
             {
-                RHelper += $"\n{tb.players.Count}< {tb.Team.Name} >";
-                foreach (Player p in tb.players)
+                RHelper += $"\n{tb.PlayerPairs.Count}< {tb.Team.Name} >";
+                foreach (KeyValuePair<Player, AdvancedTeamSubclass> p in tb.PlayerPairs)
                 {
-                    RHelper += $"\n{p.Id} | {p.Nickname} | NA";
+                    RHelper += $"\n{p.Key.Id} | {p.Key.Nickname} | {p.Value.Name}";
                 }
             }
             response = RHelper;

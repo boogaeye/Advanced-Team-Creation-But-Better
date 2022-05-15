@@ -15,5 +15,7 @@ namespace ATCBB.TeamAPI
         public int MaxHP { get; set; }
         public RoleType Model { get; set; }
         public string[] Inventory { get; set; } = { "None", "None", "None" };
+        public string Hint { get; set; } = "You are {Team}, Good Luck {Role}";
+        public string Color { get; set; } = "yellow";
     }
 }

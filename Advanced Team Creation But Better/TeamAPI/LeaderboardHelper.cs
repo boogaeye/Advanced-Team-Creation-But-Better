@@ -11,23 +11,29 @@ namespace ATCBB.TeamAPI
     public class LeaderboardHelper
     {
         public List<TeamLeaderboard> TeamLeaderboards = new List<TeamLeaderboard>();
-
+        public static bool TeamsInstantiable = false;
         public class TeamLeaderboard
         {
+            public static AdvancedTeamSubclass DEFAULTSUBCLASS = new AdvancedTeamSubclass() { Name = "DEFAULT", AdvancedTeam = "DEFAULT" };
             public TeamLeaderboard(AdvancedTeam at)
             {
                 Team = at;
             }
             public AdvancedTeam Team;
-            public List<Player> players = new List<Player>();
+            public Dictionary<Player, AdvancedTeamSubclass> PlayerPairs = new Dictionary<Player, AdvancedTeamSubclass>();
+            public void AddPlayer(Player p, AdvancedTeamSubclass advancedTeamSubclass)
+            {
+                PlayerPairs[p] = advancedTeamSubclass;
+            }
+
             public void AddPlayer(Player p)
             {
-                players.Add(p);
+                PlayerPairs[p] = DEFAULTSUBCLASS;
             }
 
             public void RemovePlayer(Player p)
             {
-                players.Remove(p);
+                PlayerPairs.Remove(p);
             }
         }
 
@@ -35,9 +41,9 @@ namespace ATCBB.TeamAPI
         {
             foreach (TeamLeaderboard tldr in TeamLeaderboards)
             {
-                if (tldr.players.Contains(ply))
+                if (tldr.PlayerPairs.Keys.Contains(ply))
                 {
-                    tldr.players.Remove(ply);
+                    tldr.PlayerPairs.Remove(ply);
                 }
             }
         }
@@ -62,12 +68,14 @@ namespace ATCBB.TeamAPI
                 TeamLeaderboards.Add(new TeamLeaderboard(at));
                 Log.Debug($"Made Team Leaderboard {at.Name}", TeamPlugin.Singleton.Config.Debug);
             }
+            TeamsInstantiable = true;
         }
 
         public void DestroyTeamLeaders()
         {
             TeamLeaderboards.Clear();
             Log.Debug("Cleared Team Leaderboards", TeamPlugin.Singleton.Config.Debug);
+            TeamsInstantiable = false;
         }
     }
 }

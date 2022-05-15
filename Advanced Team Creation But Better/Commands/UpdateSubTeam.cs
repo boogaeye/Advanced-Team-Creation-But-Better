@@ -14,9 +14,9 @@ namespace ATCBB.Commands
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     public class UpdateSubTeam : ICommand
     {
-        public string Command => "createsubteam";
+        public string Command => "updatesubteam";
 
-        public string[] Aliases { get; } = { "cst" };
+        public string[] Aliases { get; } = { "ust" };
 
         public string Description => "Updates a sub team for a team";
 

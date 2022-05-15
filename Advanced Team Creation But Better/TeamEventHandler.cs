@@ -11,6 +11,9 @@ using Exiled.API.Extensions;
 using ATCBB.TeamAPI.Events;
 using ATCBB.TeamAPI;
 using ATCBB.TeamAPI.Extentions;
+using Respawning;
+using Respawning.NamingRules;
+using System.Text.RegularExpressions;
 
 namespace ATCBB
 {
@@ -18,7 +21,7 @@ namespace ATCBB
     {
         private Plugin<TeamConfig> plugin;
         public LeaderboardHelper Leaderboard = new LeaderboardHelper();
-        public AdvancedTeam ReferancedTeam, CassieHelper;
+        public AdvancedTeam ReferancedTeam, CassieHelper, LastTeamSpawned;
 
         public TeamEventHandler(Plugin<TeamConfig> Plugin)
         {
@@ -30,16 +33,17 @@ namespace ATCBB
             
             if (ev.Reason != Exiled.API.Enums.SpawnReason.Respawn)
             {
-                ev.Player.InfoArea |= PlayerInfoArea.Role;
-                ev.Player.CustomInfo = String.Empty;
                 Leaderboard.ClearPlayerFromLeaderBoards(ev.Player);
                 ev.Player.ChangeAdvancedTeam(plugin.Config.FindAT(ev.NewRole.GetTeam().ToString()));
+                ev.Player.InfoArea |= PlayerInfoArea.Role;
+                ev.Player.CustomInfo = String.Empty;
             }
         }
 
         public void MapGenerated()
         {
             Leaderboard.SetUpTeamLeaders();
+            Respawns = 0;
         }
 
         public void RoundEnd(RoundEndedEventArgs ev)
@@ -47,20 +51,43 @@ namespace ATCBB
             Leaderboard.DestroyTeamLeaders();
         }
 
+        public void EscapingEvent(EscapingEventArgs ev)
+        {
+            if (LastTeamSpawned.EscapableClasses.Contains(ev.Player.Role))
+            {
+                ev.IsAllowed = false;
+                ev.Player.ChangeAdvancedRole(LastTeamSpawned, plugin.Config.FindAST(LastTeamSpawned.Name, LastTeamSpawned.EscapeClass), Extentions.InventoryDestroyType.Drop, true);
+            }
+        }
+
         public void MtfRespawnCassie(AnnouncingNtfEntranceEventArgs ev)
         {
+            if (CassieHelper != null && !CassieHelper.VanillaTeam)
+                ChangeUnitNameOnAdvancedTeam(Respawns, CassieHelper, $"{ev.UnitName}-{ev.UnitNumber}");
             if (CassieHelper != null && CassieHelper.CassieAnnouncement != AdvancedTeam.DEFAULTAnnounce)
             {
                 ev.IsAllowed = false;
                 if (CassieHelper.CassieAnnouncement != String.Empty)
                 {
                     if (!CassieHelper.PlayBeforeSpawning)
-                        Cassie.MessageTranslated(CassieHelper.CassieAnnouncement.Replace("{SCPLeft}", ev.ScpsLeft.ToString()), CassieHelper.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ev.ScpsLeft.ToString()));
+                        Cassie.MessageTranslated(CassieHelper.CassieAnnouncement.Replace("{SCPLeft}", ev.ScpsLeft.ToString().Replace("{Unit}", $"NATO_{ev.UnitName[0]}").Replace("{UnitNum}", ev.UnitNumber.ToString())), CassieHelper.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ev.ScpsLeft.ToString()).Replace("{Unit}", ev.UnitName).Replace("{UnitNum}", ev.UnitNumber.ToString()));
                 }
             }
+            Respawns++;
             CassieHelper = null;
         }
         bool PlayedAlready = false;
+        int ScpsLeft => Player.List.Where(e => e.IsScp && e.Role.Type != RoleType.Scp0492).Count();
+
+        public void ChangeUnitNameOnAdvancedTeam(int index, AdvancedTeam Name, string UnitName)
+        {
+            string unit = RespawnManager.Singleton.NamingManager.AllUnitNames[index].UnitName;
+            RespawnManager.Singleton.NamingManager.AllUnitNames.Remove(RespawnManager.Singleton.NamingManager.AllUnitNames[index]);
+            UnitNamingRules.AllNamingRules[SpawnableTeamType.NineTailedFox].AddCombination($"<color={Name.Color}>{Name.Name}-{UnitName}</color>", SpawnableTeamType.NineTailedFox);
+        }
+
+        int Respawns = 0;
+
         public void TeamSpawning(RespawningTeamEventArgs ev)
         {
             if (ReferancedTeam.VanillaTeam || ReferancedTeam == null)
@@ -85,7 +112,8 @@ namespace ATCBB
                 return;
             }
             if (!ReferancedTeam.PlayBeforeSpawning && !ReferancedTeam.VanillaTeam && !PlayedAlready && ev.NextKnownTeam != Respawning.SpawnableTeamType.NineTailedFox)
-                Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement, ReferancedTeam.CassieAnnouncementSubtitles);
+                Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement.Replace("{SCPLeft}", ScpsLeft.ToString()), ReferancedTeam.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ScpsLeft.ToString()));
+            
             Dictionary<string, int> Helper = new Dictionary<string, int>();
             foreach (string t in ReferancedTeam.SpawnOrder)
             {
@@ -93,7 +121,7 @@ namespace ATCBB
             }
             foreach (Player p in ev.Players)
             {
-                p.ChangeAdvancedRole(ReferancedTeam, TeamPlugin.Singleton.Config.FindAST(ReferancedTeam.Name, Helper.First().Key), true, true);
+                p.ChangeAdvancedRole(ReferancedTeam, TeamPlugin.Singleton.Config.FindAST(ReferancedTeam.Name, Helper.First().Key), Extentions.InventoryDestroyType.Destroy, true);
                 if (Helper.Values.Count == 0)
                 {
                     p.SetRole(RoleType.Spectator, Exiled.API.Enums.SpawnReason.None);
@@ -108,6 +136,7 @@ namespace ATCBB
                     Helper[Helper.First().Key]--;
                 }
             }
+            LastTeamSpawned = ReferancedTeam;
             ReferancedTeam = null;
             if (TeamPlugin.assemblyTimer != null)
             {
@@ -131,7 +160,7 @@ namespace ATCBB
             ReferancedTeam = ev.AdvancedTeam;
             if (ReferancedTeam.PlayBeforeSpawning && !ReferancedTeam.VanillaTeam && !PlayedAlready)
             {
-                Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement, ReferancedTeam.CassieAnnouncementSubtitles);
+                Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement.Replace("{SCPLeft}", ScpsLeft.ToString()), ReferancedTeam.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ScpsLeft.ToString()));
                 PlayedAlready = true;
             }
             CassieHelper = ReferancedTeam;
@@ -141,10 +170,10 @@ namespace ATCBB
                 switch (ev.SupposedTeam)
                 {
                     case Respawning.SpawnableTeamType.ChaosInsurgency:
-                        RespawnTimer.RespawnTimer.Singleton.Translation.Ci = ev.AdvancedTeam.Name;
+                        RespawnTimer.RespawnTimer.Singleton.Translation.Ci = $"<color={ev.AdvancedTeam.Color}>{ev.AdvancedTeam.Name}</color>";
                         break;
                     case Respawning.SpawnableTeamType.NineTailedFox:
-                        RespawnTimer.RespawnTimer.Singleton.Translation.Ntf = ev.AdvancedTeam.Name;
+                        RespawnTimer.RespawnTimer.Singleton.Translation.Ntf = $"<color={ev.AdvancedTeam.Color}>{ev.AdvancedTeam.Name}</color>";
                         break;
                 }
             }
