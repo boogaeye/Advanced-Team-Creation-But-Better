@@ -47,10 +47,14 @@ namespace ATCBB.TeamAPI.Extentions
                         }
                     }
                 if (ChangeInventory == InventoryDestroyType.Destroy)
+                {
                     ply.ClearInventory();
+                    ply.Ammo.Clear();
+                }
                 else if (ChangeInventory == InventoryDestroyType.Drop)
                 {
                     ply.DropItems();
+                    ply.Ammo.Clear();
                 }
                 ply.SetRole(ast.Model, SpawnReason.Respawn, true);
                 ply.CustomInfo = $"{ply.Nickname}\n<color={ast.Color}>{ast.RoleDisplay}</color>";
@@ -72,6 +76,26 @@ namespace ATCBB.TeamAPI.Extentions
                         else
                         {
                             Log.Warn($"{item} probably doesn't exist as an item...");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e.Message);
+                        Log.Error(e.StackTrace);
+                    }
+                }
+                foreach (string item in ast.AmmoInventory)
+                {
+                    string[] breaker = item.Split(':');
+                    try
+                    {
+                        if (ItemConversionHelper.TryGetAmmoTypeFromString(breaker[0], out AmmoType i))
+                        {
+                            ply.SetAmmo(i, ushort.Parse(breaker[1]));
+                        }
+                        else
+                        {
+                            Log.Warn($"{item} probably doesn't exist as an ammoType...");
                         }
                     }
                     catch (Exception e)

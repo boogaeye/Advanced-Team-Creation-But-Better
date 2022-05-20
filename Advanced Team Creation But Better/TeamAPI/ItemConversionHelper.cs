@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Exiled.API.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,20 @@ namespace ATCBB.TeamAPI
                 if (Weapon == item.ToString())
                 {
                     itemType = item;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool TryGetAmmoTypeFromString(this string Weapon, out AmmoType AmmoType)
+        {
+            AmmoType = AmmoType.None;
+            foreach (AmmoType item in Enum.GetValues(typeof(AmmoType)).Cast<AmmoType>())
+            {
+                if (Weapon == item.ToString())
+                {
+                    AmmoType = item;
                     return true;
                 }
             }
