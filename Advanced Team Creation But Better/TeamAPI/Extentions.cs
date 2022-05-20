@@ -21,6 +21,7 @@ namespace ATCBB.TeamAPI.Extentions
         }
         public static void ChangeAdvancedRole(this Player ply, AdvancedTeam at, AdvancedTeamSubclass ast, InventoryDestroyType ChangeInventory = InventoryDestroyType.None, bool ChangePosition = false)
         {
+            if (!LeaderboardHelper.TeamsInstantiable) return;
             TeamPlugin.Singleton.TeamEventHandler.Leaderboard.ClearPlayerFromLeaderBoards(ply);
             TeamPlugin.Singleton.TeamEventHandler.Leaderboard.GetTeamLeaderboard(at.Name).AddPlayer(ply, ast);
             Timing.CallDelayed(0.5f, () =>
@@ -52,8 +53,7 @@ namespace ATCBB.TeamAPI.Extentions
                     ply.DropItems();
                 }
                 ply.SetRole(ast.Model, SpawnReason.Respawn, true);
-                ply.InfoArea &= ~PlayerInfoArea.Role;
-                ply.CustomInfo = $"<color={ast.Color}>{ast.RoleDisplay}</color>";
+                ply.CustomInfo = $"{ply.Nickname}\n<color={ast.Color}>{ast.RoleDisplay}</color>";
                 ply.MaxHealth = ast.MaxHP;
                 ply.Health = ast.HP;
                 ply.ShowHint(ast.Hint.Replace("{Team}", $"<color={at.Color}>{at.Name}</color>").Replace("{Role}", $"<color={ast.Color}>{ast.RoleDisplay}</color>"), 10);
@@ -80,6 +80,8 @@ namespace ATCBB.TeamAPI.Extentions
                         Log.Error(e.StackTrace);
                     }
                 }
+                ply.ReferenceHub.nicknameSync.ShownPlayerInfo &= ~PlayerInfoArea.Nickname;
+                ply.ReferenceHub.nicknameSync.ShownPlayerInfo &= ~PlayerInfoArea.Role;
             });
         }
         public static void ChangeAdvancedTeam(this Player ply, AdvancedTeam at)

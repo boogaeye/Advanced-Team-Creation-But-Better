@@ -20,6 +20,11 @@ namespace ATCBB
         public TeamEventHandler TeamEventHandler;
         public Harmony Harmony;
 
+        public override string Name => "Advanced Team Creation";
+        public override string Author => "BoogaEye";
+        public override Version Version => new Version(1, 0, 3, 2);
+        public override Version RequiredExiledVersion => new Version(5, 1, 3, 0);
+
         public static Assembly assemblyTimer;
         public override void OnEnabled()
         {
@@ -32,6 +37,7 @@ namespace ATCBB
             Exiled.Events.Handlers.Server.RoundEnded += TeamEventHandler.RoundEnd;
             Exiled.Events.Handlers.Map.AnnouncingNtfEntrance += TeamEventHandler.MtfRespawnCassie;
             Exiled.Events.Handlers.Player.ChangingRole += TeamEventHandler.RoleChange;
+            Exiled.Events.Handlers.Player.Escaping += TeamEventHandler.EscapingEvent;
             TeamEvents.ReferancingTeam += TeamEventHandler.ReferancingTeam;
             if (!Exiled.API.Features.Server.FriendlyFire)
             {
@@ -49,6 +55,7 @@ namespace ATCBB
             Exiled.Events.Handlers.Server.RoundEnded -= TeamEventHandler.RoundEnd;
             Exiled.Events.Handlers.Map.AnnouncingNtfEntrance -= TeamEventHandler.MtfRespawnCassie;
             Exiled.Events.Handlers.Player.ChangingRole -= TeamEventHandler.RoleChange;
+            Exiled.Events.Handlers.Player.Escaping -= TeamEventHandler.EscapingEvent;
             TeamEvents.ReferancingTeam -= TeamEventHandler.ReferancingTeam;
             Harmony.UnpatchAll("BoogaEye.TeamStuff.Bruh");
             TeamEventHandler = null;

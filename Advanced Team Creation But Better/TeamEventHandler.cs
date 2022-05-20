@@ -35,8 +35,9 @@ namespace ATCBB
             {
                 Leaderboard.ClearPlayerFromLeaderBoards(ev.Player);
                 ev.Player.ChangeAdvancedTeam(plugin.Config.FindAT(ev.NewRole.GetTeam().ToString()));
-                ev.Player.InfoArea |= PlayerInfoArea.Role;
-                ev.Player.CustomInfo = String.Empty;
+                ev.Player.CustomInfo = string.Empty;
+                ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Nickname;
+                ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Role;
             }
         }
 
@@ -70,7 +71,7 @@ namespace ATCBB
                 if (CassieHelper.CassieAnnouncement != String.Empty)
                 {
                     if (!CassieHelper.PlayBeforeSpawning)
-                        Cassie.MessageTranslated(CassieHelper.CassieAnnouncement.Replace("{SCPLeft}", ev.ScpsLeft.ToString().Replace("{Unit}", $"NATO_{ev.UnitName[0]}").Replace("{UnitNum}", ev.UnitNumber.ToString())), CassieHelper.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ev.ScpsLeft.ToString()).Replace("{Unit}", ev.UnitName).Replace("{UnitNum}", ev.UnitNumber.ToString()));
+                        Cassie.MessageTranslated(CassieHelper.CassieAnnouncement.Replace("{SCPLeft}", ev.ScpsLeft.ToString().Replace("{Unit}", $"NATO_{ev.UnitName[0].ToString().ToLower()}").Replace("{UnitNum}", ev.UnitNumber.ToString())), CassieHelper.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ev.ScpsLeft.ToString()).Replace("{Unit}", ev.UnitName).Replace("{UnitNum}", ev.UnitNumber.ToString()));
                 }
             }
             Respawns++;

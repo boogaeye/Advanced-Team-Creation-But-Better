@@ -26,6 +26,7 @@ namespace ATCBB.TeamAPI
         public string EscapeClass { get; set; } = "Cadet";
         [Description("Defines what classes are able to escape if they are not then they will become whatever teams escape default is (Chaos, NTF Specialist)")]
         public RoleType[] EscapableClasses { get; set; } = { RoleType.Scientist, RoleType.ClassD };
+
         public bool VanillaTeam;
     }
 }

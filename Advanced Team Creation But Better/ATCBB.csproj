@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\UpdateSubTeam.cs" />
+    <Compile Include="Commands\SimulateRoundEnd.cs" />
     <Compile Include="Commands\UpdateTeam.cs" />
     <Compile Include="Commands\ListTeams.cs" />
     <Compile Include="Commands\CreateSubTeam.cs" />

@@ -11,12 +11,12 @@ namespace ATCBB.Patches
     [HarmonyPatch(typeof(Radio), nameof(Radio.UserCode_CmdSyncTransmissionStatus))]
     public class EndRoundSpeech
     {
-        public static bool Prefix(Radio __instance, bool bruh)
+        public static bool Prefix(Radio __instance, bool b)
         {
             Exiled.API.Features.Player ply = Exiled.API.Features.Player.Get(__instance._hub);
             if (string.IsNullOrEmpty(ply?.UserId)) return false;
-            if (CustomRoundEnder.RoundEnded) return __instance._dissonanceSetup.SpectatorChat = bruh;
-            if (ply.HasItem(ItemType.Radio)) return __instance._dissonanceSetup.RadioAsHuman = bruh;
+            if (CustomRoundEnder.RoundEnded) return __instance._dissonanceSetup.SpectatorChat = b;
+            if (ply.HasItem(ItemType.Radio)) return __instance._dissonanceSetup.RadioAsHuman = b;
             return false;
         }
     }

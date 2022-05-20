@@ -17,7 +17,7 @@ namespace ATCBB
     public class TeamConfig : IConfig
     {
         public bool IsEnabled { get; set; } = true;
-        public bool Debug { get; set; } = true;
+        public bool Debug { get; set; } = false;
         public bool FriendlyFire { get; set; } = true;
         public int TeleportRetries { get; set; } = 15;
         [Description("Recommended to keep this on this provides a custom handler to custom teams so they can win or you can switch it off to turn it back to the default round ender")]

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static ATCBB.TeamAPI.CustomEventHelpers.CustomRoundEnder;
 
 namespace ATCBB.TeamAPI
 {
@@ -14,13 +15,27 @@ namespace ATCBB.TeamAPI
         public static bool TeamsInstantiable = false;
         public class TeamLeaderboard
         {
-            public static AdvancedTeamSubclass DEFAULTSUBCLASS = new AdvancedTeamSubclass() { Name = "DEFAULT", AdvancedTeam = "DEFAULT" };
+            public static readonly AdvancedTeamSubclass DEFAULTSUBCLASS = new AdvancedTeamSubclass() { Name = "DEFAULT", AdvancedTeam = "DEFAULT" };
             public TeamLeaderboard(AdvancedTeam at)
             {
                 Team = at;
             }
             public AdvancedTeam Team;
             public Dictionary<Player, AdvancedTeamSubclass> PlayerPairs = new Dictionary<Player, AdvancedTeamSubclass>();
+            public List<RoundEndStats> Stats = new List<RoundEndStats>();
+            public void UpdateStat(string Name, string Value)
+            {
+                foreach (RoundEndStats res in Stats)
+                {
+                    if (res.Name == Name)
+                    {
+                        Stats.Remove(res);
+                        Stats.Add(new RoundEndStats(Name, Value));
+                        return;
+                    }
+                }
+                Stats.Add(new RoundEndStats(Name, Value));
+            }
             public void AddPlayer(Player p, AdvancedTeamSubclass advancedTeamSubclass)
             {
                 PlayerPairs[p] = advancedTeamSubclass;
@@ -39,6 +54,7 @@ namespace ATCBB.TeamAPI
 
         public void ClearPlayerFromLeaderBoards(Player ply)
         {
+            if (!TeamsInstantiable) return;
             foreach (TeamLeaderboard tldr in TeamLeaderboards)
             {
                 if (tldr.PlayerPairs.Keys.Contains(ply))
@@ -52,7 +68,6 @@ namespace ATCBB.TeamAPI
         {
             foreach (TeamLeaderboard tldr in TeamLeaderboards)
             {
-                Log.Debug($"Looking at {tldr.Team.Name} but im looking for {name}", TeamPlugin.Singleton.Config.Debug);
                 if (tldr.Team.Name == name)
                 {
                     return tldr;
