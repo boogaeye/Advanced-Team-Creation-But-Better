@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Exiled.API.Features;
+using Exiled;
 
 namespace ATCBB.TeamAPI
 {
@@ -10,9 +12,14 @@ namespace ATCBB.TeamAPI
     {
         public static AdvancedTeam SetUpAfterOriginalTeam(Team t)
         {
-            var at = new AdvancedTeam();
-            at.Name = t.ToString();
-            at.VanillaTeam = true;
+            Log.Info($"Converting Type {t}");
+            AdvancedTeam at = new AdvancedTeam
+            {
+                Name = t.ToString(),
+                VanillaTeam = true,
+                Chance = 1
+            };
+            Log.Info($"Made Vanilla Team {t} looking snazzy {at.Name}");
             switch (t)
             {
                 case Team.CDP:
@@ -102,7 +109,13 @@ namespace ATCBB.TeamAPI
                         "RSC"
                     };
                     break;
+                default:
+                    at.RoundEnderConfig.FriendlyTeams = new List<string>();
+                    at.RoundEnderConfig.RequiredTeams = new List<string>();
+                    at.Spectator = true;
+                    break;
             }
+            Log.Info($"Returning Vanilla Team {t}");
             return at;
         }
     }

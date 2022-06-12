@@ -41,12 +41,16 @@ namespace ATCBB
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Nickname;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Role;
                 if (ev.Reason != Exiled.API.Enums.SpawnReason.RoundStart)
-                    CustomRoundEnder.UpdateRoundStatus();
+                {
+                    MEC.Timing.CallDelayed(0.1f, () =>
+                    CustomRoundEnder.UpdateRoundStatus());
+                }
             }
         }
 
         public void MapGenerated()
         {
+            plugin.Config.LoadTeamConfigs();
             Leaderboard.SetUpTeamLeaders();
             Respawns = 0;
             LastTeamSpawned = null;
@@ -74,17 +78,32 @@ namespace ATCBB
             }
         }
 
+        public int HiddenInterference;
+
         public void MtfRespawnCassie(AnnouncingNtfEntranceEventArgs ev)
         {
             if (CassieHelper != null && !CassieHelper.VanillaTeam)
-                ChangeUnitNameOnAdvancedTeam(Respawns, CassieHelper, $"{ev.UnitName}-{ev.UnitNumber}");
+            {
+                if (CassieHelper.ChanceForHiddenMtfNato < HiddenInterference)
+                {
+                    ChangeUnitNameOnAdvancedTeam(Respawns, CassieHelper, $"{ev.UnitName}-{ev.UnitNumber}");
+                }
+                else
+                {
+                    ev.IsAllowed = false;
+                    ChangeUnitNameOnAdvancedTeam(Respawns, "<color=black>INTERFERENCE</color>");
+                    Respawns++;
+                    CassieHelper = null;
+                    return;
+                }
+            }
             if (CassieHelper != null && CassieHelper.CassieAnnouncement != AdvancedTeam.DEFAULTAnnounce)
             {
                 ev.IsAllowed = false;
                 if (CassieHelper.CassieAnnouncement != String.Empty)
                 {
                     if (!CassieHelper.PlayBeforeSpawning)
-                        Cassie.MessageTranslated(CassieHelper.CassieAnnouncement.Replace("{SCPLeft}", ev.ScpsLeft.ToString().Replace("{Unit}", $"NATO_{ev.UnitName[0].ToString().ToLower()}").Replace("{UnitNum}", ev.UnitNumber.ToString())), CassieHelper.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ev.ScpsLeft.ToString()).Replace("{Unit}", ev.UnitName).Replace("{UnitNum}", ev.UnitNumber.ToString()));
+                        Cassie.MessageTranslated(CassieHelper.CassieAnnouncement.Replace("{SCPLeft}", ev.ScpsLeft.ToString()).Replace("{Unit}", $"NATO_{ev.UnitName[0].ToString().ToLower()}").Replace("{UnitNum}", Cassie.ConvertNumber(ev.UnitNumber)), CassieHelper.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ev.ScpsLeft.ToString()).Replace("{Unit}", ev.UnitName).Replace("{UnitNum}", ev.UnitNumber.ToString()));
                 }
             }
             Respawns++;
@@ -95,12 +114,52 @@ namespace ATCBB
 
         public void ChangeUnitNameOnAdvancedTeam(int index, AdvancedTeam Name, string UnitName)
         {
-            string unit = RespawnManager.Singleton.NamingManager.AllUnitNames[index].UnitName;
             RespawnManager.Singleton.NamingManager.AllUnitNames.Remove(RespawnManager.Singleton.NamingManager.AllUnitNames[index]);
             UnitNamingRules.AllNamingRules[SpawnableTeamType.NineTailedFox].AddCombination($"<color={Name.Color}>{Name.Name}-{UnitName}</color>", SpawnableTeamType.NineTailedFox);
         }
 
+        public void ChangeUnitNameOnAdvancedTeam(int index, string UnitName)
+        {
+            RespawnManager.Singleton.NamingManager.AllUnitNames.Remove(RespawnManager.Singleton.NamingManager.AllUnitNames[index]);
+            UnitNamingRules.AllNamingRules[SpawnableTeamType.NineTailedFox].AddCombination(UnitName, SpawnableTeamType.NineTailedFox);
+        }
+
+        public void AddUnitNameOnAdvancedTeam(AdvancedTeam Name, string UnitName)
+        {
+            UnitNamingRules.AllNamingRules[SpawnableTeamType.NineTailedFox].AddCombination($"<color={Name.Color}>{Name.Name}-{UnitName}</color>", SpawnableTeamType.NineTailedFox);
+        }
+
         int Respawns = 0;
+
+        string[] Letters = new string[26]
+        { 
+            "Alpha",
+            "Bravo",
+            "Charlie",
+            "Delta",
+            "Echo",
+            "Foxtrot",
+            "Golf",
+            "Hotel",
+            "India",
+            "Juliett",
+            "Kilo",
+            "Lima",
+            "Mike",
+            "November",
+            "Oscar",
+            "Papa",
+            "Quebec",
+            "Romeo",
+            "Sierra",
+            "Tango",
+            "Uniform",
+            "Victor",
+            "Whiskey",
+            "X-ray",
+            "Yankee",
+            "Zulu"
+        };
 
         public void TeamSpawning(RespawningTeamEventArgs ev)
         {
@@ -125,9 +184,12 @@ namespace ATCBB
                 ReferancedTeam = null;
                 return;
             }
+            int UnitNum = new Random().Next(1, 9);
+            string UnitName = Letters[new Random().Next(0, 26)];
             if (!ReferancedTeam.PlayBeforeSpawning && !ReferancedTeam.VanillaTeam && !PlayedAlready && ev.NextKnownTeam != Respawning.SpawnableTeamType.NineTailedFox)
-                Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement.Replace("{SCPLeft}", ScpsLeft.ToString()), ReferancedTeam.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ScpsLeft.ToString()));
-            
+                if (HiddenInterference < ReferancedTeam.ChanceForHiddenMtfNato)
+                    Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement.Replace("{SCPLeft}", ScpsLeft.ToString()).Replace("{Unit}", $"NATO_{UnitName[0]}").Replace("{UnitNum}", UnitNum.ToString()), ReferancedTeam.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ScpsLeft.ToString()).Replace("{Unit}", $"{UnitName}").Replace("{UnitNum}", UnitNum.ToString()));
+
             Dictionary<string, int> Helper = new Dictionary<string, int>();
             foreach (string t in ReferancedTeam.SpawnOrder)
             {
@@ -162,6 +224,9 @@ namespace ATCBB
 
         public void ReferancingTeam(TeamEvents.ReferancingTeamEventArgs ev)
         {
+            HiddenInterference = new Random().Next(0, 99);
+            int UnitNumPre = new Random().Next(1, 9);
+            string UnitNamePre = Letters[new Random().Next(0, 26)];
             Log.Debug($"Got Referance {ev.AdvancedTeam.Name}", plugin.Config.Debug);
             if (!ev.IsAllowed)
             {
@@ -174,7 +239,8 @@ namespace ATCBB
             ReferancedTeam = ev.AdvancedTeam;
             if (ReferancedTeam.PlayBeforeSpawning && !ReferancedTeam.VanillaTeam && !PlayedAlready)
             {
-                Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement.Replace("{SCPLeft}", ScpsLeft.ToString()), ReferancedTeam.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ScpsLeft.ToString()));
+                if (HiddenInterference < ev.AdvancedTeam.ChanceForHiddenMtfNato)
+                    Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement.Replace("{SCPLeft}", ScpsLeft.ToString()).Replace("{Unit}", $"NATO_{UnitNamePre[0]}").Replace("{UnitNum}", UnitNumPre.ToString()), ReferancedTeam.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ScpsLeft.ToString()).Replace("{Unit}", $"{UnitNamePre}").Replace("{UnitNum}", UnitNumPre.ToString()));
                 PlayedAlready = true;
             }
             CassieHelper = ReferancedTeam;

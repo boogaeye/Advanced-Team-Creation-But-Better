@@ -23,6 +23,7 @@ namespace ATCBB.TeamAPI
         public bool PlayBeforeSpawning { get; set; } = false;
         public string CassieAnnouncement { get; set; } = DEFAULTAnnounce;
         public string CassieAnnouncementSubtitles { get; set; } = DEFAULTAnnounce;
+        public int ChanceForHiddenMtfNato { get; set; } = 0;
         public LeaderboardConfigHelper RoundEnderConfig { get; set; } = new LeaderboardConfigHelper();
         public string Color { get; set; } = "yellow";
         [Description("Defines what class an escapee will become when escaping")]
@@ -31,6 +32,7 @@ namespace ATCBB.TeamAPI
         public RoleType[] EscapableClasses { get; set; } = { RoleType.Scientist, RoleType.ClassD };
 
         public bool VanillaTeam;
+        public bool Spectator;
 
         public bool ConfirmFriendshipWithTeam(AdvancedTeam at)
         {

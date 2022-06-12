@@ -57,10 +57,10 @@ namespace ATCBB.TeamAPI.Extentions
                     ply.Ammo.Clear();
                 }
                 ply.SetRole(ast.Model, SpawnReason.Respawn, true);
-                ply.ReferenceHub.nicknameSync.ShownPlayerInfo &= ~PlayerInfoArea.Role;
-                ply.ReferenceHub.nicknameSync.ShownPlayerInfo &= ~PlayerInfoArea.Nickname;
                 ply.InfoArea = PlayerInfoArea.Nickname;
                 ply.CustomInfo = $"{ply.Nickname}\n<color={ast.Color}>{ast.RoleDisplay}</color>";
+                ply.ReferenceHub.nicknameSync.ShownPlayerInfo &= ~PlayerInfoArea.Role;
+                ply.ReferenceHub.nicknameSync.ShownPlayerInfo &= ~PlayerInfoArea.Nickname;
                 ply.MaxHealth = ast.MaxHP;
                 ply.Health = ast.HP;
                 ply.ShowHint(ast.Hint.Replace("{Team}", $"<color={at.Color}>{at.Name}</color>").Replace("{Role}", $"<color={ast.Color}>{ast.RoleDisplay}</color>"), 10);

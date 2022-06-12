@@ -26,12 +26,23 @@ namespace ATCBB.TeamAPI.CustomEventHelpers
         //{
         //    if (TeamPlugin.Singleton.Config.CustomRoundEnder)
         //    {
-                
+
         //    }
         //}
 
         public static void UpdateRoundStatus()
         {
+            if (!TeamPlugin.Singleton.Config.CustomRoundEnder) return;
+            if (Round.ElapsedTime.TotalSeconds < 10)
+            {
+                Log.Debug($"Preventing Round Ending because it hasn't been 10 seconds in the round", TeamPlugin.Singleton.Config.Debug);
+                return;
+            }
+            if (Round.IsLocked || Player.List.Count() == 1)
+            {
+                Log.Debug($"Round is locked or there is 1 player so preventing round end...", TeamPlugin.Singleton.Config.Debug);
+                return;
+            }
             foreach (LeaderboardHelper.TeamLeaderboard TL in TeamPlugin.Singleton.TeamEventHandler.Leaderboard.TeamLeaderboards)
             {
                 if (TL.Team.DoesExist())
@@ -40,13 +51,9 @@ namespace ATCBB.TeamAPI.CustomEventHelpers
                     Log.Debug($"Team {TL.Team.Name} does exist in current round", TeamPlugin.Singleton.Config.Debug);
                     foreach (LeaderboardHelper.TeamLeaderboard TL2 in TeamPlugin.Singleton.TeamEventHandler.Leaderboard.TeamLeaderboards)
                     {
-                        if (TL2 == TL)
+                        if (!TL2.Team.Spectator)
                         {
-                            Log.Debug($"Preventing {TL.Team.Name} overlap", TeamPlugin.Singleton.Config.Debug);
-                        }
-                        else
-                        {
-                            if (TL.Team.ConfirmEnemyshipWithTeam(TL2.Team))
+                            if (TL.Team.ConfirmEnemyshipWithTeam(TL2.Team) && TL2.Team.DoesExist())
                             {
                                 CanWin = false;
                                 Log.Debug($"Team {TL.Team.Name} is enemies with {TL2.Team.Name}. They can no longer win.", TeamPlugin.Singleton.Config.Debug);
@@ -54,14 +61,14 @@ namespace ATCBB.TeamAPI.CustomEventHelpers
                             }
                         }
                     }
+                    if (TL.Team.Spectator)
+                    {
+                        CanWin = false;
+                    }
                     if (CanWin)
                     {
-                        EndRound($"<color={TL.Team.Color}>{TL.Team.Name}</color>");
+                        EndRound(TL.Team.DisplayName);
                     }
-                }
-                else
-                {
-                    Log.Debug($"Team {TL.Team.Name} doesn't exist in current round", TeamPlugin.Singleton.Config.Debug);
                 }
             }
         }

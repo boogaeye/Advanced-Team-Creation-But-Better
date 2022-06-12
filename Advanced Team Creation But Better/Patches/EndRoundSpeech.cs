@@ -11,6 +11,7 @@ namespace ATCBB.Patches
     [HarmonyPatch(typeof(Radio), nameof(Radio.UserCode_CmdSyncTransmissionStatus))]
     public class EndRoundSpeech
     {
+        [HarmonyPrefix]
         public static bool Prefix(Radio __instance, bool b)
         {
             Exiled.API.Features.Player ply = Exiled.API.Features.Player.Get(__instance._hub);
