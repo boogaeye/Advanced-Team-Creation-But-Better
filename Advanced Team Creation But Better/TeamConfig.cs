@@ -69,8 +69,8 @@ namespace ATCBB
             }
             foreach (Team t in Enum.GetValues(typeof(Team)).Cast<Team>())
             {
-                Teams.Add(new AdvancedTeam() { Name = t.ToString(), VanillaTeam = true, Chance = 10 });
-                Log.Debug($"Referancing Team from vanilla game called {t.ToString()}", Debug);
+                Teams.Add(OriginalToCustomTeamHelper.SetUpAfterOriginalTeam(t));
+                Log.Debug($"Referancing Team from vanilla game called {t}", Debug);
             }
             foreach (string at in Directory.EnumerateDirectories(ConfigsFolder))
             {

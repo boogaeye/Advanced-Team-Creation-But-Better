@@ -29,7 +29,7 @@ namespace ATCBB.Commands
             {
                 response = $"Simulating Round Win for {arguments.Array[1]}";
                 AdvancedTeam at = TeamPlugin.Singleton.Config.FindAT(teamName);
-                CustomRoundEnder.EndRound($"<color={at.Color}>{at.Name}</color>");
+                CustomRoundEnder.EndRound(at.DisplayName);
                 return true;
             }
 

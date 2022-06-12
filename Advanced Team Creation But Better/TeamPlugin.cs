@@ -22,7 +22,7 @@ namespace ATCBB
 
         public override string Name => "Advanced Team Creation";
         public override string Author => "BoogaEye";
-        public override Version Version => new Version(1, 0, 3, 2);
+        public override Version Version => new Version(1, 1, 0, 0);
         public override Version RequiredExiledVersion => new Version(5, 1, 3, 0);
 
         public static Assembly assemblyTimer;
