@@ -35,6 +35,7 @@ namespace ATCBB
             {
                 Leaderboard.ClearPlayerFromLeaderBoards(ev.Player);
                 ev.Player.ChangeAdvancedTeam(plugin.Config.FindAT(ev.NewRole.GetTeam().ToString()));
+                ev.Player.InfoArea = PlayerInfoArea.Nickname;
                 ev.Player.CustomInfo = string.Empty;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Nickname;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Role;
@@ -45,6 +46,15 @@ namespace ATCBB
         {
             Leaderboard.SetUpTeamLeaders();
             Respawns = 0;
+            LastTeamSpawned = null;
+            CassieHelper = null;
+            ReferancedTeam = null;
+        }
+
+        public void RoundEnding(EndingRoundEventArgs ev)
+        {
+            ev.IsRoundEnded = !plugin.Config.CustomRoundEnder;
+            ev.IsAllowed = !plugin.Config.CustomRoundEnder;
         }
 
         public void RoundEnd(RoundEndedEventArgs ev)

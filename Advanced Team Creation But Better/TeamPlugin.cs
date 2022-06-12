@@ -35,6 +35,7 @@ namespace ATCBB
             Exiled.Events.Handlers.Map.Generated += TeamEventHandler.MapGenerated;
             Exiled.Events.Handlers.Server.RespawningTeam += TeamEventHandler.TeamSpawning;
             Exiled.Events.Handlers.Server.RoundEnded += TeamEventHandler.RoundEnd;
+            Exiled.Events.Handlers.Server.EndingRound += TeamEventHandler.RoundEnding;
             Exiled.Events.Handlers.Map.AnnouncingNtfEntrance += TeamEventHandler.MtfRespawnCassie;
             Exiled.Events.Handlers.Player.ChangingRole += TeamEventHandler.RoleChange;
             Exiled.Events.Handlers.Player.Escaping += TeamEventHandler.EscapingEvent;
@@ -52,6 +53,7 @@ namespace ATCBB
         {
             Exiled.Events.Handlers.Map.Generated -= TeamEventHandler.MapGenerated;
             Exiled.Events.Handlers.Server.RespawningTeam -= TeamEventHandler.TeamSpawning;
+            Exiled.Events.Handlers.Server.EndingRound -= TeamEventHandler.RoundEnding;
             Exiled.Events.Handlers.Server.RoundEnded -= TeamEventHandler.RoundEnd;
             Exiled.Events.Handlers.Map.AnnouncingNtfEntrance -= TeamEventHandler.MtfRespawnCassie;
             Exiled.Events.Handlers.Player.ChangingRole -= TeamEventHandler.RoleChange;

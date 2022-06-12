@@ -57,6 +57,9 @@ namespace ATCBB.TeamAPI.Extentions
                     ply.Ammo.Clear();
                 }
                 ply.SetRole(ast.Model, SpawnReason.Respawn, true);
+                ply.ReferenceHub.nicknameSync.ShownPlayerInfo &= ~PlayerInfoArea.Role;
+                ply.ReferenceHub.nicknameSync.ShownPlayerInfo &= ~PlayerInfoArea.Nickname;
+                ply.InfoArea = PlayerInfoArea.Nickname;
                 ply.CustomInfo = $"{ply.Nickname}\n<color={ast.Color}>{ast.RoleDisplay}</color>";
                 ply.MaxHealth = ast.MaxHP;
                 ply.Health = ast.HP;
@@ -104,8 +107,6 @@ namespace ATCBB.TeamAPI.Extentions
                         Log.Error(e.StackTrace);
                     }
                 }
-                ply.ReferenceHub.nicknameSync.ShownPlayerInfo &= ~PlayerInfoArea.Nickname;
-                ply.ReferenceHub.nicknameSync.ShownPlayerInfo &= ~PlayerInfoArea.Role;
             });
         }
         public static void ChangeAdvancedTeam(this Player ply, AdvancedTeam at)
