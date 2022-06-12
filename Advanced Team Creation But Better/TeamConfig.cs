@@ -19,6 +19,9 @@ namespace ATCBB
         public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; } = false;
         public bool FriendlyFire { get; set; } = true;
+        [Description("Determines if Class D Personal are friends with other Class D and Chaos")]
+        public bool ClassDFriendsWithChaos { get; set; } = true;
+        public bool ScpNeutralWithChaos { get; set; } = false;
         public int TeleportRetries { get; set; } = 15;
         [Description("Recommended to keep this on this provides a custom handler to custom teams so they can win or you can switch it off to turn it back to the default round ender")]
         public bool CustomRoundEnder { get; set; } = true;

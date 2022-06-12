@@ -30,6 +30,42 @@ namespace ATCBB.TeamAPI.CustomEventHelpers
         //    }
         //}
 
+        public static void UpdateRoundStatus()
+        {
+            foreach (LeaderboardHelper.TeamLeaderboard TL in TeamPlugin.Singleton.TeamEventHandler.Leaderboard.TeamLeaderboards)
+            {
+                if (TL.Team.DoesExist())
+                {
+                    bool CanWin = true;
+                    Log.Debug($"Team {TL.Team.Name} does exist in current round", TeamPlugin.Singleton.Config.Debug);
+                    foreach (LeaderboardHelper.TeamLeaderboard TL2 in TeamPlugin.Singleton.TeamEventHandler.Leaderboard.TeamLeaderboards)
+                    {
+                        if (TL2 == TL)
+                        {
+                            Log.Debug($"Preventing {TL.Team.Name} overlap", TeamPlugin.Singleton.Config.Debug);
+                        }
+                        else
+                        {
+                            if (TL.Team.ConfirmEnemyshipWithTeam(TL2.Team))
+                            {
+                                CanWin = false;
+                                Log.Debug($"Team {TL.Team.Name} is enemies with {TL2.Team.Name}. They can no longer win.", TeamPlugin.Singleton.Config.Debug);
+                                break;
+                            }
+                        }
+                    }
+                    if (CanWin)
+                    {
+                        EndRound($"<color={TL.Team.Color}>{TL.Team.Name}</color>");
+                    }
+                }
+                else
+                {
+                    Log.Debug($"Team {TL.Team.Name} doesn't exist in current round", TeamPlugin.Singleton.Config.Debug);
+                }
+            }
+        }
+
         public static void EndRound(string TeamWon)
         {
             if (!TeamPlugin.Singleton.Config.CustomRoundEnder) return;

@@ -114,6 +114,7 @@
     <Compile Include="Commands\CreateTeam.cs" />
     <Compile Include="Commands\ATC.cs" />
     <Compile Include="Patches\EndRoundSpeech.cs" />
+    <Compile Include="TeamAPI\CustomConfig\LeaderboardConfigHelper.cs" />
     <Compile Include="TeamAPI\CustomEventHelpers\CustomRoundEnder.cs" />
     <Compile Include="TeamAPI\Events\TeamEvents.cs" />
     <Compile Include="Patches\RefNextTeam.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="TeamAPI\Extentions.cs" />
     <Compile Include="TeamAPI\ItemConversionHelper.cs" />
     <Compile Include="TeamAPI\LeaderboardHelper.cs" />
+    <Compile Include="TeamAPI\OriginalToCustomTeamHelper.cs" />
     <Compile Include="Translations.cs" />
     <Compile Include="TeamConfig.cs" />
     <Compile Include="TeamEventHandler.cs" />

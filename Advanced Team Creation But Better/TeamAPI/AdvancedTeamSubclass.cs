@@ -18,5 +18,6 @@ namespace ATCBB.TeamAPI
         public string[] AmmoInventory { get; set; } = { "Nato9:90", "Nato556:90", "Nato762:90", "Ammo12Gauge:90", "Ammo44Cal:90" };
         public string Hint { get; set; } = "You are {Team}, Good Luck {Role}";
         public string Color { get; set; } = "yellow";
+        
     }
 }

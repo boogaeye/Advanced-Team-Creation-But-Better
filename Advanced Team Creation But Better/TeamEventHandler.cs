@@ -14,6 +14,7 @@ using ATCBB.TeamAPI.Extentions;
 using Respawning;
 using Respawning.NamingRules;
 using System.Text.RegularExpressions;
+using ATCBB.TeamAPI.CustomEventHelpers;
 
 namespace ATCBB
 {
@@ -39,6 +40,8 @@ namespace ATCBB
                 ev.Player.CustomInfo = string.Empty;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Nickname;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Role;
+                if (ev.Reason != Exiled.API.Enums.SpawnReason.RoundStart)
+                    CustomRoundEnder.UpdateRoundStatus();
             }
         }
 
