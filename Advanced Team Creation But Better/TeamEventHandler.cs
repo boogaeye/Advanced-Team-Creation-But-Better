@@ -60,14 +60,7 @@ namespace ATCBB
             if (ev.Killer.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()) && ev.Killer.IsScp)
             {
                 ev.Killer.ShowHint("<color=red>Don't damage a friendly team</color>");
-                if (!plugin.Config.FriendlyFire)
-                {
-                    ev.IsAllowed = false;
-                }
-                else
-                {
-                    ev.IsAllowed = false;
-                }
+                ev.IsAllowed = false;
             }
         }
 
