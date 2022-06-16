@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ATCBB.TeamAPI.Extentions;
 using Random = UnityEngine.Random;
+using Exiled.API.Features;
 
 namespace ATCBB.TeamAPI.Events
 {
@@ -19,13 +20,17 @@ namespace ATCBB.TeamAPI.Events
 
         public class SettingAdvancedTeamEventArgs : EventArgs
         {
-            public SettingAdvancedTeamEventArgs(AdvancedTeam advancedTeam)
+            public SettingAdvancedTeamEventArgs(Player ply, AdvancedTeam advancedTeam, AdvancedTeamSubclass advancedSubTeam)
             {
                 AdvancedTeam = advancedTeam;
+                AdvancedSubTeam = advancedSubTeam;
+                Player = ply;
             }
 
             public bool IsAllowed { get; set; } = true;
+            public Player Player { get; }
             public AdvancedTeam AdvancedTeam { get; set; }
+            public AdvancedTeamSubclass AdvancedSubTeam { get; set; }
 
             public void Invoke()
             {

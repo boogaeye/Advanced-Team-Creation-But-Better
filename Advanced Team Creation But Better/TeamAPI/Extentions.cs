@@ -8,6 +8,7 @@ using Exiled.API.Features;
 using CustomItems.API;
 using MEC;
 using UnityEngine;
+using ATCBB.TeamAPI.Events;
 
 namespace ATCBB.TeamAPI.Extentions
 {
@@ -35,6 +36,12 @@ namespace ATCBB.TeamAPI.Extentions
         public static void ChangeAdvancedRole(this Player ply, AdvancedTeam at, AdvancedTeamSubclass ast, InventoryDestroyType ChangeInventory = InventoryDestroyType.None, bool ChangePosition = false)
         {
             if (!LeaderboardHelper.TeamsInstantiable) return;
+            var av = new TeamEvents.SettingAdvancedTeamEventArgs(ply, at, ast);
+            var t = av.AdvancedTeam;
+            var ts = av.AdvancedSubTeam;
+            if (!av.IsAllowed) return;
+            at = av.AdvancedTeam;
+            ast = av.AdvancedSubTeam;
             TeamPlugin.Singleton.TeamEventHandler.Leaderboard.ClearPlayerFromLeaderBoards(ply);
             TeamPlugin.Singleton.TeamEventHandler.Leaderboard.GetTeamLeaderboard(at.Name).AddPlayer(ply, ast);
             Timing.CallDelayed(0.5f, () =>
