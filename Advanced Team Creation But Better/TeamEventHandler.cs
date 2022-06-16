@@ -32,18 +32,58 @@ namespace ATCBB
         public void RoleChange(ChangingRoleEventArgs ev)
         {
             
-            if (ev.Reason != Exiled.API.Enums.SpawnReason.Respawn)
+            if (ev.Reason != Exiled.API.Enums.SpawnReason.Respawn && ev.Reason != Exiled.API.Enums.SpawnReason.Escaped)
             {
                 Leaderboard.ClearPlayerFromLeaderBoards(ev.Player);
                 ev.Player.ChangeAdvancedTeam(plugin.Config.FindAT(ev.NewRole.GetTeam().ToString()));
-                ev.Player.InfoArea = PlayerInfoArea.Nickname;
-                ev.Player.CustomInfo = string.Empty;
+                ev.Player.CustomInfo = null;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Nickname;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Role;
                 if (ev.Reason != Exiled.API.Enums.SpawnReason.RoundStart)
                 {
                     MEC.Timing.CallDelayed(0.1f, () =>
                     CustomRoundEnder.UpdateRoundStatus());
+                }
+            }
+        }
+
+        public void RagdollSpawn(SpawningRagdollEventArgs ev)
+        {
+            if (ev.Owner.GetAdvancedTeam().VanillaTeam) return;
+            ev.IsAllowed = false;
+            RagdollInfo info = new RagdollInfo(Server.Host.ReferenceHub, ev.DamageHandlerBase, ev.Role, ev.Position, ev.Rotation, $"{ev.Nickname}", ev.CreationTime);
+            new Exiled.API.Features.Ragdoll(info, true);
+        }
+
+        public void PlayerDead(DyingEventArgs ev)
+        {
+            if (ev.Killer.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()) && ev.Killer.IsScp)
+            {
+                ev.Killer.ShowHint("<color=red>Don't damage a friendly team</color>");
+                if (!plugin.Config.FriendlyFire)
+                {
+                    ev.IsAllowed = false;
+                }
+                else
+                {
+                    ev.IsAllowed = false;
+                }
+            }
+        }
+
+        public void PlayerHurt(HurtingEventArgs ev)
+        {
+            if (ev.Attacker.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()))
+            {
+                ev.Attacker.ShowHint("<color=red>Don't damage a friendly team</color>");
+                if (!plugin.Config.FriendlyFire)
+                {
+                    ev.IsAllowed = false;
+                }
+                else
+                {
+                    ev.Target.Hurt(ev.Amount * 0.3f);
+                    ev.IsAllowed = false;
                 }
             }
         }
@@ -75,6 +115,17 @@ namespace ATCBB
             {
                 ev.IsAllowed = false;
                 ev.Player.ChangeAdvancedRole(LastTeamSpawned, plugin.Config.FindAST(LastTeamSpawned.Name, LastTeamSpawned.EscapeClass), Extentions.InventoryDestroyType.Drop, true);
+            }
+            else
+            {
+                Leaderboard.ClearPlayerFromLeaderBoards(ev.Player);
+                ev.Player.ChangeAdvancedTeam(plugin.Config.FindAT(ev.NewRole.GetTeam().ToString()));
+                ev.Player.InfoArea = PlayerInfoArea.CustomInfo;
+                ev.Player.CustomInfo = string.Empty;
+                ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Nickname;
+                ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Role;
+                MEC.Timing.CallDelayed(0.1f, () =>
+                    CustomRoundEnder.UpdateRoundStatus());
             }
         }
 

@@ -19,6 +19,19 @@ namespace ATCBB.TeamAPI.Extentions
             Drop,
             Destroy
         }
+
+        public static AdvancedTeam GetAdvancedTeam(this Player ply)
+        {
+            foreach (LeaderboardHelper.TeamLeaderboard tl in TeamPlugin.Singleton.TeamEventHandler.Leaderboard.TeamLeaderboards)
+            {
+                if (tl.PlayerPairs.Keys.Contains(ply))
+                {
+                    return tl.Team;
+                }
+            }
+            return null;
+        }
+
         public static void ChangeAdvancedRole(this Player ply, AdvancedTeam at, AdvancedTeamSubclass ast, InventoryDestroyType ChangeInventory = InventoryDestroyType.None, bool ChangePosition = false)
         {
             if (!LeaderboardHelper.TeamsInstantiable) return;
@@ -54,13 +67,13 @@ namespace ATCBB.TeamAPI.Extentions
                 else if (ChangeInventory == InventoryDestroyType.Drop)
                 {
                     ply.DropItems();
+                    ply.ClearInventory();
                     ply.Ammo.Clear();
                 }
                 ply.SetRole(ast.Model, SpawnReason.Respawn, true);
-                ply.InfoArea = PlayerInfoArea.Nickname;
-                ply.CustomInfo = $"{ply.Nickname}\n<color={ast.Color}>{ast.RoleDisplay}</color>";
-                ply.ReferenceHub.nicknameSync.ShownPlayerInfo &= ~PlayerInfoArea.Role;
+                ply.CustomInfo = $"{ply.Nickname}\n{ast.RoleDisplay}";
                 ply.ReferenceHub.nicknameSync.ShownPlayerInfo &= ~PlayerInfoArea.Nickname;
+                ply.ReferenceHub.nicknameSync.ShownPlayerInfo &= ~PlayerInfoArea.Role;
                 ply.MaxHealth = ast.MaxHP;
                 ply.Health = ast.HP;
                 ply.ShowHint(ast.Hint.Replace("{Team}", $"<color={at.Color}>{at.Name}</color>").Replace("{Role}", $"<color={ast.Color}>{ast.RoleDisplay}</color>"), 10);

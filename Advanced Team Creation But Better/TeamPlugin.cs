@@ -38,6 +38,8 @@ namespace ATCBB
             Exiled.Events.Handlers.Map.AnnouncingNtfEntrance += TeamEventHandler.MtfRespawnCassie;
             Exiled.Events.Handlers.Player.ChangingRole += TeamEventHandler.RoleChange;
             Exiled.Events.Handlers.Player.Escaping += TeamEventHandler.EscapingEvent;
+            Exiled.Events.Handlers.Player.Hurting += TeamEventHandler.PlayerHurt;
+            Exiled.Events.Handlers.Player.Dying += TeamEventHandler.PlayerDead;
             TeamEvents.ReferancingTeam += TeamEventHandler.ReferancingTeam;
             if (!Exiled.API.Features.Server.FriendlyFire)
             {
@@ -55,9 +57,11 @@ namespace ATCBB
             Exiled.Events.Handlers.Server.EndingRound -= TeamEventHandler.RoundEnding;
             Exiled.Events.Handlers.Server.RoundEnded -= TeamEventHandler.RoundEnd;
             Exiled.Events.Handlers.Map.AnnouncingNtfEntrance -= TeamEventHandler.MtfRespawnCassie;
+            Exiled.Events.Handlers.Player.Hurting -= TeamEventHandler.PlayerHurt;
             Exiled.Events.Handlers.Player.ChangingRole -= TeamEventHandler.RoleChange;
             Exiled.Events.Handlers.Player.Escaping -= TeamEventHandler.EscapingEvent;
             TeamEvents.ReferancingTeam -= TeamEventHandler.ReferancingTeam;
+            Exiled.Events.Handlers.Player.Dying -= TeamEventHandler.PlayerDead;
             Harmony.UnpatchAll("BoogaEye.TeamStuff.Bruh");
             TeamEventHandler = null;
             Harmony = null;

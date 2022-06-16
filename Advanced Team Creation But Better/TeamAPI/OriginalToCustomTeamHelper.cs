@@ -94,8 +94,8 @@ namespace ATCBB.TeamAPI
                         at.RoundEnderConfig.RequiredTeams.Add("SCP");
                     break;
                 case Team.MTF:
-                    at.DisplayName = "<color=cyan>Mobile Task Force</color> and <color=grey>Facility Forces</color>";
-                    at.Color = "cyan";
+                    at.DisplayName = "<color=blue>Mobile Task Force</color> and <color=grey>Facility Forces</color>";
+                    at.Color = "blue";
                     at.RoundEnderConfig.FriendlyTeams = new List<string>()
                     {
                         "MTF",
