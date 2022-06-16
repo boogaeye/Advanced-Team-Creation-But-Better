@@ -33,6 +33,53 @@ namespace ATCBB.TeamAPI.Extentions
             return null;
         }
 
+
+        public static void ShowFriendlyTeamDisplay(this Player ply)
+        {
+            string sb = "<align=right><size=45%>Teams:</size></align>\n";
+
+            if (ply.GetAdvancedTeam().GetAllFriendlyTeams().Any())
+            {
+                sb += "<align=right><size=45%><color=green>Friendly Teams:</color></size></align>";
+                //Get Friendly Teams
+                foreach (AdvancedTeam at in ply.GetAdvancedTeam().GetAllFriendlyTeams())
+                {
+                    sb += $"\n<align=right><size=45%><color={at.Color}>{at.Name}</color></size></align>";
+                }
+            }
+
+            if (ply.GetAdvancedTeam().GetAllHostileTeams().Any())
+            {
+                //Get Enemy teams that are hostile
+                sb += "\n\n<align=right><size=45%><color=red>Enemy Teams:</color></size></align>";
+                foreach (AdvancedTeam at in ply.GetAdvancedTeam().GetAllHostileTeams())
+                {
+                    sb += $"\n<align=right><size=45%><color={at.Color}>{at.Name}</color></size></align>";
+                }
+            }
+            if (ply.GetAdvancedTeam().GetAllNeutralTeams().Any())
+            {
+                //Get Neutral teams not always hostile
+                sb += "\n\n<align=right><size=45%><color=grey>Neutral Teams:</color></size></align>";
+                foreach (AdvancedTeam at in ply.GetAdvancedTeam().GetAllNeutralTeams())
+                {
+                    sb += $"\n<align=right><size=45%><color={at.Color}>{at.Name}</color></size></align>";
+                }
+            }
+
+            if (ply.GetAdvancedTeam().GetAllRequiredTeams().Any())
+            {
+                //Get Required teams friendlies that you need to help (escape maybe?)
+                sb += "\n\n<align=right><size=45%><color=yellow>Help These Teams(Escape):</color></size></align>";
+                foreach (AdvancedTeam at in ply.GetAdvancedTeam().GetAllRequiredTeams())
+                {
+                    sb += $"\n<align=right><size=45%><color={at.Color}>{at.Name}</color></size></align>";
+                }
+            }
+
+            ply.ShowHint(sb);
+        }
+
         public static void ChangeAdvancedRole(this Player ply, AdvancedTeam at, AdvancedTeamSubclass ast, InventoryDestroyType ChangeInventory = InventoryDestroyType.None, bool ChangePosition = false)
         {
             if (!LeaderboardHelper.TeamsInstantiable) return;

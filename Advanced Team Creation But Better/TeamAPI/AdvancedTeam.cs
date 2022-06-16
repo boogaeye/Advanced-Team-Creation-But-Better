@@ -36,7 +36,59 @@ namespace ATCBB.TeamAPI
 
         public bool ConfirmFriendshipWithTeam(AdvancedTeam at)
         {
-            return RoundEnderConfig.FriendlyTeams.Contains(at.Name) || at.RoundEnderConfig.FriendlyTeams.Contains(Name);
+            return RoundEnderConfig.FriendlyTeams.Contains(at.Name) || at.RoundEnderConfig.FriendlyTeams.Contains(Name) || at.Name == Name;
+        }
+
+        public AdvancedTeam[] GetAllFriendlyTeams()
+        {
+            List<AdvancedTeam> atlist = new List<AdvancedTeam>();
+            foreach (AdvancedTeam at in TeamPlugin.Singleton.Config.Teams)
+            {
+                if (ConfirmFriendshipWithTeam(at) && !at.Spectator)
+                {
+                    atlist.Add(at);
+                }
+            }
+            return atlist.ToArray();
+        }
+
+        public AdvancedTeam[] GetAllHostileTeams()
+        {
+            List<AdvancedTeam> atlist = new List<AdvancedTeam>();
+            foreach (AdvancedTeam at in TeamPlugin.Singleton.Config.Teams)
+            {
+                if (ConfirmEnemyshipWithTeam(at) && !ConfirmFriendshipWithTeam(at) && !at.Spectator)
+                {
+                    atlist.Add(at);
+                }
+            }
+            return atlist.ToArray();
+        }
+
+        public AdvancedTeam[] GetAllRequiredTeams()
+        {
+            List<AdvancedTeam> atlist = new List<AdvancedTeam>();
+            foreach (AdvancedTeam at in TeamPlugin.Singleton.Config.Teams)
+            {
+                if (ConfirmEnemyshipWithTeam(at) && ConfirmFriendshipWithTeam(at) && !at.Spectator)
+                {
+                    atlist.Add(at);
+                }
+            }
+            return atlist.ToArray();
+        }
+
+        public AdvancedTeam[] GetAllNeutralTeams()
+        {
+            List<AdvancedTeam> atlist = new List<AdvancedTeam>();
+            foreach (AdvancedTeam at in TeamPlugin.Singleton.Config.Teams)
+            {
+                if (!ConfirmEnemyshipWithTeam(at) && !ConfirmFriendshipWithTeam(at) && !at.Spectator)
+                {
+                    atlist.Add(at);
+                }
+            }
+            return atlist.ToArray();
         }
 
         public bool ConfirmEnemyshipWithTeam(AdvancedTeam at)

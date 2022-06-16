@@ -30,23 +30,18 @@ namespace ATCBB.Commands
             string SubTeam = arguments.Array[3];
             if (sender.CheckPermission("ATC.main"))
             {
-                response = $"No Such Team...";
-                foreach (AdvancedTeam at in TeamPlugin.Singleton.Config.Teams)
+                try
                 {
-                    if (at.Name == Team)
-                    {
-                        foreach (AdvancedTeamSubclass asc in TeamPlugin.Singleton.Config.SubTeams)
-                        {
-                            if (asc.Name == SubTeam)
-                            {
-                                p.ChangeAdvancedRole(at, asc);
-                                response = "Player Team Changed";
-                                return true;
-                            }
-                        }
-                    }
+                    p.ChangeAdvancedRole(TeamPlugin.Singleton.Config.FindAT(Team), TeamPlugin.Singleton.Config.FindAST(Team, SubTeam));
+                    response = $"Changed Team";
+
+                    return true;
                 }
-                return false;
+                catch (Exception)
+                {
+                    response = "Team or SubTeam Doesn't Exist";
+                    return false;
+                }
             }
 
             response = TeamPlugin.Singleton.Translation.NoPermissions;

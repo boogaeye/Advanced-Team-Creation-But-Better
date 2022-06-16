@@ -40,6 +40,7 @@ namespace ATCBB
             Exiled.Events.Handlers.Player.Escaping += TeamEventHandler.EscapingEvent;
             Exiled.Events.Handlers.Player.Hurting += TeamEventHandler.PlayerHurt;
             Exiled.Events.Handlers.Player.Dying += TeamEventHandler.PlayerDead;
+            Exiled.Events.Handlers.Player.Verified += TeamEventHandler.PlayerVerified;
             TeamEvents.ReferancingTeam += TeamEventHandler.ReferancingTeam;
             if (!Exiled.API.Features.Server.FriendlyFire)
             {
@@ -62,6 +63,7 @@ namespace ATCBB
             Exiled.Events.Handlers.Player.Escaping -= TeamEventHandler.EscapingEvent;
             TeamEvents.ReferancingTeam -= TeamEventHandler.ReferancingTeam;
             Exiled.Events.Handlers.Player.Dying -= TeamEventHandler.PlayerDead;
+            Exiled.Events.Handlers.Player.Verified -= TeamEventHandler.PlayerVerified;
             Harmony.UnpatchAll("BoogaEye.TeamStuff.Bruh");
             TeamEventHandler = null;
             Harmony = null;

@@ -15,6 +15,8 @@ using Respawning;
 using Respawning.NamingRules;
 using System.Text.RegularExpressions;
 using ATCBB.TeamAPI.CustomEventHelpers;
+using MEC;
+using Exiled.API.Enums;
 
 namespace ATCBB
 {
@@ -27,6 +29,21 @@ namespace ATCBB
         public TeamEventHandler(Plugin<TeamConfig> Plugin)
         {
             plugin = Plugin;
+        }
+
+        public void PlayerVerified(VerifiedEventArgs ev)
+        {
+            Timing.RunCoroutine(TeamLister(ev.Player).CancelWith(ev.Player.GameObject));
+        }
+
+        IEnumerator<float> TeamLister(Player ply)
+        {
+            while (true)
+            {
+                yield return Timing.WaitForSeconds(1);
+                yield return Timing.WaitUntilTrue(() => !ply.GetAdvancedTeam().Spectator);
+                ply.ShowFriendlyTeamDisplay();
+            }
         }
 
         public void RoleChange(ChangingRoleEventArgs ev)

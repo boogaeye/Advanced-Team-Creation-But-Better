@@ -18,6 +18,8 @@ namespace ATCBB
     {
         public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; } = false;
+        [Description("Shows who are Hostile, Required, Friendly, and Neutral")]
+        public bool ShowTeamsList { get; set; } = true;
         public bool FriendlyFire { get; set; } = true;
         [Description("Determines if Class D Personal are friends with other Class D and Chaos")]
         public bool ClassDFriendsWithChaos { get; set; } = true;
