@@ -12,14 +12,15 @@ namespace ATCBB.TeamAPI
     {
         public static AdvancedTeam SetUpAfterOriginalTeam(Team t)
         {
-            Log.Info($"Converting Type {t}");
+            bool d = TeamPlugin.Singleton.Config.Debug;
+            Log.Debug($"Converting Type {t}", d);
             AdvancedTeam at = new AdvancedTeam
             {
                 Name = t.ToString(),
                 VanillaTeam = true,
                 Chance = 1
             };
-            Log.Info($"Made Vanilla Team {t} looking snazzy {at.Name}");
+            Log.Debug($"Made Vanilla Team {t} looking snazzy {at.Name}", d);
             switch (t)
             {
                 case Team.CDP:
@@ -115,7 +116,7 @@ namespace ATCBB.TeamAPI
                     at.Spectator = true;
                     break;
             }
-            Log.Info($"Returning Vanilla Team {t}");
+            Log.Debug($"Returning Vanilla Team {t}", d);
             return at;
         }
     }

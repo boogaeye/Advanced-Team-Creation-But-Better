@@ -52,7 +52,8 @@ namespace ATCBB
                             else
                                 ply.ShowFriendlyTeamDisplay(PlayerTimesAlive[ply].TotalSeconds + plugin.Config.ShowEnemyTeamsForTime < Round.ElapsedTime.TotalSeconds);
                         }
-                        RaycastHelper(ply);
+                        if (plugin.Config.ShowFriendlyHint)
+                            RaycastHelper(ply);
                     }
                 }
             }
@@ -62,8 +63,8 @@ namespace ATCBB
         {
             if (!UnityEngine.Physics.Raycast(ply.CameraTransform.position, ply.CameraTransform.forward, out UnityEngine.RaycastHit raycastHit, 999, 13))
                 return;
-            
-            Player target = Player.Get(raycastHit.collider.gameObject);
+            //Makes sure it only gets players???
+            Player target = Player.Get(raycastHit.collider.gameObject.GetComponentInChildren<ReferenceHub>());
             if (target == null)
                 return;
             if (ply.GetAdvancedTeam().ConfirmFriendshipWithTeam(target.GetAdvancedTeam()))
@@ -112,13 +113,6 @@ namespace ATCBB
             else if (ev.Killer.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()))
             {
                 ev.Killer.ShowHint("<color=red>Don't damage a friendly team</color>");
-                if (plugin.Config.FriendlyFireReflection)
-                    if (!TeamKillList.ContainsKey(ev.Killer))
-                    {
-                        ev.Killer.ShowHint("<color=red>Team damage will now be reflected for 30 seconds</color>");
-                        TeamKillList[ev.Killer] = true;
-                        Timing.CallDelayed(30, () => { TeamKillList[ev.Killer] = false; ev.Killer.ShowHint("<color=green>Team reflection damage is disabled</color>"); });
-                    }
                 if (!plugin.Config.FriendlyFire)
                 {
                     ev.IsAllowed = false;
@@ -128,8 +122,19 @@ namespace ATCBB
 
         public void PlayerHurt(HurtingEventArgs ev)
         {
+            if (ev.Attacker == ev.Target) return;
             if (ev.Attacker.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()))
             {
+                if (ev.Target.Health <= ev.Amount * 0.3f)
+                {
+                    if (plugin.Config.FriendlyFireReflection)
+                        if (!TeamKillList.ContainsKey(ev.Attacker))
+                        {
+                            ev.Attacker.ShowHint($"<color=red>Team damage will now be reflected for {plugin.Config.ReflectionDamageTime} seconds</color>");
+                            TeamKillList[ev.Attacker] = true;
+                            Timing.CallDelayed(plugin.Config.ReflectionDamageTime, () => { TeamKillList[ev.Attacker] = false; ev.Attacker.ShowHint("<color=green>Team reflection damage is disabled</color>"); });
+                        }
+                }
                 ev.Attacker.ShowHint("<color=red>Don't damage a friendly team</color>");
                 if (!plugin.Config.FriendlyFire)
                 {
@@ -137,9 +142,10 @@ namespace ATCBB
                 }
                 else
                 {
-                    if (TeamKillList.ContainsKey(ev.Attacker) && TeamKillList[ev.Attacker])
+                    if (TeamKillList.ContainsKey(ev.Attacker))
                     {
-                        ev.Attacker.Hurt(ev.Amount);
+                        if (TeamKillList[ev.Attacker])
+                            ev.Attacker.Hurt(ev.Amount);
                     }
                     else
                     {
@@ -165,10 +171,12 @@ namespace ATCBB
             ReferancedTeam = null;
         }
 
+        // Preventing conflicts with plugins like EndConditions
         public void RoundEnding(EndingRoundEventArgs ev)
         {
-            ev.IsRoundEnded = !plugin.Config.CustomRoundEnder;
-            ev.IsAllowed = !plugin.Config.CustomRoundEnder;
+            if (plugin.Config.CustomRoundEnder) return;
+            ev.IsRoundEnded = false;
+            ev.IsAllowed = false;
         }
 
         public void RoundEnd(RoundEndedEventArgs ev)

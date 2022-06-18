@@ -32,8 +32,13 @@ namespace ATCBB.Commands
             {
                 try
                 {
+                    if (TeamPlugin.Singleton.Config.FindAT(Team).VanillaTeam)
+                    {
+                        response = "This is a vanilla team use forceclass for this...";
+                        return false;
+                    }
                     p.ChangeAdvancedRole(TeamPlugin.Singleton.Config.FindAT(Team), TeamPlugin.Singleton.Config.FindAST(Team, SubTeam));
-                    response = $"Changed Team";
+                    response = "Changed Team";
 
                     return true;
                 }

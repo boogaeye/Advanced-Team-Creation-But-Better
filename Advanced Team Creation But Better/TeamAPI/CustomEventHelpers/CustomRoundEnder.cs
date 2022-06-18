@@ -32,7 +32,11 @@ namespace ATCBB.TeamAPI.CustomEventHelpers
 
         public static void UpdateRoundStatus()
         {
-            if (!TeamPlugin.Singleton.Config.CustomRoundEnder) return;
+            if (!TeamPlugin.Singleton.Config.CustomRoundEnder)
+            {
+                Log.Debug("Preventing UpdateRoundStatus CustomRoundEnder is false", TeamPlugin.Singleton.Config.Debug);
+                return;
+            }
             if (Round.ElapsedTime.TotalSeconds < 10)
             {
                 Log.Debug($"Preventing Round Ending because it hasn't been 10 seconds in the round", TeamPlugin.Singleton.Config.Debug);
@@ -75,7 +79,11 @@ namespace ATCBB.TeamAPI.CustomEventHelpers
 
         public static void EndRound(string TeamWon)
         {
-            if (!TeamPlugin.Singleton.Config.CustomRoundEnder) return;
+            if (!TeamPlugin.Singleton.Config.CustomRoundEnder) 
+            {
+                Log.Debug("Preventing Custom Round end CustomRoundEnder is false", TeamPlugin.Singleton.Config.Debug);
+                return; 
+            }
             RoundEnded = true;
             TeamPlugin.Singleton.TeamEventHandler.Leaderboard.DestroyTeamLeaders();
             if (TeamPlugin.assemblyTimer != null)

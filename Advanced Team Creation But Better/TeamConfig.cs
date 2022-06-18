@@ -22,6 +22,9 @@ namespace ATCBB
         public bool TeamSpawnsOnlyIfEnemiesExist { get; set; } = true;
         [Description("Shows who are Hostile, Required, Friendly, and Neutral")]
         public bool ShowTeamsList { get; set; } = true;
+        public bool ShowFriendlyHint { get; set; } = true;
+        public int ReflectionDamageTime { get; set; } = 30;
+        public bool ShowHurtFriendlyHint { get; set; } = true;
         [Description("Shows only friendly teams after time is up set to -1 for it to not disappear")]
         public int ShowEnemyTeamsForTime { get; set; } = -1;
         public bool FriendlyFire { get; set; } = true;

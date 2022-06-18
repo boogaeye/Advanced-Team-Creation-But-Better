@@ -36,6 +36,7 @@ namespace ATCBB.TeamAPI.Extentions
 
         public static void ShowFriendlyTeamDisplay(this Player ply, bool ShowOnlyImportantTeams = false)
         {
+            if (!TeamPlugin.Singleton.Config.ShowTeamsList) return;
             if (ply.HasHint) return;
             Translations t = TeamPlugin.Singleton.Translation;
             string sb = t.TopTeamList.Replace("(TEAM)", $"<color={ply.GetAdvancedTeam().Color}>{ply.GetAdvancedTeam().Name}</color>") + "\n\n";
