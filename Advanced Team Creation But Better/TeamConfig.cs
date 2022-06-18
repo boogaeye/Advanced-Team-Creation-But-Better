@@ -18,9 +18,14 @@ namespace ATCBB
     {
         public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; } = false;
+        [Description("Only spawn a team if they have an enemy in a facility")]
+        public bool TeamSpawnsOnlyIfEnemiesExist { get; set; } = true;
         [Description("Shows who are Hostile, Required, Friendly, and Neutral")]
         public bool ShowTeamsList { get; set; } = true;
+        [Description("Shows only friendly teams after time is up set to -1 for it to not disappear")]
+        public int ShowEnemyTeamsForTime { get; set; } = -1;
         public bool FriendlyFire { get; set; } = true;
+        public bool FriendlyFireReflection { get; set; } = true;
         [Description("Determines if Class D Personal are friends with other Class D and Chaos")]
         public bool ClassDFriendsWithChaos { get; set; } = true;
         public bool ScpNeutralWithChaos { get; set; } = false;

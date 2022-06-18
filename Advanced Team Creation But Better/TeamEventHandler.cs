@@ -25,30 +25,57 @@ namespace ATCBB
         private Plugin<TeamConfig> plugin;
         public LeaderboardHelper Leaderboard = new LeaderboardHelper();
         public AdvancedTeam ReferancedTeam, CassieHelper, LastTeamSpawned;
+        public CoroutineHandle coro;
 
         public TeamEventHandler(Plugin<TeamConfig> Plugin)
         {
             plugin = Plugin;
         }
 
-        public void PlayerVerified(VerifiedEventArgs ev)
-        {
-            Timing.RunCoroutine(TeamLister(ev.Player).CancelWith(ev.Player.GameObject));
-        }
+        public Dictionary<Player, TimeSpan> PlayerTimesAlive = new Dictionary<Player, TimeSpan>();
 
-        IEnumerator<float> TeamLister(Player ply)
+        IEnumerator<float> TeamLister()
         {
             while (true)
             {
+                yield return Timing.WaitUntilTrue(() => Round.IsStarted);
                 yield return Timing.WaitForSeconds(1);
-                yield return Timing.WaitUntilTrue(() => !ply.GetAdvancedTeam().Spectator);
-                ply.ShowFriendlyTeamDisplay();
+                foreach (Player ply in Player.List)
+                {
+                    if (!ply.GetAdvancedTeam().Spectator)
+                    {
+                        
+                        if (PlayerTimesAlive[ply].TotalSeconds + 3 < Round.ElapsedTime.TotalSeconds)
+                        {
+                            if (plugin.Config.ShowEnemyTeamsForTime == -1)
+                                ply.ShowFriendlyTeamDisplay();
+                            else
+                                ply.ShowFriendlyTeamDisplay(PlayerTimesAlive[ply].TotalSeconds + plugin.Config.ShowEnemyTeamsForTime < Round.ElapsedTime.TotalSeconds);
+                        }
+                        RaycastHelper(ply);
+                    }
+                }
+            }
+        }
+
+        public void RaycastHelper(Player ply)
+        {
+            if (!UnityEngine.Physics.Raycast(ply.CameraTransform.position, ply.CameraTransform.forward, out UnityEngine.RaycastHit raycastHit, 999, 13))
+                return;
+            
+            Player target = Player.Get(raycastHit.collider.gameObject);
+            if (target == null)
+                return;
+            if (ply.GetAdvancedTeam().ConfirmFriendshipWithTeam(target.GetAdvancedTeam()))
+            {
+                ply.ShowHint(TeamPlugin.Singleton.Translation.TeamIsFriendlyHint);
+                Log.Debug($"{ply.Nickname} is staring at {target.Nickname}", plugin.Config.Debug);
             }
         }
 
         public void RoleChange(ChangingRoleEventArgs ev)
         {
-            
+            PlayerTimesAlive[ev.Player] = Round.ElapsedTime;
             if (ev.Reason != Exiled.API.Enums.SpawnReason.Respawn && ev.Reason != Exiled.API.Enums.SpawnReason.Escaped)
             {
                 Leaderboard.ClearPlayerFromLeaderBoards(ev.Player);
@@ -72,12 +99,30 @@ namespace ATCBB
             new Exiled.API.Features.Ragdoll(info, true);
         }
 
+        public Dictionary<Player, bool> TeamKillList = new Dictionary<Player, bool>();
+
         public void PlayerDead(DyingEventArgs ev)
         {
+            if (ev.Target == ev.Killer) return;
             if (ev.Killer.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()) && ev.Killer.IsScp)
             {
                 ev.Killer.ShowHint("<color=red>Don't damage a friendly team</color>");
                 ev.IsAllowed = false;
+            }
+            else if (ev.Killer.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()))
+            {
+                ev.Killer.ShowHint("<color=red>Don't damage a friendly team</color>");
+                if (plugin.Config.FriendlyFireReflection)
+                    if (!TeamKillList.ContainsKey(ev.Killer))
+                    {
+                        ev.Killer.ShowHint("<color=red>Team damage will now be reflected for 30 seconds</color>");
+                        TeamKillList[ev.Killer] = true;
+                        Timing.CallDelayed(30, () => { TeamKillList[ev.Killer] = false; ev.Killer.ShowHint("<color=green>Team reflection damage is disabled</color>"); });
+                    }
+                if (!plugin.Config.FriendlyFire)
+                {
+                    ev.IsAllowed = false;
+                }
             }
         }
 
@@ -92,7 +137,15 @@ namespace ATCBB
                 }
                 else
                 {
-                    ev.Target.Hurt(ev.Amount * 0.3f);
+                    if (TeamKillList.ContainsKey(ev.Attacker) && TeamKillList[ev.Attacker])
+                    {
+                        ev.Attacker.Hurt(ev.Amount);
+                    }
+                    else
+                    {
+                        ev.Target.Hurt(ev.Amount * 0.3f);
+                        
+                    }
                     ev.IsAllowed = false;
                 }
             }
@@ -100,6 +153,10 @@ namespace ATCBB
 
         public void MapGenerated()
         {
+            if (coro != null)
+                Timing.KillCoroutines(coro);
+            PlayerTimesAlive.Clear();
+            coro = Timing.RunCoroutine(TeamLister());
             plugin.Config.LoadTeamConfigs();
             Leaderboard.SetUpTeamLeaders();
             Respawns = 0;
@@ -125,6 +182,8 @@ namespace ATCBB
             {
                 ev.IsAllowed = false;
                 ev.Player.ChangeAdvancedRole(LastTeamSpawned, plugin.Config.FindAST(LastTeamSpawned.Name, LastTeamSpawned.EscapeClass), Extentions.InventoryDestroyType.Drop, true);
+                MEC.Timing.CallDelayed(0.1f, () =>
+                    CustomRoundEnder.UpdateRoundStatus());
             }
             else
             {
@@ -143,6 +202,7 @@ namespace ATCBB
 
         public void MtfRespawnCassie(AnnouncingNtfEntranceEventArgs ev)
         {
+            Respawns++;
             if (CassieHelper != null && !CassieHelper.VanillaTeam)
             {
                 if (CassieHelper.ChanceForHiddenMtfNato < HiddenInterference)
@@ -167,7 +227,6 @@ namespace ATCBB
                         Cassie.MessageTranslated(CassieHelper.CassieAnnouncement.Replace("{SCPLeft}", ev.ScpsLeft.ToString()).Replace("{Unit}", $"NATO_{ev.UnitName[0].ToString().ToLower()}").Replace("{UnitNum}", Cassie.ConvertNumber(ev.UnitNumber)), CassieHelper.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ev.ScpsLeft.ToString()).Replace("{Unit}", ev.UnitName).Replace("{UnitNum}", ev.UnitNumber.ToString()));
                 }
             }
-            Respawns++;
             CassieHelper = null;
         }
         bool PlayedAlready = false;
@@ -298,6 +357,32 @@ namespace ATCBB
                 return;
             }
             ReferancedTeam = ev.AdvancedTeam;
+            if (plugin.Config.TeamSpawnsOnlyIfEnemiesExist)
+            {
+                bool CanSpawn = false;
+                foreach (AdvancedTeam at in plugin.Config.Teams)
+                {
+                    if (at.DoesExist())
+                    {
+                        if (ReferancedTeam.ConfirmEnemyshipWithTeam(at))
+                        {
+                            CanSpawn = true;
+                            Log.Debug("Allowing team spawn because it has a common enemy", plugin.Config.Debug);
+                            break;
+                        }
+                    }
+                }
+                if (CanSpawn)
+                {
+                    Log.Debug($"Team Spawn Check has been allowed! Allowing the Spawning team {ReferancedTeam.Name}", plugin.Config.Debug);
+                }
+                else
+                {
+                    Log.Debug($"Team Spawn Check has been denied! {ReferancedTeam.Name} doesn't have a common enemy spawning normal team...", plugin.Config.Debug);
+                    ReferancedTeam = null;
+                    return;
+                }
+            }
             if (ReferancedTeam.PlayBeforeSpawning && !ReferancedTeam.VanillaTeam && !PlayedAlready)
             {
                 if (HiddenInterference < ev.AdvancedTeam.ChanceForHiddenMtfNato)
