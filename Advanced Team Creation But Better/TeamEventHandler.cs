@@ -17,6 +17,8 @@ using System.Text.RegularExpressions;
 using ATCBB.TeamAPI.CustomEventHelpers;
 using MEC;
 using Exiled.API.Enums;
+using Exiled.API.Features.DamageHandlers;
+using PlayerStatsSystem;
 
 namespace ATCBB
 {
@@ -39,18 +41,20 @@ namespace ATCBB
             while (true)
             {
                 yield return Timing.WaitUntilTrue(() => Round.IsStarted);
-                yield return Timing.WaitForSeconds(1);
+                yield return Timing.WaitForSeconds(0.25f);
                 foreach (Player ply in Player.List)
                 {
                     if (!ply.GetAdvancedTeam().Spectator)
                     {
-                        
-                        if (PlayerTimesAlive[ply].TotalSeconds + 3 < Round.ElapsedTime.TotalSeconds)
+                        if (!plugin.Config.TeamsListPromptsAtAnnouncement)
                         {
-                            if (plugin.Config.ShowEnemyTeamsForTime == -1)
-                                ply.ShowFriendlyTeamDisplay();
-                            else
-                                ply.ShowFriendlyTeamDisplay(PlayerTimesAlive[ply].TotalSeconds + plugin.Config.ShowEnemyTeamsForTime < Round.ElapsedTime.TotalSeconds);
+                            if (PlayerTimesAlive[ply].TotalSeconds + 3 < Round.ElapsedTime.TotalSeconds)
+                            {
+                                if (plugin.Config.ShowEnemyTeamsForTime == -1)
+                                    ply.ShowFriendlyTeamDisplay();
+                                else
+                                    ply.ShowFriendlyTeamDisplay(1, PlayerTimesAlive[ply].TotalSeconds + plugin.Config.ShowEnemyTeamsForTime < Round.ElapsedTime.TotalSeconds);
+                            }
                         }
                         if (plugin.Config.ShowFriendlyHint)
                             RaycastHelper(ply);
@@ -59,18 +63,50 @@ namespace ATCBB
             }
         }
 
+        public void Scp106DistressHelper(ContainingEventArgs ev)
+        {
+            if (ev.Player.GetAdvancedTeam().ConfirmFriendshipWithTeam(plugin.Config.FindAT("SCP")))
+            {
+                if (plugin.Config.FriendlyFire) return;
+                ev.IsAllowed = false;
+            }
+        }
+
+        public void Scp106FemurBreakerPreventer(EnteringFemurBreakerEventArgs ev)
+        {
+            if (ev.Player.GetAdvancedTeam().SpawnRoom == RoomType.Hcz106 || ev.Player.GetAdvancedTeam().ConfirmFriendshipWithTeam(plugin.Config.FindAT("SCP")))
+            {
+                ev.IsAllowed = false;
+            }
+        }
+
         public void RaycastHelper(Player ply)
         {
+            if (plugin.Config.TeamsListPromptsAtAnnouncement && ply.HasHint) return;
             if (!UnityEngine.Physics.Raycast(ply.CameraTransform.position, ply.CameraTransform.forward, out UnityEngine.RaycastHit raycastHit, 999, 13))
                 return;
+            if (!UnityEngine.Physics.Raycast(ply.CameraTransform.position, ply.CameraTransform.forward, out UnityEngine.RaycastHit rayNormal, 10, 13))
+                return;
             //Makes sure it only gets players???
-            Player target = Player.Get(raycastHit.collider.gameObject.GetComponentInChildren<ReferenceHub>());
+            Player target = Player.Get(raycastHit.collider.gameObject);
+            Player targetEnemy = Player.Get(rayNormal.collider.gameObject);
             if (target == null)
                 return;
             if (ply.GetAdvancedTeam().ConfirmFriendshipWithTeam(target.GetAdvancedTeam()))
             {
-                ply.ShowHint(TeamPlugin.Singleton.Translation.TeamIsFriendlyHint);
-                Log.Debug($"{ply.Nickname} is staring at {target.Nickname}", plugin.Config.Debug);
+                ply.ShowHint(TeamPlugin.Singleton.Translation.TeamIsFriendlyHint.Replace("(user)", target.Nickname).Replace("(dist)", raycastHit.distance.ToString()).Replace("(role)", target.GetAdvancedTeam().Name), 0.3f);
+            }
+            else if (targetEnemy != null && ply.GetAdvancedTeam().ConfirmEnemyshipWithTeam(targetEnemy.GetAdvancedTeam()))
+            {
+                ply.ShowHint(TeamPlugin.Singleton.Translation.TeamIsHostileHint.Replace("(user)", targetEnemy.Nickname).Replace("(role)", target.GetAdvancedTeam().Name), 0.3f);
+            }
+            else if (targetEnemy != null && ply.GetAdvancedTeam().ConfirmNeutralshipWithTeam(targetEnemy.GetAdvancedTeam()))
+            {
+                ply.ShowHint(TeamPlugin.Singleton.Translation.TeamIsNeutralHint.Replace("(user)", targetEnemy.Nickname).Replace("(role)", target.GetAdvancedTeam().Name), 0.3f);
+            }
+            else if (ply.GetAdvancedTeam().ConfirmRequiredshipWithTeam(target.GetAdvancedTeam()))
+            {
+                ply.ShowHint(TeamPlugin.Singleton.Translation.TeamIsRequiredHint.Replace("(user)", target.Nickname).Replace("(dist)", raycastHit.distance.ToString()).Replace("(role)", target.GetAdvancedTeam().Name), 0.3f);
             }
         }
 
@@ -92,12 +128,13 @@ namespace ATCBB
             }
         }
 
+        string nickHelper;
         public void RagdollSpawn(SpawningRagdollEventArgs ev)
         {
             if (ev.Owner.GetAdvancedTeam().VanillaTeam) return;
             ev.IsAllowed = false;
-            RagdollInfo info = new RagdollInfo(Server.Host.ReferenceHub, ev.DamageHandlerBase, ev.Role, ev.Position, ev.Rotation, $"{ev.Nickname}", ev.CreationTime);
-            new Exiled.API.Features.Ragdoll(info, true);
+            var LatestestRagdollInfo = new RagdollInfo(Server.Host.ReferenceHub, ev.DamageHandlerBase, ev.Role, ev.Position, ev.Rotation, nickHelper, ev.CreationTime);
+            new Exiled.API.Features.Ragdoll(LatestestRagdollInfo, true);
         }
 
         public Dictionary<Player, bool> TeamKillList = new Dictionary<Player, bool>();
@@ -105,6 +142,7 @@ namespace ATCBB
         public void PlayerDead(DyingEventArgs ev)
         {
             if (ev.Target == ev.Killer) return;
+            nickHelper = $"{ev.Target.Nickname}({ev.Target.GetAdvancedTeam().Name})";
             if (ev.Killer.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()) && ev.Killer.IsScp)
             {
                 ev.Killer.ShowHint("<color=red>Don't damage a friendly team</color>");
@@ -117,6 +155,11 @@ namespace ATCBB
                 {
                     ev.IsAllowed = false;
                 }
+            }
+            if (ev.Target.IsScp)
+            {
+                NineTailedFoxAnnouncer.ConvertSCP(ev.Target.Role.Type, out string nSpace, out string wSpace);
+                CustomTeamScpTermination(wSpace, ev.Handler, ev.Killer.GetAdvancedTeam());
             }
         }
 
@@ -174,7 +217,7 @@ namespace ATCBB
         // Preventing conflicts with plugins like EndConditions
         public void RoundEnding(EndingRoundEventArgs ev)
         {
-            if (plugin.Config.CustomRoundEnder) return;
+            if (!plugin.Config.CustomRoundEnder) return;
             ev.IsRoundEnded = false;
             ev.IsAllowed = false;
         }
@@ -184,6 +227,15 @@ namespace ATCBB
             Leaderboard.DestroyTeamLeaders();
         }
 
+        public void ShowAllPlayersTeams(int secs)
+        {
+            foreach (Player p in Player.List)
+            {
+                if (!p.GetAdvancedTeam().Spectator)
+                    p.ShowFriendlyTeamDisplay(secs);
+            }
+        }
+
         public void EscapingEvent(EscapingEventArgs ev)
         {
             if (LastTeamSpawned.EscapableClasses.Contains(ev.Player.Role))
@@ -191,7 +243,11 @@ namespace ATCBB
                 ev.IsAllowed = false;
                 ev.Player.ChangeAdvancedRole(LastTeamSpawned, plugin.Config.FindAST(LastTeamSpawned.Name, LastTeamSpawned.EscapeClass), Extentions.InventoryDestroyType.Drop, true);
                 MEC.Timing.CallDelayed(0.1f, () =>
-                    CustomRoundEnder.UpdateRoundStatus());
+                {
+                    ev.Player.ShowFriendlyTeamDisplay();
+                    CustomRoundEnder.UpdateRoundStatus();
+                }
+                );
             }
             else
             {
@@ -202,8 +258,33 @@ namespace ATCBB
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Nickname;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Role;
                 MEC.Timing.CallDelayed(0.1f, () =>
-                    CustomRoundEnder.UpdateRoundStatus());
+                    {
+                        ev.Player.ShowFriendlyTeamDisplay();
+                        CustomRoundEnder.UpdateRoundStatus();
+                    }
+                    );
             }
+        }
+
+        public void ScpTermination(AnnouncingScpTerminationEventArgs ev)
+        {
+            if (plugin.Config.TeamsListPromptsAtAnnouncement)
+            {
+                ShowAllPlayersTeams(10);
+            }
+            if (!ev.Killer.GetAdvancedTeam().VanillaTeam)
+            {
+                ev.IsAllowed = false;
+            }
+        }
+
+        public void CustomTeamScpTermination(string scpName, Exiled.API.Features.DamageHandlers.DamageHandlerBase info, AdvancedTeam at)
+        {
+            if (at.VanillaTeam) return;
+            string text = scpName;
+            text = "scp " + text + " CONTAINEDSUCCESSFULLY. containment unit " + at.SaidName;
+            float num = ((AlphaWarheadController.Host.timeToDetonation <= 0f) ? 3.5f : 1f);
+            Cassie.GlitchyMessage(text, UnityEngine.Random.Range(0.1f, 0.14f) * num, UnityEngine.Random.Range(0.07f, 0.08f) * num);
         }
 
         public int HiddenInterference;
@@ -234,6 +315,10 @@ namespace ATCBB
                     if (!CassieHelper.PlayBeforeSpawning)
                         Cassie.MessageTranslated(CassieHelper.CassieAnnouncement.Replace("{SCPLeft}", ev.ScpsLeft.ToString()).Replace("{Unit}", $"NATO_{ev.UnitName[0].ToString().ToLower()}").Replace("{UnitNum}", Cassie.ConvertNumber(ev.UnitNumber)), CassieHelper.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ev.ScpsLeft.ToString()).Replace("{Unit}", ev.UnitName).Replace("{UnitNum}", ev.UnitNumber.ToString()));
                 }
+            }
+            if (plugin.Config.TeamsListPromptsAtAnnouncement)
+            {
+                ShowAllPlayersTeams(10);
             }
             CassieHelper = null;
         }
@@ -316,7 +401,11 @@ namespace ATCBB
             string UnitName = Letters[new Random().Next(0, 26)];
             if (!ReferancedTeam.PlayBeforeSpawning && !ReferancedTeam.VanillaTeam && !PlayedAlready && ev.NextKnownTeam != Respawning.SpawnableTeamType.NineTailedFox)
                 if (HiddenInterference < ReferancedTeam.ChanceForHiddenMtfNato)
+                {
+                    if (plugin.Config.TeamsListPromptsAtAnnouncement)
+                        ShowAllPlayersTeams(10);
                     Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement.Replace("{SCPLeft}", ScpsLeft.ToString()).Replace("{Unit}", $"NATO_{UnitName[0]}").Replace("{UnitNum}", UnitNum.ToString()), ReferancedTeam.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ScpsLeft.ToString()).Replace("{Unit}", $"{UnitName}").Replace("{UnitNum}", UnitNum.ToString()));
+                }
 
             Dictionary<string, int> Helper = new Dictionary<string, int>();
             foreach (string t in ReferancedTeam.SpawnOrder)
@@ -394,7 +483,11 @@ namespace ATCBB
             if (ReferancedTeam.PlayBeforeSpawning && !ReferancedTeam.VanillaTeam && !PlayedAlready)
             {
                 if (HiddenInterference < ev.AdvancedTeam.ChanceForHiddenMtfNato)
+                {
+                    if (plugin.Config.TeamsListPromptsAtAnnouncement)
+                        ShowAllPlayersTeams(10);
                     Cassie.MessageTranslated(ReferancedTeam.CassieAnnouncement.Replace("{SCPLeft}", ScpsLeft.ToString()).Replace("{Unit}", $"NATO_{UnitNamePre[0]}").Replace("{UnitNum}", UnitNumPre.ToString()), ReferancedTeam.CassieAnnouncementSubtitles.Replace("{SCPLeft}", ScpsLeft.ToString()).Replace("{Unit}", $"{UnitNamePre}").Replace("{UnitNum}", UnitNumPre.ToString()));
+                }
                 PlayedAlready = true;
             }
             CassieHelper = ReferancedTeam;

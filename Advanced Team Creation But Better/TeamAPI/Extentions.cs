@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Exiled.API.Enums;
 using Exiled.API.Features;
-using CustomItems.API;
+using Exiled.CustomItems.API.Features;
 using MEC;
 using UnityEngine;
 using ATCBB.TeamAPI.Events;
@@ -34,10 +34,9 @@ namespace ATCBB.TeamAPI.Extentions
         }
 
 
-        public static void ShowFriendlyTeamDisplay(this Player ply, bool ShowOnlyImportantTeams = false)
+        public static void ShowFriendlyTeamDisplay(this Player ply, int sec = 1, bool ShowOnlyImportantTeams = false)
         {
             if (!TeamPlugin.Singleton.Config.ShowTeamsList) return;
-            if (ply.HasHint) return;
             Translations t = TeamPlugin.Singleton.Translation;
             string sb = t.TopTeamList.Replace("(TEAM)", $"<color={ply.GetAdvancedTeam().Color}>{ply.GetAdvancedTeam().Name}</color>") + "\n\n";
 
@@ -80,7 +79,7 @@ namespace ATCBB.TeamAPI.Extentions
                 }
             }
 
-            ply.ShowHint(sb);
+            ply.ShowHint(sb, sec);
         }
 
         public static void ChangeAdvancedRole(this Player ply, AdvancedTeam at, AdvancedTeamSubclass ast, InventoryDestroyType ChangeInventory = InventoryDestroyType.None, bool ChangePosition = false)
@@ -142,9 +141,13 @@ namespace ATCBB.TeamAPI.Extentions
                         {
                             ply.AddItem(i);
                         }
-                        else if (ItemConversionHelper.TryGetCustomItemTypeFromString(item, out CustomItems.API.CustomItem ci))
+                        else if (ItemConversionHelper.TryGetCustomItemTypeFromString(item, out Exiled.CustomItems.API.Features.CustomItem ci))
                         {
-                            ply.GiveItem(ci, false);
+                            ci.Give(ply, false);
+                        }
+                        else if (int.TryParse(item, out int _i) && ItemConversionHelper.TryGetCustomItemTypeFromInt(_i, out Exiled.CustomItems.API.Features.CustomItem _ci))
+                        {
+                            ci.Give(ply, false);
                         }
                         else
                         {

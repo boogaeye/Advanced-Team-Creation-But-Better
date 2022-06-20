@@ -11,6 +11,7 @@ using Exiled.Loader;
 using Exiled.API.Features;
 using Exiled.API.Extensions;
 using ATCBB.TeamAPI;
+using ATCBB.ATCCustomItems;
 
 namespace ATCBB
 {
@@ -18,6 +19,9 @@ namespace ATCBB
     {
         public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; } = false;
+        public bool UseCustomItemsFromATC { get; set; } = true;
+        [Description("Makes the team list only appear when announcements go off")]
+        public bool TeamsListPromptsAtAnnouncement { get; set; } = false;
         [Description("Only spawn a team if they have an enemy in a facility")]
         public bool TeamSpawnsOnlyIfEnemiesExist { get; set; } = true;
         [Description("Shows who are Hostile, Required, Friendly, and Neutral")]
@@ -38,6 +42,21 @@ namespace ATCBB
         public string ConfigsFolder { get; set; } = Path.Combine(Paths.Configs, "AdvancedTeamCreation");
         public List<AdvancedTeam> Teams = new List<AdvancedTeam>();
         public List<AdvancedTeamSubclass> SubTeams = new List<AdvancedTeamSubclass>();
+        public ATCBB.TeamAPI.CustomConfig.AtcItems AtcItems { get; set; } = new TeamAPI.CustomConfig.AtcItems();
+
+
+
+
+        public void LoadItems()
+        {
+            Log.Info("Registering custom items");
+            Exiled.CustomItems.API.Features.CustomItem.RegisterItems(overrideClass:AtcItems);
+        }
+
+        public void UnloadItems()
+        {
+            Exiled.CustomItems.API.Features.CustomItem.UnregisterItems();
+        }
 
         public AdvancedTeam FindAT(string name)
         {

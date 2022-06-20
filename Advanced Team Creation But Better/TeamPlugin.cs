@@ -22,7 +22,7 @@ namespace ATCBB
 
         public override string Name => "Advanced Team Creation";
         public override string Author => "BoogaEye";
-        public override Version Version => new Version(1, 3, 0, 0);
+        public override Version Version => new Version(1, 4, 0, 0);
         public override Version RequiredExiledVersion => new Version(5, 1, 3, 0);
 
         public static Assembly assemblyTimer;
@@ -40,10 +40,18 @@ namespace ATCBB
             Exiled.Events.Handlers.Player.Escaping += TeamEventHandler.EscapingEvent;
             Exiled.Events.Handlers.Player.Hurting += TeamEventHandler.PlayerHurt;
             Exiled.Events.Handlers.Player.Dying += TeamEventHandler.PlayerDead;
+            Exiled.Events.Handlers.Map.AnnouncingScpTermination += TeamEventHandler.ScpTermination;
             TeamEvents.ReferancingTeam += TeamEventHandler.ReferancingTeam;
+            Exiled.Events.Handlers.Player.EnteringFemurBreaker += TeamEventHandler.Scp106FemurBreakerPreventer;
+            Exiled.Events.Handlers.Scp106.Containing += TeamEventHandler.Scp106DistressHelper;
+            Exiled.Events.Handlers.Player.SpawningRagdoll += TeamEventHandler.RagdollSpawn;
             if (!Exiled.API.Features.Server.FriendlyFire)
             {
                 Log.Warn("Friendly Fire Is heavily recommended to be enabled on server config as it can lead to problems with people not being able to finish around because a person is supposed to be their enemy");
+            }
+            if (Config.UseCustomItemsFromATC)
+            {
+                Config.LoadItems();
             }
             Harmony.PatchAll();
             CheckPlugins();
@@ -60,8 +68,13 @@ namespace ATCBB
             Exiled.Events.Handlers.Player.Hurting -= TeamEventHandler.PlayerHurt;
             Exiled.Events.Handlers.Player.ChangingRole -= TeamEventHandler.RoleChange;
             Exiled.Events.Handlers.Player.Escaping -= TeamEventHandler.EscapingEvent;
+            Exiled.Events.Handlers.Map.AnnouncingScpTermination -= TeamEventHandler.ScpTermination;
             TeamEvents.ReferancingTeam -= TeamEventHandler.ReferancingTeam;
             Exiled.Events.Handlers.Player.Dying -= TeamEventHandler.PlayerDead;
+            Exiled.Events.Handlers.Player.EnteringFemurBreaker -= TeamEventHandler.Scp106FemurBreakerPreventer;
+            Exiled.Events.Handlers.Scp106.Containing -= TeamEventHandler.Scp106DistressHelper;
+            Exiled.Events.Handlers.Player.SpawningRagdoll -= TeamEventHandler.RagdollSpawn;
+            Config.UnloadItems();
             Harmony.UnpatchAll("BoogaEye.TeamStuff.Bruh");
             TeamEventHandler = null;
             Harmony = null;

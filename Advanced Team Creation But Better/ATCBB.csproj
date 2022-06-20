@@ -105,6 +105,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ATCCustomItems\Grenade106.cs" />
+    <Compile Include="ATCCustomItems\TtaCard.cs" />
+    <Compile Include="ATCCustomItems\AlaCommanderCard.cs" />
+    <Compile Include="ATCCustomItems\AlaOfficerCard.cs" />
+    <Compile Include="ATCCustomItems\AlaFirstCard.cs" />
+    <Compile Include="ATCCustomItems\AlaCard.cs" />
+    <Compile Include="ATCCustomItems\GruCard.cs" />
+    <Compile Include="ATCCustomItems\SerpentsHandCard.cs" />
     <Compile Include="Commands\UpdateSubTeam.cs" />
     <Compile Include="Commands\SimulateRoundEnd.cs" />
     <Compile Include="Commands\UpdateTeam.cs" />
@@ -113,7 +121,11 @@
     <Compile Include="Commands\ChangeTeam.cs" />
     <Compile Include="Commands\CreateTeam.cs" />
     <Compile Include="Commands\ATC.cs" />
+    <Compile Include="ATCCustomItems\GruCommanderCard.cs" />
+    <Compile Include="ATCCustomItems\SerpentsHandCommanderCard.cs" />
+    <Compile Include="ATCCustomItems\Gun106.cs" />
     <Compile Include="Patches\EndRoundSpeech.cs" />
+    <Compile Include="TeamAPI\CustomConfig\AtcItems.cs" />
     <Compile Include="TeamAPI\CustomConfig\LeaderboardConfigHelper.cs" />
     <Compile Include="TeamAPI\CustomEventHelpers\CustomRoundEnder.cs" />
     <Compile Include="TeamAPI\Events\TeamEvents.cs" />

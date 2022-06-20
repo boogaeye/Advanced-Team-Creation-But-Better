@@ -16,6 +16,8 @@ namespace ATCBB.TeamAPI
         public static readonly string DEFAULTAnnounce = "DEFAULT";
         public string Name { get; set; } = "No Team";
         public string DisplayName { get; set; } = "<color=black>NAN</color>";
+        [Description("Used for when and Scp gets terminated by this team typically if it was the global occult coalition it would look like 'G O C'")]
+        public string SaidName { get; set; } = "Unspecified";
         public RoomType SpawnRoom { get; set; } = RoomType.Surface;
         public int Chance { get; set; } = 75;
         public string[] SpawnOrder { get; set; } = { "Commander:1", "Officer:3", "Cadet:5" };
@@ -37,6 +39,16 @@ namespace ATCBB.TeamAPI
         public bool ConfirmFriendshipWithTeam(AdvancedTeam at)
         {
             return RoundEnderConfig.FriendlyTeams.Contains(at.Name) || at.RoundEnderConfig.FriendlyTeams.Contains(Name) || at.Name == Name;
+        }
+
+        public bool ConfirmNeutralshipWithTeam(AdvancedTeam at)
+        {
+            return !ConfirmFriendshipWithTeam(at) && !ConfirmEnemyshipWithTeam(at);
+        }
+
+        public bool ConfirmRequiredshipWithTeam(AdvancedTeam at)
+        {
+            return ConfirmEnemyshipWithTeam(at) && ConfirmFriendshipWithTeam(at);
         }
 
         public AdvancedTeam[] GetAllFriendlyTeams()

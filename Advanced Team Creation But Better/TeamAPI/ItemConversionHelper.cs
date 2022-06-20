@@ -37,9 +37,23 @@ namespace ATCBB.TeamAPI
             return false;
         }
 
-        public static bool TryGetCustomItemTypeFromString(this string Weapon, out CustomItems.API.CustomItem Custom)
+        public static bool TryGetCustomItemTypeFromString(this string Weapon, out Exiled.CustomItems.API.Features.CustomItem Custom)
         {
-            if (CustomItems.API.API.TryGetItem(Weapon, out CustomItems.API.CustomItem item))
+            if (Exiled.CustomItems.API.Features.CustomItem.TryGet(Weapon, out Exiled.CustomItems.API.Features.CustomItem item))
+            {
+                Custom = item;
+                return true;
+            }
+            else
+            {
+                Custom = null;
+                return false;
+            }
+        }
+
+        public static bool TryGetCustomItemTypeFromInt(this int Weapon, out Exiled.CustomItems.API.Features.CustomItem Custom)
+        {
+            if (Exiled.CustomItems.API.Features.CustomItem.TryGet(Weapon, out Exiled.CustomItems.API.Features.CustomItem item))
             {
                 Custom = item;
                 return true;

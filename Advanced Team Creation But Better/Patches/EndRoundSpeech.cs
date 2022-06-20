@@ -18,6 +18,7 @@ namespace ATCBB.Patches
             if (string.IsNullOrEmpty(ply?.UserId)) return false;
             if (CustomRoundEnder.RoundEnded) return __instance._dissonanceSetup.SpectatorChat = b;
             if (ply.HasItem(ItemType.Radio)) return __instance._dissonanceSetup.RadioAsHuman = b;
+            if (ply.Role.Type == RoleType.Scp93953 || ply.Role.Type == RoleType.Scp93989 || ply.Role.Type == RoleType.Scp049) return __instance._dissonanceSetup.MimicAs939 = b;
             return false;
         }
     }
