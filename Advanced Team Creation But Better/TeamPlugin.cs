@@ -25,7 +25,7 @@ namespace ATCBB
         public override string Author => "BoogaEye";
         public override string Name => "Advanced Team Creation";
         public override Version RequiredExiledVersion => new Version(5, 1, 3, 0);
-        public override Version Version => new Version(1, 5, 0, 0);
+        public override Version Version => new Version(1, 5, 0, 4);
 
         #endregion Public Properties
 

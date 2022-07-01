@@ -153,10 +153,38 @@ namespace ATCBB
             if (ev.Killer == null)
             {
                 Log.Debug($"There is no Killer so using Target instead", plugin.Config.Debug);
-
-                goto TeamLabel;
+                Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} how many players are left {Leaderboard.GetTeamLeaderboard(ev.Target.GetAdvancedTeam().Name).PlayerPairs.Count - 1}", plugin.Config.Debug);
+                if (Leaderboard.GetTeamLeaderboard(ev.Target.GetAdvancedTeam().Name).PlayerPairs.Count - 1 == 0)
+                {
+                    var e2 = new TeamEvents.AdvancedTeamSlaughteredEventArgs(ev.Target.GetAdvancedTeam(), ev.Target.GetAdvancedTeam());
+                    e2.Slaughter();
+                    Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} sent slaughter event", plugin.Config.Debug);
+                    if (e2.IsAllowed && ev.Target.GetAdvancedTeam().Name != "SCP")
+                    {
+                        if (e2.AdvancedTeam.CassieSlaughtered != string.Empty)
+                        {
+                            Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} sent Termination Cassie", plugin.Config.Debug);
+                            SlaughteredTeam(e2.AdvancedTeam, e2.TerminatingTeam);
+                        }
+                    }
+                }
             }
             if (!ev.Killer.IsConnected && !ev.Target.IsConnected) return;
+            Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} how many players are left {Leaderboard.GetTeamLeaderboard(ev.Target.GetAdvancedTeam().Name).PlayerPairs.Count - 1}", plugin.Config.Debug);
+            if (Leaderboard.GetTeamLeaderboard(ev.Target.GetAdvancedTeam().Name).PlayerPairs.Count - 1 == 0)
+            {
+                var e2 = new TeamEvents.AdvancedTeamSlaughteredEventArgs(ev.Target.GetAdvancedTeam(), ev.Killer.GetAdvancedTeam());
+                e2.Slaughter();
+                Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} sent slaughter event", plugin.Config.Debug);
+                if (e2.IsAllowed && ev.Target.GetAdvancedTeam().Name != "SCP")
+                {
+                    if (e2.AdvancedTeam.CassieSlaughtered != string.Empty)
+                    {
+                        Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} sent Termination Cassie", plugin.Config.Debug);
+                        SlaughteredTeam(e2.AdvancedTeam, e2.TerminatingTeam);
+                    }
+                }
+            }
             Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} how many players are left {Leaderboard.GetTeamLeaderboard(ev.Target.GetAdvancedTeam().Name).PlayerPairs.Count}", plugin.Config.Debug);
             if (Leaderboard.GetTeamLeaderboard(ev.Target.GetAdvancedTeam().Name).PlayerPairs.Count == 0)
             {
@@ -183,22 +211,6 @@ namespace ATCBB
             {
                 NineTailedFoxAnnouncer.ConvertSCP(ev.Target.Role.Type, out string nSpace, out string wSpace);
                 CustomTeamScpTermination(wSpace, ev.Handler, ev.Killer.GetAdvancedTeam());
-            }
-        TeamLabel:
-            Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} how many players are left {Leaderboard.GetTeamLeaderboard(ev.Target.GetAdvancedTeam().Name).PlayerPairs.Count - 1}", plugin.Config.Debug);
-            if (Leaderboard.GetTeamLeaderboard(ev.Target.GetAdvancedTeam().Name).PlayerPairs.Count - 1 == 0)
-            {
-                var e2 = new TeamEvents.AdvancedTeamSlaughteredEventArgs(ev.Target.GetAdvancedTeam(), ev.Target.GetAdvancedTeam());
-                e2.Slaughter();
-                Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} sent slaughter event", plugin.Config.Debug);
-                if (e2.IsAllowed && ev.Target.GetAdvancedTeam().Name != "SCP")
-                {
-                    if (e2.AdvancedTeam.CassieSlaughtered != string.Empty)
-                    {
-                        Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} sent Termination Cassie", plugin.Config.Debug);
-                        SlaughteredTeam(e2.AdvancedTeam, e2.TerminatingTeam);
-                    }
-                }
             }
         }
 
