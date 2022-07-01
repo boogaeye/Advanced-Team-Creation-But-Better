@@ -1,74 +1,67 @@
-﻿using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Exiled.API.Interfaces;
-using Exiled.API;
-using System.IO;
-using Exiled.Loader;
+﻿using ATCBB.TeamAPI;
 using Exiled.API.Features;
-using Exiled.API.Extensions;
-using ATCBB.TeamAPI;
-using ATCBB.ATCCustomItems;
+using Exiled.API.Interfaces;
+using Exiled.Loader;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
 
 namespace ATCBB
 {
     public class TeamConfig : IConfig
     {
-        public bool IsEnabled { get; set; } = true;
-        public bool Debug { get; set; } = false;
-        public bool UseCustomItemsFromATC { get; set; } = true;
-        [Description("Makes the team list only appear when announcements go off")]
-        public bool TeamsListPromptsAtAnnouncement { get; set; } = false;
-        [Description("Only spawn a team if they have an enemy in a facility")]
-        public bool TeamSpawnsOnlyIfEnemiesExist { get; set; } = true;
-        [Description("Shows who are Hostile, Required, Friendly, and Neutral")]
-        public bool ShowTeamsList { get; set; } = true;
-        public bool ShowFriendlyHint { get; set; } = true;
-        public int ReflectionDamageTime { get; set; } = 30;
-        public bool ShowHurtFriendlyHint { get; set; } = true;
-        [Description("Shows only friendly teams after time is up set to -1 for it to not disappear")]
-        public int ShowEnemyTeamsForTime { get; set; } = -1;
-        public bool FriendlyFire { get; set; } = true;
-        public bool FriendlyFireReflection { get; set; } = true;
-        [Description("Determines if Class D Personal are friends with other Class D and Chaos")]
-        public bool ClassDFriendsWithChaos { get; set; } = true;
-        public bool ScpNeutralWithChaos { get; set; } = false;
-        public int TeleportRetries { get; set; } = 15;
-        [Description("Recommended to keep this on this provides a custom handler to custom teams so they can win or you can switch it off to turn it back to the default round ender")]
-        public bool CustomRoundEnder { get; set; } = true;
-        public string ConfigsFolder { get; set; } = Path.Combine(Paths.Configs, "AdvancedTeamCreation");
-        public List<AdvancedTeam> Teams = new List<AdvancedTeam>();
+        #region Public Fields
+
         public List<AdvancedTeamSubclass> SubTeams = new List<AdvancedTeamSubclass>();
+        public List<AdvancedTeam> Teams = new List<AdvancedTeam>();
+
+        #endregion Public Fields
+
+        #region Public Properties
+
         public ATCBB.TeamAPI.CustomConfig.AtcItems AtcItems { get; set; } = new TeamAPI.CustomConfig.AtcItems();
 
+        [Description("Determines if Class D Personal are friends with other Class D and Chaos")]
+        public bool ClassDFriendsWithChaos { get; set; } = true;
 
+        public string ConfigsFolder { get; set; } = Path.Combine(Paths.Configs, "AdvancedTeamCreation");
 
+        [Description("Recommended to keep this on this provides a custom handler to custom teams so they can win or you can switch it off to turn it back to the default round ender")]
+        public bool CustomRoundEnder { get; set; } = true;
 
-        public void LoadItems()
-        {
-            Log.Info("Registering custom items");
-            Exiled.CustomItems.API.Features.CustomItem.RegisterItems(overrideClass:AtcItems);
-        }
+        public bool Debug { get; set; } = false;
+        public bool FriendlyFire { get; set; } = true;
+        public bool FriendlyFireReflection { get; set; } = true;
+        public bool IsEnabled { get; set; } = true;
+        public int ReflectionDamageTime { get; set; } = 30;
+        public bool ScpNeutralWithChaos { get; set; } = false;
 
-        public void UnloadItems()
-        {
-            Exiled.CustomItems.API.Features.CustomItem.UnregisterItems();
-        }
+        [Description("Shows only friendly teams after time is up set to -1 for it to not disappear")]
+        public int ShowEnemyTeamsForTime { get; set; } = -1;
 
-        public AdvancedTeam FindAT(string name)
-        {
-            foreach (AdvancedTeam at in Teams)
-            {
-                if (at.Name == name)
-                {
-                    return at;
-                }
-            }
-            return null;
-        }
+        public bool ShowFriendlyHint { get; set; } = true;
+        public bool ShowHurtFriendlyHint { get; set; } = true;
+
+        [Description("Shows who are Hostile, Required, Friendly, and Neutral")]
+        public bool ShowTeamsList { get; set; } = true;
+
+        [Description("Makes the team list only appear when announcements go off")]
+        public bool TeamsListPromptsAtAnnouncement { get; set; } = false;
+
+        [Description("Only spawn a team if they have an enemy in a facility")]
+        public bool TeamSpawnsOnlyIfEnemiesExist { get; set; } = true;
+
+        public int TeleportRetries { get; set; } = 15;
+        public bool UseCustomItemsFromATC { get; set; } = true;
+
+        [Description("If Vanilla teams get the first chance to spawn instead of having the last chances to spawn")]
+        public bool VanillaTeamsHavePriority { get; set; } = true;
+
+        #endregion Public Properties
+
+        #region Public Methods
 
         public AdvancedTeamSubclass FindAST(string Team, string name)
         {
@@ -86,6 +79,24 @@ namespace ATCBB
                 }
             }
             return null;
+        }
+
+        public AdvancedTeam FindAT(string name)
+        {
+            foreach (AdvancedTeam at in Teams)
+            {
+                if (at.Name == name)
+                {
+                    return at;
+                }
+            }
+            return null;
+        }
+
+        public void LoadItems()
+        {
+            Log.Info("Registering custom items");
+            Exiled.CustomItems.API.Features.CustomItem.RegisterItems(overrideClass: AtcItems);
         }
 
         public void LoadTeamConfigs()
@@ -119,5 +130,12 @@ namespace ATCBB
                 }
             }
         }
+
+        public void UnloadItems()
+        {
+            Exiled.CustomItems.API.Features.CustomItem.UnregisterItems();
+        }
+
+        #endregion Public Methods
     }
 }

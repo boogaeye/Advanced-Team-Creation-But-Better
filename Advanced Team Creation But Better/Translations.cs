@@ -1,14 +1,5 @@
-﻿using System;
+﻿using Exiled.API.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Exiled.API.Interfaces;
-using Exiled.API;
-using System.IO;
-using Exiled.Loader;
-using Exiled.API.Features;
-using ATCBB.TeamAPI;
 
 namespace ATCBB
 {
@@ -28,5 +19,15 @@ namespace ATCBB
         public string NeutralTeamListed { get; set; } = "<align=right><size=45%>(TEAM)</size></align>";
         public string EscapeTeamHeader { get; set; } = "<align=right><size=45%><color=yellow>Help These Teams(Escape):</color></size></align>";
         public string EscapeTeamListed { get; set; } = "<align=right><size=45%><color=yellow>(TEAMNoColor)</color></size></align>";
+
+        public Dictionary<Team, string> TeamCassieSlaughter { get; set; } = new Dictionary<Team, string>()
+        {
+            { Team.CDP, "pitch_0.5 .g4 .g4 .g4 pitch_1 all {Terminated} terminated by {Terminating} . allremaining awaitingrecontainment jam_1_5 {SCPLeft} scpsubjects" },
+        };
+
+        public Dictionary<Team, string> TeamCassieSlaughterSubtitles { get; set; } = new Dictionary<Team, string>()
+        {
+            { Team.CDP, "all {Terminated} terminated by {Terminating} all remaining personal are advised to proceed with standard evacuation protocols until an MTF squad reaches your destination. awaiting recontainment of {SCPLeft} scp subjects." }
+        };
     }
 }

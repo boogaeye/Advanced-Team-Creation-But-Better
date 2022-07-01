@@ -29,6 +29,7 @@ namespace ATCBB.ATCCustomItems
             Exiled.Events.Handlers.Player.InteractingDoor += DoorOpening;
             base.SubscribeEvents();
         }
+
         protected override void UnsubscribeEvents()
         {
             Exiled.Events.Handlers.Player.InteractingDoor -= DoorOpening;
@@ -51,9 +52,10 @@ namespace ATCBB.ATCCustomItems
                         case Exiled.API.Enums.DoorType.HID:
                         case Exiled.API.Enums.DoorType.Scp106Primary:
                         case Exiled.API.Enums.DoorType.Scp106Secondary:
-                        case Exiled.API.Enums.DoorType.Scp914:
+                        case Exiled.API.Enums.DoorType.Scp914Gate:
                             ev.IsAllowed = true;
                             break;
+
                         default:
                             if (ev.Door.RequiredPermissions.RequiredPermissions != Interactables.Interobjects.DoorUtils.KeycardPermissions.None)
                                 ev.IsAllowed = false;

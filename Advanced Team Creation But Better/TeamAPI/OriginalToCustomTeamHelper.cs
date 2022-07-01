@@ -20,12 +20,22 @@ namespace ATCBB.TeamAPI
                 VanillaTeam = true,
                 Chance = 1
             };
+            if (TeamPlugin.Singleton.Translation.TeamCassieSlaughter.ContainsKey(t))
+            {
+                at.CassieSlaughtered = TeamPlugin.Singleton.Translation.TeamCassieSlaughter[t];
+                at.CassieSlaughteredSubtitles = TeamPlugin.Singleton.Translation.TeamCassieSlaughterSubtitles[t];
+            }
+            else
+            {
+                at.CassieSlaughtered = String.Empty;
+            }
             Log.Debug($"Made Vanilla Team {t} looking snazzy {at.Name}", d);
             switch (t)
             {
                 case Team.CDP:
                     at.Color = "orange";
                     at.DisplayName = "<color=orange>Class D Personal Escapee's</color>";
+                    at.SaidName = "Class D";
                     at.RoundEnderConfig.FriendlyTeams = new List<string>();
                     at.RoundEnderConfig.RequiredTeams = new List<string>()
                     {
@@ -39,9 +49,11 @@ namespace ATCBB.TeamAPI
                         at.RoundEnderConfig.FriendlyTeams.Add("CDP");
                     }
                     break;
+
                 case Team.RSC:
                     at.DisplayName = "<color=yellow>Research Personal Escapee's</color>";
                     at.Color = "yellow";
+                    at.SaidName = "Scientist";
                     at.RoundEnderConfig.FriendlyTeams = new List<string>()
                     {
                         "RSC",
@@ -55,9 +67,11 @@ namespace ATCBB.TeamAPI
                         "CHI"
                     };
                     break;
+
                 case Team.SCP:
                     at.DisplayName = "<color=red>SCP's</color>";
                     at.Color = "red";
+                    at.SaidName = "SCPSubjects";
                     at.RoundEnderConfig.FriendlyTeams = new List<string>()
                     {
                         "SCP"
@@ -71,9 +85,11 @@ namespace ATCBB.TeamAPI
                     if (!TeamPlugin.Singleton.Config.ScpNeutralWithChaos)
                         at.RoundEnderConfig.RequiredTeams.Add("CHI");
                     break;
+
                 case Team.CHI:
                     at.DisplayName = "<color=green>The Insurgency</color>";
                     at.Color = "green";
+                    at.SaidName = "Chaos Insurgency";
                     at.RoundEnderConfig.FriendlyTeams = new List<string>()
                     {
                         "CHI"
@@ -94,9 +110,11 @@ namespace ATCBB.TeamAPI
                     if (!TeamPlugin.Singleton.Config.ScpNeutralWithChaos)
                         at.RoundEnderConfig.RequiredTeams.Add("SCP");
                     break;
+
                 case Team.MTF:
                     at.DisplayName = "<color=blue>Mobile Task Force</color> and <color=grey>Facility Forces</color>";
                     at.Color = "blue";
+                    at.SaidName = "MTFUnit";
                     at.RoundEnderConfig.FriendlyTeams = new List<string>()
                     {
                         "MTF",
@@ -110,10 +128,12 @@ namespace ATCBB.TeamAPI
                         "RSC"
                     };
                     break;
+
                 default:
                     at.RoundEnderConfig.FriendlyTeams = new List<string>();
                     at.RoundEnderConfig.RequiredTeams = new List<string>();
                     at.Spectator = true;
+                    at.SaidName = "Unspecified";
                     break;
             }
             Log.Debug($"Returning Vanilla Team {t}", d);

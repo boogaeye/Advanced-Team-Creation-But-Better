@@ -14,6 +14,10 @@ namespace ATCBB.TeamAPI.Extentions
 {
     public static class Extentions
     {
+        public static List<AdvancedTeam> AdvancedTeamsChi => TeamPlugin.Singleton.Config.Teams.Where(e => !e.VanillaTeam && e.BindedTeam == Respawning.SpawnableTeamType.ChaosInsurgency || e.BindedTeam == Respawning.SpawnableTeamType.None).ToList();
+        public static List<AdvancedTeam> AdvancedTeamsMtf => TeamPlugin.Singleton.Config.Teams.Where(e => !e.VanillaTeam && e.BindedTeam == Respawning.SpawnableTeamType.NineTailedFox || e.BindedTeam == Respawning.SpawnableTeamType.None).ToList();
+        public static List<AdvancedTeam> AdvancedTeamsOnly => TeamPlugin.Singleton.Config.Teams.Where(e => !e.VanillaTeam).ToList();
+
         public enum InventoryDestroyType
         {
             None,
@@ -33,8 +37,7 @@ namespace ATCBB.TeamAPI.Extentions
             return null;
         }
 
-
-        public static void ShowFriendlyTeamDisplay(this Player ply, int sec = 1, bool ShowOnlyImportantTeams = false)
+        public static void ShowFriendlyTeamDisplay(this Player ply, int sec = 3, bool ShowOnlyImportantTeams = false)
         {
             if (!TeamPlugin.Singleton.Config.ShowTeamsList) return;
             Translations t = TeamPlugin.Singleton.Translation;
@@ -107,7 +110,6 @@ namespace ATCBB.TeamAPI.Extentions
                                 {
                                     ply.Teleport(vec);
                                 }
-                                
                             }
                             else
                             {
@@ -182,6 +184,7 @@ namespace ATCBB.TeamAPI.Extentions
                 }
             });
         }
+
         public static void ChangeAdvancedTeam(this Player ply, AdvancedTeam at)
         {
             TeamPlugin.Singleton.TeamEventHandler.Leaderboard.ClearPlayerFromLeaderBoards(ply);

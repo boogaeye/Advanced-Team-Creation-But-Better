@@ -29,6 +29,7 @@ namespace ATCBB.ATCCustomItems
             Exiled.Events.Handlers.Player.InteractingDoor += DoorOpening;
             base.SubscribeEvents();
         }
+
         protected override void UnsubscribeEvents()
         {
             Exiled.Events.Handlers.Player.InteractingDoor -= DoorOpening;
@@ -46,9 +47,10 @@ namespace ATCBB.ATCCustomItems
                         case Exiled.API.Enums.DoorType.CheckpointEntrance:
                         case Exiled.API.Enums.DoorType.GateA:
                         case Exiled.API.Enums.DoorType.GateB:
-                        case Exiled.API.Enums.DoorType.Scp914:
+                        case Exiled.API.Enums.DoorType.Scp914Gate:
                             ev.IsAllowed = true;
                             break;
+
                         default:
                             if (ev.Door.RequiredPermissions.RequiredPermissions != Interactables.Interobjects.DoorUtils.KeycardPermissions.None)
                                 ev.IsAllowed = false;
