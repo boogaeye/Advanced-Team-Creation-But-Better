@@ -39,6 +39,12 @@ namespace ATCBB.TeamAPI.Extentions
             return null;
         }
 
+        public static void Hurt(this Player ply, float damage, Player damager)
+        {
+            TeamDamageHandler tdh = new TeamDamageHandler(damager, "Enemy", damage);
+            ply.Hurt(tdh);
+        }
+
         public static void ShowFriendlyTeamDisplay(this Player ply, int sec = 3, bool ShowOnlyImportantTeams = false)
         {
             if (!TeamPlugin.Singleton.Config.ShowTeamsList) return;

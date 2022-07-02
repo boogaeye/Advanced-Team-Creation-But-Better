@@ -139,6 +139,7 @@
     <Compile Include="TeamAPI\ItemConversionHelper.cs" />
     <Compile Include="TeamAPI\LeaderboardHelper.cs" />
     <Compile Include="TeamAPI\OriginalToCustomTeamHelper.cs" />
+    <Compile Include="TeamAPI\TeamDamageHandler.cs" />
     <Compile Include="Translations.cs" />
     <Compile Include="TeamConfig.cs" />
     <Compile Include="TeamEventHandler.cs" />
