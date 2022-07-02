@@ -6,6 +6,7 @@ using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
+using Exiled.Events.Patches.Generic;
 using MEC;
 using Respawning;
 using Respawning.NamingRules;
@@ -122,7 +123,6 @@ namespace ATCBB
                 {
                     ev.IsAllowed = false;
                     ChangeUnitNameOnAdvancedTeam(Respawns, "<color=black>INTERFERENCE</color>");
-                    Respawns++;
                     CassieHelper = null;
                     return;
                 }
@@ -168,6 +168,7 @@ namespace ATCBB
                         }
                     }
                 }
+                return;
             }
             if (!ev.Killer.IsConnected && !ev.Target.IsConnected) return;
             Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} how many players are left {Leaderboard.GetTeamLeaderboard(ev.Target.GetAdvancedTeam().Name).PlayerPairs.Count - 1}", plugin.Config.Debug);
@@ -204,8 +205,6 @@ namespace ATCBB
                 ev.IsAllowed = false;
                 return;
             }
-            LastHurtingPlayer = ev.Killer;
-            LastHurtedTeam = ev.Target.GetAdvancedTeam();
             nickHelper = $"{ev.Target.Nickname}({ev.Target.GetAdvancedTeam().Name})";
             if (ev.Target.IsScp)
             {
@@ -214,47 +213,46 @@ namespace ATCBB
             }
         }
 
-        public Player LastHurtingPlayer;
-        public AdvancedTeam LastHurtedTeam;
-
         public void PlayerHurt(HurtingEventArgs ev)
         {
-            if (ev.Attacker == ev.Target) return;
             if (ev.Attacker == null) return;
-            if (null == ev.Target) return;
             if (!ev.Attacker.IsConnected && !ev.Target.IsConnected) return;
-            LastHurtingPlayer = ev.Attacker;
-            LastHurtedTeam = ev.Target.GetAdvancedTeam();
-            if (ev.Attacker.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()))
+            if (!IndividualFriendlyFire.CheckFriendlyFirePlayerHitbox(ev.Attacker.ReferenceHub, ev.Target.ReferenceHub))
             {
-                ev.Attacker.ShowHint("<color=red>Don't damage a friendly team</color>");
-                if (ev.Target.Health <= ev.Amount * 0.3f)
+                if (ev.Target.GetAdvancedTeam().ConfirmEnemyshipWithTeam(ev.Attacker.GetAdvancedTeam()))
                 {
-                    if (plugin.Config.FriendlyFireReflection)
-                        if (!TeamKillList.Contains(ev.Attacker))
-                        {
-                            ev.Attacker.ShowHint($"<color=red>Team damage will now be reflected for {plugin.Config.ReflectionDamageTime} seconds</color>");
-                            TeamKillList.Add(ev.Attacker);
-                            Timing.CallDelayed(plugin.Config.ReflectionDamageTime, () => { TeamKillList.Remove(ev.Attacker); ev.Attacker.ShowHint("<color=green>Team reflection damage is disabled</color>"); });
-                        }
+                    ev.Attacker.ShowHitMarker();
+                    ev.Target.Hurt(ev.Handler);
+                    Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their opposing teams");
                 }
-                if (!plugin.Config.FriendlyFire)
+            }
+            else
+            {
+                if (ev.Target.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Attacker.GetAdvancedTeam()))
                 {
-                    ev.IsAllowed = false;
-                }
-                else
-                {
-                    if (TeamKillList.Contains(ev.Attacker))
+                    if (ev.Target.GetAdvancedTeam().VanillaTeam)
                     {
-                        if (TeamKillList.Contains(ev.Attacker))
-                            ev.Attacker.Hurt(ev.Amount);
+                        if (Server.FriendlyFire)
+                        {
+                            ev.Handler.Damage *= ev.Attacker.FriendlyFireMultiplier[ev.Target.Role.Type];
+                            ev.Target.Hurt(ev.Handler);
+                        }
+                        ev.IsAllowed = false;
                     }
                     else
                     {
-                        ev.Target.Hurt(ev.Amount * 0.3f);
+                        if (Server.FriendlyFire)
+                        {
+                            ev.Handler.Damage *= 0.3f;
+                            ev.Target.Hurt(ev.Handler);
+                        }
+                        ev.IsAllowed = false;
                     }
-                    ev.IsAllowed = false;
                 }
+            }
+            if (ev.Attacker.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()))
+            {
+                ev.Attacker.ShowHint("<color=red>Don't damage a friendly team</color>");
             }
         }
 
@@ -399,7 +397,7 @@ namespace ATCBB
         {
             if (ev.Player.GetAdvancedTeam().ConfirmFriendshipWithTeam(plugin.Config.FindAT("SCP")))
             {
-                if (plugin.Config.FriendlyFire) return;
+                if (!Server.FriendlyFire) return;
                 ev.IsAllowed = false;
             }
         }

@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Exiled.API.Enums;
 using Exiled.API.Features;
+using Exiled.API.Extensions;
 using Exiled.CustomItems.API.Features;
 using MEC;
 using UnityEngine;
 using ATCBB.TeamAPI.Events;
+using Exiled.CustomRoles.API.Features;
 
 namespace ATCBB.TeamAPI.Extentions
 {
@@ -47,9 +49,20 @@ namespace ATCBB.TeamAPI.Extentions
             {
                 sb += t.FriendlyTeamHeader;
                 //Get Friendly Teams
-                foreach (AdvancedTeam at in ply.GetAdvancedTeam().GetAllFriendlyTeams())
+                if (TeamPlugin.Singleton.Config.ShowTeamInListIfAliveOnly)
                 {
-                    sb += $"\n{t.FriendlyTeamListed.Replace("(TEAM)", $"<color={at.Color}>{at.Name}</color>").Replace("(TEAMNoColor)", $"{at.Name}")}";
+                    //Made to reduce list size though reduces secrecy of team spawning as well
+                    foreach (AdvancedTeam at in ply.GetAdvancedTeam().GetAllFriendlyTeams().Where(e => e.DoesExist()))
+                    {
+                        sb += $"\n{t.FriendlyTeamListed.Replace("(TEAM)", $"<color={at.Color}>{at.Name}</color>").Replace("(TEAMNoColor)", $"{at.Name}")}";
+                    }
+                }
+                else
+                {
+                    foreach (AdvancedTeam at in ply.GetAdvancedTeam().GetAllFriendlyTeams())
+                    {
+                        sb += $"\n{t.FriendlyTeamListed.Replace("(TEAM)", $"<color={at.Color}>{at.Name}</color>").Replace("(TEAMNoColor)", $"{at.Name}")}";
+                    }
                 }
             }
 
@@ -76,9 +89,20 @@ namespace ATCBB.TeamAPI.Extentions
             {
                 //Get Required teams friendlies that you need to help (escape maybe?)
                 sb += $"\n\n{t.EscapeTeamHeader}";
-                foreach (AdvancedTeam at in ply.GetAdvancedTeam().GetAllRequiredTeams())
+                if (TeamPlugin.Singleton.Config.ShowTeamInListIfAliveOnly)
                 {
-                    sb += $"\n{t.EscapeTeamListed.Replace("(TEAM)", $"<color={at.Color}>{at.Name}</color>").Replace("(TEAMNoColor)", $"{at.Name}")}";
+                    //Made to reduce list size though reduces secrecy of team spawning as well
+                    foreach (AdvancedTeam at in ply.GetAdvancedTeam().GetAllRequiredTeams().Where(e => e.DoesExist()))
+                    {
+                        sb += $"\n{t.EscapeTeamListed.Replace("(TEAM)", $"<color={at.Color}>{at.Name}</color>").Replace("(TEAMNoColor)", $"{at.Name}")}";
+                    }
+                }
+                else
+                {
+                    foreach (AdvancedTeam at in ply.GetAdvancedTeam().GetAllRequiredTeams())
+                    {
+                        sb += $"\n{t.EscapeTeamListed.Replace("(TEAM)", $"<color={at.Color}>{at.Name}</color>").Replace("(TEAMNoColor)", $"{at.Name}")}";
+                    }
                 }
             }
 

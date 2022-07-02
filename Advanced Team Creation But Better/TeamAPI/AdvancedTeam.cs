@@ -65,22 +65,22 @@ namespace ATCBB.TeamAPI
 
         public bool ConfirmEnemyshipWithTeam(AdvancedTeam at)
         {
-            return RoundEnderConfig.RequiredTeams.Contains(at.Name) || at.RoundEnderConfig.RequiredTeams.Contains(Name);
+            return (RoundEnderConfig.RequiredTeams.Contains(at.Name) || at.RoundEnderConfig.RequiredTeams.Contains(Name)) && !ConfirmRequiredshipWithTeam(at);
         }
 
         public bool ConfirmFriendshipWithTeam(AdvancedTeam at)
         {
-            return RoundEnderConfig.FriendlyTeams.Contains(at.Name) || at.RoundEnderConfig.FriendlyTeams.Contains(Name) || at.Name == Name;
+            return (RoundEnderConfig.FriendlyTeams.Contains(at.Name) || at.RoundEnderConfig.FriendlyTeams.Contains(Name) || at.Name == Name) && !ConfirmRequiredshipWithTeam(at);
         }
 
         public bool ConfirmNeutralshipWithTeam(AdvancedTeam at)
         {
-            return !ConfirmFriendshipWithTeam(at) && !ConfirmEnemyshipWithTeam(at);
+            return !(RoundEnderConfig.RequiredTeams.Contains(at.Name) || at.RoundEnderConfig.RequiredTeams.Contains(Name)) && !(RoundEnderConfig.FriendlyTeams.Contains(at.Name) || at.RoundEnderConfig.FriendlyTeams.Contains(Name) || at.Name == Name);
         }
 
         public bool ConfirmRequiredshipWithTeam(AdvancedTeam at)
         {
-            return ConfirmEnemyshipWithTeam(at) && ConfirmFriendshipWithTeam(at);
+            return (RoundEnderConfig.RequiredTeams.Contains(at.Name) || at.RoundEnderConfig.RequiredTeams.Contains(Name)) && (RoundEnderConfig.FriendlyTeams.Contains(at.Name) || at.RoundEnderConfig.FriendlyTeams.Contains(Name) || at.Name == Name);
         }
 
         public bool DoesExist()
@@ -119,7 +119,7 @@ namespace ATCBB.TeamAPI
             List<AdvancedTeam> atlist = new List<AdvancedTeam>();
             foreach (AdvancedTeam at in TeamPlugin.Singleton.Config.Teams)
             {
-                if (!ConfirmEnemyshipWithTeam(at) && !ConfirmFriendshipWithTeam(at) && !at.Spectator)
+                if (ConfirmNeutralshipWithTeam(at) && !at.Spectator)
                 {
                     atlist.Add(at);
                 }
@@ -132,7 +132,7 @@ namespace ATCBB.TeamAPI
             List<AdvancedTeam> atlist = new List<AdvancedTeam>();
             foreach (AdvancedTeam at in TeamPlugin.Singleton.Config.Teams)
             {
-                if (ConfirmEnemyshipWithTeam(at) && ConfirmFriendshipWithTeam(at) && !at.Spectator)
+                if (ConfirmRequiredshipWithTeam(at) && !at.Spectator)
                 {
                     atlist.Add(at);
                 }

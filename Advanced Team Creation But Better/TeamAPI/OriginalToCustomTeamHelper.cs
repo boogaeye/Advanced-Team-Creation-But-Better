@@ -5,11 +5,54 @@ using System.Text;
 using System.Threading.Tasks;
 using Exiled.API.Features;
 using Exiled;
+using Exiled.API.Extensions;
 
 namespace ATCBB.TeamAPI
 {
     public class OriginalToCustomTeamHelper
     {
+        public static bool GetRolesFromTeam(Team t, out RoleType[] bruh)
+        {
+            List<RoleType> T = new List<RoleType>();
+            foreach (RoleType rt in Enum.GetValues(typeof(RoleType)).Cast<RoleType>())
+            {
+                if (rt.GetTeam() == t)
+                {
+                    T.Add(rt);
+                }
+            }
+            bruh = T.ToArray();
+            return true;
+        }
+
+        public static bool GetRolesFromTeam(string t, out RoleType[] bruh)
+        {
+            Team Selection = Team.RIP;
+            foreach (Team ts in Enum.GetValues(typeof(Team)).Cast<Team>())
+            {
+                if (ts.ToString() == t)
+                {
+                    Selection = ts;
+                    break;
+                }
+            }
+            if (Selection == Team.RIP)
+            {
+                bruh = null;
+                return false;
+            }
+            List<RoleType> T = new List<RoleType>();
+            foreach (RoleType rt in Enum.GetValues(typeof(RoleType)).Cast<RoleType>())
+            {
+                if (rt.GetTeam() == Selection)
+                {
+                    T.Add(rt);
+                }
+            }
+            bruh = T.ToArray();
+            return true;
+        }
+
         public static AdvancedTeam SetUpAfterOriginalTeam(Team t)
         {
             bool d = TeamPlugin.Singleton.Config.Debug;

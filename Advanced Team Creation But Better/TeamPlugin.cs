@@ -4,6 +4,7 @@ using Exiled.API.Interfaces;
 using HarmonyLib;
 using System;
 using System.Reflection;
+using Exiled.CustomRoles.API.Features;
 
 namespace ATCBB
 {
@@ -61,6 +62,7 @@ namespace ATCBB
             Exiled.Events.Handlers.Scp106.Containing -= TeamEventHandler.Scp106DistressHelper;
             Exiled.Events.Handlers.Player.SpawningRagdoll -= TeamEventHandler.RagdollSpawn;
             Config.UnloadItems();
+            CustomRole.UnregisterRoles();
             Harmony.UnpatchAll("BoogaEye.TeamStuff.Bruh");
             TeamEventHandler = null;
             Harmony = null;
@@ -86,10 +88,6 @@ namespace ATCBB
             Exiled.Events.Handlers.Player.EnteringFemurBreaker += TeamEventHandler.Scp106FemurBreakerPreventer;
             Exiled.Events.Handlers.Scp106.Containing += TeamEventHandler.Scp106DistressHelper;
             Exiled.Events.Handlers.Player.SpawningRagdoll += TeamEventHandler.RagdollSpawn;
-            if (!Exiled.API.Features.Server.FriendlyFire)
-            {
-                Log.Warn("Friendly Fire Is heavily recommended to be enabled on server config as it can lead to problems with people not being able to finish around because a person is supposed to be their enemy");
-            }
             if (Config.UseCustomItemsFromATC)
             {
                 Config.LoadItems();

@@ -1,6 +1,7 @@
 ﻿using ATCBB.TeamAPI;
 using Exiled.API.Features;
 using Exiled.API.Interfaces;
+using Exiled.CustomRoles.API.Features;
 using Exiled.Loader;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace ATCBB
 
         public List<AdvancedTeamSubclass> SubTeams = new List<AdvancedTeamSubclass>();
         public List<AdvancedTeam> Teams = new List<AdvancedTeam>();
+        public List<CustomRole> DynamicRoles = new List<CustomRole>();
 
         #endregion Public Fields
 
@@ -32,20 +34,20 @@ namespace ATCBB
         public bool CustomRoundEnder { get; set; } = true;
 
         public bool Debug { get; set; } = false;
-        public bool FriendlyFire { get; set; } = true;
-        public bool FriendlyFireReflection { get; set; } = true;
         public bool IsEnabled { get; set; } = true;
-        public int ReflectionDamageTime { get; set; } = 30;
         public bool ScpNeutralWithChaos { get; set; } = false;
 
         [Description("Shows only friendly teams after time is up set to -1 for it to not disappear")]
-        public int ShowEnemyTeamsForTime { get; set; } = -1;
+        public int ShowEnemyTeamsForTime { get; set; } = 10;
 
         public bool ShowFriendlyHint { get; set; } = true;
         public bool ShowHurtFriendlyHint { get; set; } = true;
 
         [Description("Shows who are Hostile, Required, Friendly, and Neutral")]
         public bool ShowTeamsList { get; set; } = true;
+
+        [Description("Shows only alive friendlies and requirements instead of showing all friendlies    reduces list size")]
+        public bool ShowTeamInListIfAliveOnly { get; set; } = true;
 
         [Description("Makes the team list only appear when announcements go off")]
         public bool TeamsListPromptsAtAnnouncement { get; set; } = false;
