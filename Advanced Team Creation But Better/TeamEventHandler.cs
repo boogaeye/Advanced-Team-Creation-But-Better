@@ -223,7 +223,7 @@ namespace ATCBB
                 {
                     ev.Attacker.ShowHitMarker();
                     ev.Target.Hurt(ev.Handler.Damage, ev.Attacker);
-                    Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their opposing teams", TeamPlugin.Singleton.Config.Debug);
+                    //Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their opposing teams", TeamPlugin.Singleton.Config.Debug);
                 }
             }
             else
@@ -237,7 +237,7 @@ namespace ATCBB
                             ev.Handler.Damage *= ev.Attacker.FriendlyFireMultiplier[ev.Target.Role.Type];
                             ev.Target.Hurt(ev.Handler.Damage, ev.Attacker);
 
-                            Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their friendly teams (vanilla)", TeamPlugin.Singleton.Config.Debug);
+                            //Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their friendly teams (vanilla)", TeamPlugin.Singleton.Config.Debug);
                         }
                         ev.IsAllowed = false;
                     }
@@ -248,7 +248,7 @@ namespace ATCBB
                             ev.Handler.Damage *= 0.3f;
                             ev.Target.Hurt(ev.Handler.Damage, ev.Attacker);
 
-                            Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their friendly teams", TeamPlugin.Singleton.Config.Debug);
+                            //Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their friendly teams", TeamPlugin.Singleton.Config.Debug);
                         }
                         ev.IsAllowed = false;
                     }
