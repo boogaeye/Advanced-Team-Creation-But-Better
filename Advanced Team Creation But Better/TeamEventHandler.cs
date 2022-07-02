@@ -234,7 +234,10 @@ namespace ATCBB
                     {
                         if (Server.FriendlyFire)
                         {
-                            ev.Handler.Damage *= ev.Attacker.FriendlyFireMultiplier[ev.Target.Role.Type];
+                            if (ev.Attacker.FriendlyFireMultiplier.ContainsKey(ev.Target.Role.Type))
+                                ev.Handler.Damage *= ev.Attacker.FriendlyFireMultiplier[ev.Target.Role.Type];
+                            else
+                                ev.Handler.Damage *= 0.3f;
                             ev.Target.Hurt(ev.Handler.Damage, ev.Attacker);
 
                             //Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their friendly teams (vanilla)", TeamPlugin.Singleton.Config.Debug);
