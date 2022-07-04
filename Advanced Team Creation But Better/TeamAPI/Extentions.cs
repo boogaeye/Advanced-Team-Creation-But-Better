@@ -45,6 +45,11 @@ namespace ATCBB.TeamAPI.Extentions
             ply.Hurt(tdh);
         }
 
+        public static void Kill(this Player ply, string Reason, Player Damager, string Cassie = "")
+        {
+            ply.ReferenceHub.playerStats.KillPlayer(new TeamDamageHandler(Damager, Reason, float.MaxValue, Cassie));
+        }
+
         public static void ShowFriendlyTeamDisplay(this Player ply, int sec = 3, bool ShowOnlyImportantTeams = false)
         {
             if (!TeamPlugin.Singleton.Config.ShowTeamsList) return;

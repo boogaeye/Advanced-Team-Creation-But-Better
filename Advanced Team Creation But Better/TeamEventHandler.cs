@@ -205,24 +205,27 @@ namespace ATCBB
         public void PlayerHurt(HurtingEventArgs ev)
         {
             if (ev.Attacker == null) return;
+            if (ev.Attacker.IsScp) return;
             if (!ev.Attacker.IsConnected && !ev.Target.IsConnected) return;
             if (ev.Attacker.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()))
             {
                 ev.Attacker.ShowHint("<color=red>Don't damage a friendly team</color>");
             }
-            if (ev.Handler.As<TeamDamageHandler>() != null)
-            {
-                if (ev.Handler.As<TeamDamageHandler>()._deathReason == "Enemy")
-                {
-                    return;
-                }
-            }
+            //if TeamDamageHandler then return to prevent looping
+            if (ev.Handler.Is(out TeamDamageHandler _)) return;
             if (!IndividualFriendlyFire.CheckFriendlyFirePlayerHitbox(ev.Attacker.ReferenceHub, ev.Target.ReferenceHub))
             {
                 if (ev.Target.GetAdvancedTeam().ConfirmEnemyshipWithTeam(ev.Attacker.GetAdvancedTeam()))
                 {
                     ev.Attacker.ShowHitMarker();
-                    ev.Target.Hurt(ev.Handler.Damage, ev.Attacker);
+                    if (ev.Amount >= ev.Target.Health)
+                    {
+                        ev.Target.Kill($"{ev.Attacker}({ev.Attacker.GetAdvancedTeam().DisplayName}) killed you with {ev.Handler.Type}", ev.Attacker);
+                    }
+                    else
+                    {
+                        ev.Target.Hurt(ev.Handler.Damage, ev.Attacker);
+                    }
                     //Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their opposing teams", TeamPlugin.Singleton.Config.Debug);
                 }
             }
