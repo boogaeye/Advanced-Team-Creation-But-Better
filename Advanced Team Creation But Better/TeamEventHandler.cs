@@ -368,39 +368,41 @@ namespace ATCBB
 
         public bool LoadTimerConfig(AdvancedTeam team)
         {
-            string text = RespawnTimer.RespawnTimer.Singleton.Config.Timers[UnityEngine.Random.Range(0, RespawnTimer.RespawnTimer.Singleton.Config.Timers.Count)];
-            string text2 = Path.Combine(RespawnTimer.RespawnTimer.RespawnTimerDirectoryPath, text);
-            if (!Directory.Exists(text2))
-            {
-                Log.Error(text + " directory does not exist!");
-                return false;
-            }
 
-            string path = Path.Combine(text2, "TimerBeforeSpawn.txt");
-            if (!File.Exists(path))
-            {
-                Log.Error(Path.GetFileName(path) + " file does not exist!");
-                return false;
-            }
-
-            string path2 = Path.Combine(text2, "TimerDuringSpawn.txt");
-            if (!File.Exists(path2))
-            {
-                Log.Error(Path.GetFileName(path2) + " file does not exist!");
-                return false;
-            }
-
-            string path3 = Path.Combine(text2, "Properties.yml");
-            if (!File.Exists(path3))
-            {
-                Log.Error(Path.GetFileName(path3) + " file does not exist!");
-                return false;
-            }
             if (team != null)
+            {
+                string text = RespawnTimer.RespawnTimer.Singleton.Config.Timers[UnityEngine.Random.Range(0, RespawnTimer.RespawnTimer.Singleton.Config.Timers.Count)];
+                string text2 = Path.Combine(RespawnTimer.RespawnTimer.RespawnTimerDirectoryPath, text);
+                if (!Directory.Exists(text2))
+                {
+                    Log.Error(text + " directory does not exist!");
+                    return false;
+                }
+
+                string path = Path.Combine(text2, "TimerBeforeSpawn.txt");
+                if (!File.Exists(path))
+                {
+                    Log.Error(Path.GetFileName(path) + " file does not exist!");
+                    return false;
+                }
+
+                string path2 = Path.Combine(text2, "TimerDuringSpawn.txt");
+                if (!File.Exists(path2))
+                {
+                    Log.Error(Path.GetFileName(path2) + " file does not exist!");
+                    return false;
+                }
+
+                string path3 = Path.Combine(text2, "Properties.yml");
+                if (!File.Exists(path3))
+                {
+                    Log.Error(Path.GetFileName(path3) + " file does not exist!");
+                    return false;
+                }
                 RespawnTimer.API.API.TimerView = new TimerView(File.ReadAllText(path), File.ReadAllText(path2).Replace("{team}", $"<color={team.Color}>{team.Name}</color>"), Loader.Deserializer.Deserialize<Properties>(File.ReadAllText(path3)));
+            }
             else
-                RespawnTimer.API.API.TimerView = new TimerView(File.ReadAllText(path), File.ReadAllText(path2), Loader.Deserializer.Deserialize<Properties>(File.ReadAllText(path3)));
-            Log.Debug(text + " has been successfully loaded!", TeamPlugin.Singleton.Config.Debug);
+                RespawnTimer.RespawnTimer.Singleton.OnReloaded();
             return true;
         }
 
