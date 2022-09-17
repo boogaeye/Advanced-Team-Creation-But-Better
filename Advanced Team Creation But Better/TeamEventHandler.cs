@@ -7,12 +7,16 @@ using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs;
 using Exiled.Events.Patches.Generic;
+using Exiled.Loader;
 using MEC;
 using PlayerStatsSystem;
 using Respawning;
 using Respawning.NamingRules;
+using RespawnTimer.API.Features;
+using RespawnTimer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace ATCBB
@@ -212,7 +216,8 @@ namespace ATCBB
                 ev.Attacker.ShowHint("<color=red>Don't damage a friendly team</color>");
             }
             //if TeamDamageHandler then return to prevent looping
-            if (ev.Handler.Is(out TeamDamageHandler _)) return;
+            if (ev.Handler.As<TeamDamageHandler>() != null)
+                if (ev.Handler.As<TeamDamageHandler>()._deathReason == "Enemy") return;
             if (!IndividualFriendlyFire.CheckFriendlyFirePlayerHitbox(ev.Attacker.ReferenceHub, ev.Target.ReferenceHub))
             {
                 if (ev.Target.GetAdvancedTeam().ConfirmEnemyshipWithTeam(ev.Attacker.GetAdvancedTeam()))
@@ -355,17 +360,48 @@ namespace ATCBB
 
             if (TeamPlugin.assemblyTimer != null && !ev.AdvancedTeam.VanillaTeam && ev.SupposedTeam != Respawning.SpawnableTeamType.None)
             {
-                switch (ev.SupposedTeam)
-                {
-                    case Respawning.SpawnableTeamType.ChaosInsurgency:
-                        RespawnTimer.RespawnTimer.Singleton.Translation.Ci = $"<color={ev.AdvancedTeam.Color}>{ev.AdvancedTeam.Name}</color>";
-                        break;
-
-                    case Respawning.SpawnableTeamType.NineTailedFox:
-                        RespawnTimer.RespawnTimer.Singleton.Translation.Ntf = $"<color={ev.AdvancedTeam.Color}>{ev.AdvancedTeam.Name}</color>";
-                        break;
-                }
+                LoadTimerConfig(ReferancedTeam);
+                
+                
             }
+        }
+
+        public bool LoadTimerConfig(AdvancedTeam team)
+        {
+            string text = RespawnTimer.RespawnTimer.Singleton.Config.Timers[UnityEngine.Random.Range(0, RespawnTimer.RespawnTimer.Singleton.Config.Timers.Count)];
+            string text2 = Path.Combine(RespawnTimer.RespawnTimer.RespawnTimerDirectoryPath, text);
+            if (!Directory.Exists(text2))
+            {
+                Log.Error(text + " directory does not exist!");
+                return false;
+            }
+
+            string path = Path.Combine(text2, "TimerBeforeSpawn.txt");
+            if (!File.Exists(path))
+            {
+                Log.Error(Path.GetFileName(path) + " file does not exist!");
+                return false;
+            }
+
+            string path2 = Path.Combine(text2, "TimerDuringSpawn.txt");
+            if (!File.Exists(path2))
+            {
+                Log.Error(Path.GetFileName(path2) + " file does not exist!");
+                return false;
+            }
+
+            string path3 = Path.Combine(text2, "Properties.yml");
+            if (!File.Exists(path3))
+            {
+                Log.Error(Path.GetFileName(path3) + " file does not exist!");
+                return false;
+            }
+            if (team != null)
+                RespawnTimer.API.API.TimerView = new TimerView(File.ReadAllText(path), File.ReadAllText(path2).Replace("{team}", $"<color={team.Color}>{team.Name}</color>"), Loader.Deserializer.Deserialize<Properties>(File.ReadAllText(path3)));
+            else
+                RespawnTimer.API.API.TimerView = new TimerView(File.ReadAllText(path), File.ReadAllText(path2), Loader.Deserializer.Deserialize<Properties>(File.ReadAllText(path3)));
+            Log.Debug(text + " has been successfully loaded!", TeamPlugin.Singleton.Config.Debug);
+            return true;
         }
 
         public void RoleChange(ChangingRoleEventArgs ev)
@@ -448,8 +484,7 @@ namespace ATCBB
             }
             if (ReferancedTeam.VanillaTeam || ReferancedTeam == null)
             {
-                RespawnTimer.RespawnTimer.Singleton.Translation.Ci = TeamPlugin.chaosTrans;
-                RespawnTimer.RespawnTimer.Singleton.Translation.Ntf = TeamPlugin.mtfTrans;
+                LoadTimerConfig(null);
                 foreach (Player p in ev.Players)
                 {
                     switch (ev.NextKnownTeam)
@@ -504,8 +539,7 @@ namespace ATCBB
             ReferancedTeam = null;
             if (TeamPlugin.assemblyTimer != null)
             {
-                RespawnTimer.RespawnTimer.Singleton.Translation.Ci = TeamPlugin.chaosTrans;
-                RespawnTimer.RespawnTimer.Singleton.Translation.Ntf = TeamPlugin.mtfTrans;
+                LoadTimerConfig(null);
             }
             PlayedAlready = false;
         }

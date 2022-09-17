@@ -87,7 +87,7 @@ namespace ATCBB.TeamAPI.CustomEventHelpers
             RoundEnded = true;
             TeamPlugin.Singleton.TeamEventHandler.Leaderboard.DestroyTeamLeaders();
             if (TeamPlugin.assemblyTimer != null)
-                Timing.KillCoroutines(RespawnTimer.EventHandler.timerCoroutine);
+                Timing.KillCoroutines(RespawnTimer.EventHandler._timerCoroutine);
             LeaderboardStats.Add(new RoundEndStats("<color=yellow>Elapsed Time</color>", Round.ElapsedTime.ToString()));
             LeaderboardStats.Add(new RoundEndStats("<color=red>SCP Kills</color>", Round.KillsByScp.ToString()));
             LeaderboardStats.Add(new RoundEndStats("Kills", Round.Kills.ToString()));

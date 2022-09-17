@@ -25,8 +25,8 @@ namespace ATCBB
 
         public override string Author => "BoogaEye";
         public override string Name => "Advanced Team Creation";
-        public override Version RequiredExiledVersion => new Version(5, 1, 3, 0);
-        public override Version Version => new Version(1, 5, 2, 0);
+        public override Version RequiredExiledVersion => new Version(5, 3, 0, 0);
+        public override Version Version => new Version(1, 5, 3, 0);
 
         #endregion Public Properties
 
@@ -40,7 +40,6 @@ namespace ATCBB
                 {
                     assemblyTimer = plugin.Assembly;
                     Log.Debug("RespawnTimer assembly found", this.Config.Debug);
-                    StartRT();
                 }
             }
         }
@@ -102,26 +101,6 @@ namespace ATCBB
             Config.LoadTeamConfigs();
             base.OnReloaded();
         }
-
-        public void StartRT()
-        {
-            MEC.Timing.CallDelayed(1, () =>
-            {
-                try
-                {
-                    Log.Debug($"Does translation Exist? => {RespawnTimer.RespawnTimer.Singleton.Translation}", Config.Debug);
-                    mtfTrans = RespawnTimer.RespawnTimer.Singleton.Translation.Ntf;
-                    chaosTrans = RespawnTimer.RespawnTimer.Singleton.Translation.Ci;
-                    Log.Debug("Got respawn timer configs", Config.Debug);
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e.Message);
-                    Log.Error(e.StackTrace);
-                }
-            });
-        }
-
         #endregion Public Methods
     }
 }
