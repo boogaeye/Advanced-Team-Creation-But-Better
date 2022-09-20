@@ -30,14 +30,16 @@ namespace AdvancedTeamCreation.TeamAPI.Events
         {
             public ReferancingTeamEventArgs(Respawning.SpawnableTeamType team)
             {
+                SupposedTeam = team;
                 if (RespawnHelper.ReferancedTeam != null)
                 {
                     AdvancedTeam = RespawnHelper.ReferancedTeam;
+                    Log.Debug($"Team {AdvancedTeam} already referanced", TeamPlugin.Singleton.Config.Debug);
                     return;
                 }
-                SupposedTeam = team;
                 if (TeamPlugin.Singleton.Config.VanillaTeamsHavePriority)
                 {
+                    Log.Debug("Vanilla Teams Have Priority", TeamPlugin.Singleton.Config.Debug);
                     foreach (AdvancedTeam at in UnitHelper.Teams)
                     {
                         if (DetectChance(at))
@@ -58,6 +60,8 @@ namespace AdvancedTeamCreation.TeamAPI.Events
                         }
                     }
                 }
+                Log.Debug("No More Teams to choose from...", TeamPlugin.Singleton.Config.Debug);
+
                 switch (team)
                 {
                     case Respawning.SpawnableTeamType.ChaosInsurgency:

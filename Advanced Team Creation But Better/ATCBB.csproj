@@ -30,65 +30,79 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\Downloads\Harmony.2.2.1.0\net5.0\0Harmony.dll</HintPath>
+      <HintPath>..\..\..\..\AppData\Roaming\EXILED\Plugins\dependencies\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Downloads\Master\Assembly-CSharp-firstpass.dll</HintPath>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\..\..\Serv\servers\3\serverfiles\SCPSL_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-Publicized, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Serv\servers\3\serverfiles\SCPSL_Data\Managed\Assembly-CSharp-Publicized.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="AudioPlayer">
       <HintPath>..\..\..\..\Downloads\AudioPlayer.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="CommandSystem.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EXILED.5.3.0\lib\net472\CommandSystem.Core.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="CustomItems, Version=1.8.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CustomItems.1.8.2\lib\net472\CustomItems.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Exiled.API, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.API.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Exiled.Bootstrap, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.Bootstrap.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Exiled.CreditTags, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.CreditTags.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Exiled.CustomItems, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.CustomItems.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Exiled.CustomRoles, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.CustomRoles.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Exiled.Events, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.Events.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Exiled.Loader, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.Loader.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Exiled.Permissions, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.Permissions.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Exiled.Updater, Version=3.1.1.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.Updater.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="Mirror, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Downloads\Master\Mirror.dll</HintPath>
+    <Reference Include="Mirror">
+      <HintPath>..\..\..\Serv\servers\3\serverfiles\SCPSL_Data\Managed\Mirror.dll</HintPath>
     </Reference>
     <Reference Include="NorthwoodLib, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EXILED.5.3.0\lib\net472\NorthwoodLib.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RespawnTimer_publicized, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Downloads\native-win-x64-release.tar\native-win-x64-release\publicized_assemblies\RespawnTimer_publicized.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -100,16 +114,21 @@
     <Reference Include="System.Xml" />
     <Reference Include="TKInfo">
       <HintPath>..\..\..\..\Downloads\TKInfo.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\Serv\servers\3\serverfiles\SCPSL_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\Unity\ZombiesVsPlayers\PlayerWoondows\ZombiesVsPlayers_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\..\Serv\servers\3\serverfiles\SCPSL_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>..\..\..\..\Downloads\Master\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>..\..\..\Serv\servers\3\serverfiles\SCPSL_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
     <Reference Include="YamlDotNet, Version=12.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\AppData\Roaming\EXILED\Plugins\dependencies\YamlDotNet.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

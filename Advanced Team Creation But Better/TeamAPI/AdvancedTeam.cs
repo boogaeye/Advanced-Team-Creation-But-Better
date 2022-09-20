@@ -13,6 +13,8 @@ namespace AdvancedTeamCreation.TeamAPI
         public static readonly string DEFAULTAnnounce = "DEFAULT";
         public bool Spectator;
         public bool VanillaTeam;
+        public string Name = "No Team";
+        public AdvancedTeamSubclass LastIndexSubclass;
 
         [Description("What team should it only spawn as if its none it will spawn as either or")]
         public SpawnableTeamType BindedTeam { get; set; } = SpawnableTeamType.None;
@@ -35,8 +37,6 @@ namespace AdvancedTeamCreation.TeamAPI
 
         [Description("Defines what class an escapee will become when escaping")]
         public string EscapeClass { get; set; } = "Cadet";
-
-        public string Name { get; set; } = "No Team";
 
         [Description("Does the CASSIE Announcement play before spawning")]
         public bool PlayBeforeSpawning { get; set; } = false;

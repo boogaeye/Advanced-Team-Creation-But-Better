@@ -3,6 +3,7 @@ using Respawning;
 using System.Collections.Generic;
 using System.Linq;
 using Exiled.API.Features;
+using System.Xml.Linq;
 
 namespace AdvancedTeamCreation.TeamAPI.Helpers
 {
@@ -69,7 +70,14 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
         {
             RegisteredTeams.Add(at);
             RegisteredSubTeams.AddRange(advancedTeamSubclasses);
-            Log.Info($"Registered {at.Name} and {advancedTeamSubclasses.Length} Subteams");
+            Log.Info($"Registered {at.Name} and {advancedTeamSubclasses.Length} Subteams Default Subclass: {at.LastIndexSubclass.Name}");
+        }
+
+        public static void RegisterTeam(Team t)
+        {
+            var at = OriginalToCustomTeamHelper.SetUpAfterOriginalTeam(t);
+            RegisteredTeams.Add(at);
+            Log.Info($"Registered {at.Name} Subteams Default Subclass: {at.LastIndexSubclass.Name}");
         }
 
         public static void UnregisterTeams()

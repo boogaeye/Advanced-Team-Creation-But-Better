@@ -51,7 +51,7 @@ namespace AdvancedTeamCreation
         public bool UseCustomItemsFromATC { get; set; } = true;
 
         [Description("If Vanilla teams get the first chance to spawn instead of having the last chances to spawn")]
-        public bool VanillaTeamsHavePriority { get; set; } = true;
+        public bool VanillaTeamsHavePriority { get; set; } = false;
 
         public void LoadItems()
         {
@@ -68,14 +68,13 @@ namespace AdvancedTeamCreation
             }
             foreach (Team t in Enum.GetValues(typeof(Team)).Cast<Team>())
             {
-                var at = OriginalToCustomTeamHelper.SetUpAfterOriginalTeam(t);
-                UnitHelper.RegisterTeam(at);
-                Log.Debug($"Referancing Team from vanilla game called {t} creating {at.Name} with Displayer of {at.DisplayName}", Debug);
+                UnitHelper.RegisterTeam(t);
             }
             foreach (string at in Directory.EnumerateDirectories(ConfigsFolder))
             {
                 var gh = Loader.Deserializer.Deserialize<AdvancedTeam>(File.ReadAllText(Path.Combine(at, "TeamConfig.yml")));
-                Log.Debug($"Deserializing Team {at}", Debug);
+                gh.Name = Path.GetFileName(at);
+                Log.Debug($"Deserializing Team {at} to Team {gh.Name}", Debug);
                 List<AdvancedTeamSubclass> SubteamMan = new List<AdvancedTeamSubclass>();
                 foreach (string ast in Directory.EnumerateFiles(at))
                 {
@@ -83,8 +82,14 @@ namespace AdvancedTeamCreation
                     {
                         var g = Loader.Deserializer.Deserialize<AdvancedTeamSubclass>(File.ReadAllText(ast));
                         g.AdvancedTeam = gh.Name;
+                        g.Name = Path.GetFileNameWithoutExtension(ast);
+                        if (gh.SpawnOrder.Last().Split(':')[0] == g.Name)
+                        {
+                            gh.LastIndexSubclass = g;
+                            Log.Debug($"{g.Name} is last spawn order", Debug);
+                        }
                         SubteamMan.Add(g);
-                        Log.Debug($"Deserializing SubTeam {ast}", Debug);
+                        Log.Debug($"Deserializing SubTeam {ast} to Subclass {g.Name}", Debug);
                     }
                 }
                 UnitHelper.RegisterTeam(gh, SubteamMan.ToArray());

@@ -12,7 +12,7 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
 
         public class TeamLeaderboard
         {
-            public static readonly AdvancedTeamSubclass DEFAULTSUBCLASS = new AdvancedTeamSubclass() { Name = "DEFAULT", AdvancedTeam = "DEFAULT" };
+            public AdvancedTeamSubclass SubclassDefault => Team.LastIndexSubclass;
 
             public TeamLeaderboard(AdvancedTeam at)
             {
@@ -56,7 +56,7 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
 
             public void AddPlayer(Player p)
             {
-                PlayerPairs[p] = DEFAULTSUBCLASS;
+                PlayerPairs[p] = SubclassDefault;
             }
 
             public void RemovePlayer(Player p)

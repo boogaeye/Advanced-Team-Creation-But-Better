@@ -57,54 +57,12 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
             Cassie.MessageTranslated(at.CassieSlaughtered.Replace("{Terminating}", TerminatingTeam.SaidName).Replace("{SCPLeft}", ScpsLeft.ToString()).Replace("{Terminated}", at.SaidName), at.CassieSlaughteredSubtitles.Replace("{Terminating}", $"<color={TerminatingTeam.Color}>{TerminatingTeam.Name}</color>").Replace("{Terminated}", $"<color={at.Color}>{at.Name}</color>").Replace("{SCPLeft}", ScpsLeft.ToString()));
         }
 
-        public static void PlayTeamAnnouncement()
-        {
-            if (RespawnHelper.ReferancedTeam.CassieAnnouncement != String.Empty)
-            {
-                Log.Debug("Announcement is empty...", TeamPlugin.Singleton.Config.Debug);
-                return;
-            }
-            if (PlayedAlready)
-            {
-                Log.Debug("Announcement has not been reset. Stopping announcement...", TeamPlugin.Singleton.Config.Debug);
-                return;
-            }
-            Log.Debug("Attempting to Play Team Announcement!", TeamPlugin.Singleton.Config.Debug);
-            int UnitNumPre = new Random().Next(1, 19);
-            string UnitNamePre = Natos[new Random().Next(0, 26)];
-            if (HiddenInterference < RespawnHelper.ReferancedTeam.ChanceForHiddenMtfNato)
-            {
-                if (TeamPlugin.Singleton.Config.TeamsListPromptsAtAnnouncement)
-                    HudHelper.ShowAllPlayersTeamDisplay(10);
-                Cassie.MessageTranslated(RespawnHelper.ReferancedTeam.CassieAnnouncement.Replace("{SCPLeft}", MessageHelper.ScpsLeft.ToString()).Replace("{Unit}", $"NATO_{UnitNamePre[0]}").Replace("{UnitNum}", UnitNumPre.ToString()), RespawnHelper.ReferancedTeam.CassieAnnouncementSubtitles.Replace("{SCPLeft}", MessageHelper.ScpsLeft.ToString()).Replace("{Unit}", $"{UnitNamePre}").Replace("{UnitNum}", UnitNumPre.ToString()));
-            }
-
-            PlayedAlready = true;
-        }
-
         public static void PlayTeamAnnouncement(AdvancedTeam at)
         {
-            if (at.CassieAnnouncement == String.Empty)
-            {
-                Log.Debug("Announcement is empty...", TeamPlugin.Singleton.Config.Debug);
-                return;
-            }
-            if (PlayedAlready)
-            {
-                Log.Debug("Announcement has not been reset. Stopping announcement...", TeamPlugin.Singleton.Config.Debug);
-                return;
-            }
-            Log.Debug("Attempting to Play Team Announcement!", TeamPlugin.Singleton.Config.Debug);
+            Log.Debug("Attempting to Play Team Random Nato Announcement!", TeamPlugin.Singleton.Config.Debug);
             int UnitNumPre = new Random().Next(1, 19);
             string UnitNamePre = Natos[new Random().Next(0, 26)];
-            if (HiddenInterference < at.ChanceForHiddenMtfNato)
-            {
-                if (TeamPlugin.Singleton.Config.TeamsListPromptsAtAnnouncement)
-                    HudHelper.ShowAllPlayersTeamDisplay(10);
-                Cassie.MessageTranslated(at.CassieAnnouncement.Replace("{SCPLeft}", MessageHelper.ScpsLeft.ToString()).Replace("{Unit}", $"NATO_{UnitNamePre[0]}").Replace("{UnitNum}", UnitNumPre.ToString()), at.CassieAnnouncementSubtitles.Replace("{SCPLeft}", MessageHelper.ScpsLeft.ToString()).Replace("{Unit}", $"{UnitNamePre}").Replace("{UnitNum}", UnitNumPre.ToString()));
-            }
-
-            PlayedAlready = true;
+            PlayTeamAnnouncement(at, UnitNamePre, UnitNumPre);
         }
 
         public static void PlayTeamAnnouncement(AdvancedTeam at, string Nato, int Number)
@@ -119,7 +77,7 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
                 Log.Debug("Announcement has not been reset. Stopping announcement...", TeamPlugin.Singleton.Config.Debug);
                 return;
             }
-            Log.Debug("Attempting to Play Team Announcement!", TeamPlugin.Singleton.Config.Debug);
+            Log.Debug("Attempting to Play Team Custom Nato Announcement!", TeamPlugin.Singleton.Config.Debug);
             if (HiddenInterference < at.ChanceForHiddenMtfNato)
             {
                 if (TeamPlugin.Singleton.Config.TeamsListPromptsAtAnnouncement)

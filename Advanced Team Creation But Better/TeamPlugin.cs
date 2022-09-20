@@ -5,6 +5,7 @@ using HarmonyLib;
 using System;
 using System.Reflection;
 using Exiled.CustomRoles.API.Features;
+using Exiled.API.Enums;
 
 namespace AdvancedTeamCreation
 {
@@ -23,6 +24,7 @@ namespace AdvancedTeamCreation
         public override string Prefix => "ATC";
         public override Version RequiredExiledVersion => new Version(5, 3, 0, 0);
         public override Version Version => new Version(2, 0, 0, 0);
+        public override PluginPriority Priority => PluginPriority.Last;
 
         public void CheckPlugins()
         {

@@ -66,8 +66,15 @@ namespace AdvancedTeamCreation
             MessageHelper.ResetSpawns();
             RespawnHelper.SetReferance(null);
             RespawnHelper.ResetCassie();
-            HudHelper.NormalTime = RespawnTimer.API.API.TimerView;
-            HudHelper.LoadTimerConfig(null);
+            MEC.Timing.CallDelayed(1, () =>
+            {
+                if (TeamPlugin.assemblyTimer != null)
+                {
+                    HudHelper.NormalTime = RespawnTimer.API.API.TimerView;
+                    Log.Debug($"Caught Normal Timer {HudHelper.NormalTime.DuringRespawnString.Length}", plugin.Config.Debug);
+                    HudHelper.LoadTimerConfig(null);
+                }
+            });
         }
 
         public void MtfRespawnCassie(AnnouncingNtfEntranceEventArgs ev)
@@ -75,6 +82,7 @@ namespace AdvancedTeamCreation
             MessageHelper.IncrementSpawns();
             if (RespawnHelper.CassieHelper != null && !RespawnHelper.CassieHelper.VanillaTeam)
             {
+                Log.Debug("Cassie Helper is stable", plugin.Config.Debug);
                 if (RespawnHelper.CassieHelper.ChanceForHiddenMtfNato < MessageHelper.HiddenInterference)
                 {
                     UnitHelper.ChangeUnitNameOnAdvancedTeam(MessageHelper.Spawns, RespawnHelper.CassieHelper, $"{ev.UnitName}-{ev.UnitNumber}");
@@ -82,7 +90,7 @@ namespace AdvancedTeamCreation
                 else
                 {
                     ev.IsAllowed = false;
-                    UnitHelper.ChangeUnitNameOnAdvancedTeam(MessageHelper.Spawns, "<color=black>INTERFERENCE</color>");
+                    UnitHelper.ChangeUnitNameOnAdvancedTeam(MessageHelper.Spawns, TeamPlugin.Singleton.Translation.InterferenceText);
                     RespawnHelper.ResetCassie();
                     return;
                 }
@@ -90,7 +98,9 @@ namespace AdvancedTeamCreation
             if (RespawnHelper.CassieHelper != null && RespawnHelper.CassieHelper.CassieAnnouncement != AdvancedTeam.DEFAULTAnnounce)
             {
                 ev.IsAllowed = false;
+                Log.Debug("Playing Team Announcement from MtfCassie!", plugin.Config.Debug);
                 MessageHelper.PlayTeamAnnouncement(RespawnHelper.CassieHelper, ev.UnitName, ev.UnitNumber);
+                MessageHelper.ResetTeamAnnouncement();
             }
             if (plugin.Config.TeamsListPromptsAtAnnouncement)
             {
@@ -313,7 +323,10 @@ namespace AdvancedTeamCreation
                 return;
             }
             if (!RespawnHelper.ReferancedTeam.PlayBeforeSpawning && !RespawnHelper.ReferancedTeam.VanillaTeam && ev.NextKnownTeam != Respawning.SpawnableTeamType.NineTailedFox)
+            {
+                Log.Debug("Playing Team Announcement from Team Spawn!", plugin.Config.Debug);
                 MessageHelper.PlayTeamAnnouncement(RespawnHelper.ReferancedTeam);
+            }
 
             Dictionary<string, int> Helper = new Dictionary<string, int>();
             foreach (string t in RespawnHelper.ReferancedTeam.SpawnOrder)

@@ -10,9 +10,12 @@
         public static AdvancedTeam SetReferance(AdvancedTeam advancedTeam)
         {
             ReferancedTeam = advancedTeam;
-            CassieHelper = advancedTeam;
+
             if (advancedTeam != null)
+            {
+                CassieHelper = advancedTeam;
                 LastTeamSpawned = advancedTeam;
+            }
             return advancedTeam;
         }
 

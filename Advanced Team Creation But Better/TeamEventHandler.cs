@@ -1,16 +1,12 @@
 ﻿using AdvancedTeamCreation.TeamAPI;
 using AdvancedTeamCreation.TeamAPI.Events;
 using Exiled.API.Features;
-using System;
-using System.Collections.Generic;
 using AdvancedTeamCreation.TeamAPI.Helpers;
 
 namespace AdvancedTeamCreation
 {
     public class TeamEventHandler
     {
-        public Dictionary<Player, TimeSpan> PlayerTimesAlive = new Dictionary<Player, TimeSpan>();
-
         public TeamEventHandler(Plugin<TeamConfig> Plugin)
         {
             plugin = Plugin;
@@ -58,11 +54,13 @@ namespace AdvancedTeamCreation
             }
             if (RespawnHelper.ReferancedTeam.PlayBeforeSpawning && !RespawnHelper.ReferancedTeam.VanillaTeam)
             {
+                Log.Debug("Playing Team Announcement from Referance!", plugin.Config.Debug);
                 MessageHelper.PlayTeamAnnouncement(RespawnHelper.ReferancedTeam);
             }
 
             if (TeamPlugin.assemblyTimer != null && !ev.AdvancedTeam.VanillaTeam && ev.SupposedTeam != Respawning.SpawnableTeamType.None)
             {
+                Log.Debug("Loading Timer Config(Respawn Timer Support)", plugin.Config.Debug);
                 HudHelper.LoadTimerConfig(RespawnHelper.ReferancedTeam);
             }
         }

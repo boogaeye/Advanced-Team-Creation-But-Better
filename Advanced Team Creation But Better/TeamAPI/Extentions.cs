@@ -58,7 +58,13 @@ namespace AdvancedTeamCreation.TeamAPI.Extentions
         {
             if (!TeamPlugin.Singleton.Config.ShowTeamsList) return;
             Translations t = TeamPlugin.Singleton.Translation;
-            string sb = $"<align=right><size=45%>{ply.GetAdvancedSubTeam().Description}</align></size>\n\n";
+            string[] desc = ply.GetAdvancedSubTeam().Description.Split(':');
+            string sb = "";
+            foreach (string s in desc)
+            {
+                sb += $"<align=right><size=45%>{s}</align></size>\n";
+            }
+            sb += "\n";
 
             if (ply.GetAdvancedTeam().GetAllFriendlyTeams().Any())
             {

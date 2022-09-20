@@ -60,6 +60,14 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
                 VanillaTeam = true,
                 Chance = 1
             };
+            if (TeamPlugin.Singleton.Translation.TeamDescriptions.ContainsKey(t))
+            {
+                at.LastIndexSubclass = new AdvancedTeamSubclass() { Name = t.ToString(), AdvancedTeam = "DEFAULT", Description = TeamPlugin.Singleton.Translation.TeamDescriptions[t] };
+            }
+            else
+            {
+                at.LastIndexSubclass = new AdvancedTeamSubclass() { Name = "DEFAULT", AdvancedTeam = "DEFAULT", Description = "Contact Server Owner for Desc...." };
+            }
             if (TeamPlugin.Singleton.Translation.TeamCassieSlaughter.ContainsKey(t))
             {
                 at.CassieSlaughtered = TeamPlugin.Singleton.Translation.TeamCassieSlaughter[t];

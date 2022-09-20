@@ -10,7 +10,7 @@ namespace AdvancedTeamCreation.TeamAPI
     public class AdvancedTeamSubclass
     {
         public string AdvancedTeam;
-        public string Name { get; set; }
+        public string Name;
         public string RoleDisplay { get; set; }
         public int HP { get; set; }
         public int MaxHP { get; set; }

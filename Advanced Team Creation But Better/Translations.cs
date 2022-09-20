@@ -1,5 +1,6 @@
 ﻿using Exiled.API.Interfaces;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace AdvancedTeamCreation
 {
@@ -27,6 +28,17 @@ namespace AdvancedTeamCreation
         public string RoundsStat { get; set; } = "Rounds Completed";
         public string RoundWonStat { get; set; } = "{TeamWon} Wins\n\n- Stats -\n";
         public string TeamKillsStat { get; set; } = "{Team} killed";
+        public string InterferenceText { get; set; } = "<color=black>INTERFERENCE</color>";
+
+        [Description(": makes the words after it goto the next line")]
+        public Dictionary<Team, string> TeamDescriptions { get; set; } = new Dictionary<Team, string>()
+        {
+            { Team.CDP, "You are a <color=orange>Class D</color>,:Find a <color=yellow>Keycard</color> and Escape!" },
+            { Team.RSC, "You are a <color=yellow>Scientist</color>,:Upgrade your <color=yellow>Keycard</color>:Get help and Escape!" },
+            { Team.SCP, "You are a <color=red>SCP</color>,:<color=red>Kill everyone...</color>" },
+            { Team.CHI, "You are <color=green>The Insurgency</color>,:take <color=red>SCP</color> objects:Help <color=orange>Class D's</color> escape..." },
+            { Team.MTF, "You are the <color=blue>Mobile Task Force</color>,:take out <color=red>SCP Subjects</color>:Terminate <color=green>Hostile</color> Forces:Help <color=yellow>Scientists</color> escape..." },
+        };
 
         public Dictionary<Team, string> TeamCassieSlaughter { get; set; } = new Dictionary<Team, string>()
         {
