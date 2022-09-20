@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Exiled.API.Features.Spawn;
 using Exiled.CustomItems.API.Features;
-using Exiled.CustomItems.API.EventArgs;
 using Exiled.CustomItems.API;
-using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
-using CustomPlayerEffects;
 using Exiled.API.Features.Attributes;
 
-namespace ATCBB.ATCCustomItems
+namespace AdvancedTeamCreation.ATCCustomItems
 {
     [CustomItem(ItemType.KeycardO5)]
     public class SerpentsHandCommanderCard : CustomItem
@@ -29,6 +22,7 @@ namespace ATCBB.ATCCustomItems
             Exiled.Events.Handlers.Player.InteractingDoor += DoorOpening;
             base.SubscribeEvents();
         }
+
         protected override void UnsubscribeEvents()
         {
             Exiled.Events.Handlers.Player.InteractingDoor -= DoorOpening;
@@ -49,6 +43,7 @@ namespace ATCBB.ATCCustomItems
                         case Exiled.API.Enums.DoorType.Intercom:
                             ev.IsAllowed = true;
                             break;
+
                         default:
                             if (ev.Door.RequiredPermissions.RequiredPermissions != Interactables.Interobjects.DoorUtils.KeycardPermissions.None)
                                 ev.IsAllowed = false;

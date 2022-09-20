@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Exiled.API.Features.Spawn;
 using Exiled.CustomItems.API.Features;
-using Exiled.CustomItems.API.EventArgs;
 using Exiled.CustomItems.API;
-using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
 using CustomPlayerEffects;
 using Exiled.API.Features.Attributes;
-namespace ATCBB.ATCCustomItems
+
+namespace AdvancedTeamCreation.ATCCustomItems
 {
     [CustomItem(ItemType.GrenadeHE)]
     public class Grenade106 : CustomGrenade
@@ -27,10 +23,11 @@ namespace ATCBB.ATCCustomItems
         public override ItemType Type { get; set; } = ItemType.GrenadeHE;
         public override bool ExplodeOnCollision { get; set; } = false;
         public override float FuseTime { get; set; } = 5;
+
         protected override void OnExploding(ExplodingGrenadeEventArgs ev)
         {
             int rand = new Random().Next(0, 99);
-            ev.TargetsToAffect.ForEach(e => 
+            ev.TargetsToAffect.ForEach(e =>
             {
                 if (e.IsScp && rand < RandScpPocket)
                 {
@@ -44,10 +41,12 @@ namespace ATCBB.ATCCustomItems
             });
             base.OnExploding(ev);
         }
+
         protected override void SubscribeEvents()
         {
             base.SubscribeEvents();
         }
+
         protected override void UnsubscribeEvents()
         {
             base.UnsubscribeEvents();

@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Exiled.API.Enums;
 using Exiled.API.Features;
-using Exiled.API.Extensions;
-using Exiled.CustomItems.API.Features;
 using MEC;
 using UnityEngine;
-using ATCBB.TeamAPI.Events;
-using Exiled.CustomRoles.API.Features;
+using AdvancedTeamCreation.TeamAPI.Events;
+using AdvancedTeamCreation.TeamAPI.Helpers;
 
-namespace ATCBB.TeamAPI.Extentions
+namespace AdvancedTeamCreation.TeamAPI.Extentions
 {
     public static class Extentions
     {
-        public static List<AdvancedTeam> AdvancedTeamsChi => TeamPlugin.Singleton.Config.Teams.Where(e => !e.VanillaTeam && e.BindedTeam == Respawning.SpawnableTeamType.ChaosInsurgency || e.BindedTeam == Respawning.SpawnableTeamType.None).ToList();
-        public static List<AdvancedTeam> AdvancedTeamsMtf => TeamPlugin.Singleton.Config.Teams.Where(e => !e.VanillaTeam && e.BindedTeam == Respawning.SpawnableTeamType.NineTailedFox || e.BindedTeam == Respawning.SpawnableTeamType.None).ToList();
-        public static List<AdvancedTeam> AdvancedTeamsOnly => TeamPlugin.Singleton.Config.Teams.Where(e => !e.VanillaTeam).ToList();
-
         public enum InventoryDestroyType
         {
             None,
@@ -29,11 +21,23 @@ namespace ATCBB.TeamAPI.Extentions
 
         public static AdvancedTeam GetAdvancedTeam(this Player ply)
         {
-            foreach (LeaderboardHelper.TeamLeaderboard tl in TeamPlugin.Singleton.TeamEventHandler.Leaderboard.TeamLeaderboards)
+            foreach (LeaderboardHelper.TeamLeaderboard tl in RespawnHelper.Leaderboard.TeamLeaderboards)
             {
                 if (tl.PlayerPairs.Keys.Contains(ply))
                 {
                     return tl.Team;
+                }
+            }
+            return null;
+        }
+
+        public static AdvancedTeamSubclass GetAdvancedSubTeam(this Player ply)
+        {
+            foreach (LeaderboardHelper.TeamLeaderboard tl in RespawnHelper.Leaderboard.TeamLeaderboards)
+            {
+                if (tl.PlayerPairs.Keys.Contains(ply))
+                {
+                    return tl.PlayerPairs[ply];
                 }
             }
             return null;
@@ -50,11 +54,11 @@ namespace ATCBB.TeamAPI.Extentions
             ply.ReferenceHub.playerStats.KillPlayer(new TeamDamageHandler(Damager, Reason, float.MaxValue, Cassie));
         }
 
-        public static void ShowFriendlyTeamDisplay(this Player ply, int sec = 3, bool ShowOnlyImportantTeams = false)
+        public static void ShowPlayerTeamDisplay(this Player ply, int sec = 3, bool ShowOnlyImportantTeams = false)
         {
             if (!TeamPlugin.Singleton.Config.ShowTeamsList) return;
             Translations t = TeamPlugin.Singleton.Translation;
-            string sb = t.TopTeamList.Replace("(TEAM)", $"<color={ply.GetAdvancedTeam().Color}>{ply.GetAdvancedTeam().Name}</color>") + "\n\n";
+            string sb = $"<align=right><size=45%>{ply.GetAdvancedSubTeam().Description}</align></size>\n\n";
 
             if (ply.GetAdvancedTeam().GetAllFriendlyTeams().Any())
             {
@@ -129,8 +133,8 @@ namespace ATCBB.TeamAPI.Extentions
             if (!av.IsAllowed) return;
             at = av.AdvancedTeam;
             ast = av.AdvancedSubTeam;
-            TeamPlugin.Singleton.TeamEventHandler.Leaderboard.ClearPlayerFromLeaderBoards(ply);
-            TeamPlugin.Singleton.TeamEventHandler.Leaderboard.GetTeamLeaderboard(at.Name).AddPlayer(ply, ast);
+            RespawnHelper.Leaderboard.ClearPlayerFromLeaderBoards(ply);
+            RespawnHelper.Leaderboard.GetTeamLeaderboard(at.Name).AddPlayer(ply, ast);
             Timing.CallDelayed(0.5f, () =>
             {
                 if (ChangePosition && at.SpawnRoom != RoomType.Surface && !Warhead.IsInProgress && !Warhead.IsDetonated)
@@ -222,8 +226,8 @@ namespace ATCBB.TeamAPI.Extentions
 
         public static void ChangeAdvancedTeam(this Player ply, AdvancedTeam at)
         {
-            TeamPlugin.Singleton.TeamEventHandler.Leaderboard.ClearPlayerFromLeaderBoards(ply);
-            TeamPlugin.Singleton.TeamEventHandler.Leaderboard.GetTeamLeaderboard(at.Name).AddPlayer(ply);
+            RespawnHelper.Leaderboard.ClearPlayerFromLeaderBoards(ply);
+            RespawnHelper.Leaderboard.GetTeamLeaderboard(at.Name).AddPlayer(ply);
         }
     }
 }

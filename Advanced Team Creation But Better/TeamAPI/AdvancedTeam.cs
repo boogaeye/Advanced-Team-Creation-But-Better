@@ -1,28 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Exiled.API.Enums;
-using Exiled.API;
-using Exiled.API.Features;
 using System.ComponentModel;
-using ATCBB.TeamAPI.CustomConfig;
+using AdvancedTeamCreation.TeamAPI.CustomConfig;
 using Respawning;
+using AdvancedTeamCreation.TeamAPI.Helpers;
 
-namespace ATCBB.TeamAPI
+namespace AdvancedTeamCreation.TeamAPI
 {
     public class AdvancedTeam
     {
-        #region Public Fields
-
         public static readonly string DEFAULTAnnounce = "DEFAULT";
         public bool Spectator;
         public bool VanillaTeam;
-
-        #endregion Public Fields
-
-        #region Public Properties
 
         [Description("What team should it only spawn as if its none it will spawn as either or")]
         public SpawnableTeamType BindedTeam { get; set; } = SpawnableTeamType.None;
@@ -59,10 +49,6 @@ namespace ATCBB.TeamAPI
         public string[] SpawnOrder { get; set; } = { "Commander:1", "Officer:3", "Cadet:5" };
         public RoomType SpawnRoom { get; set; } = RoomType.Surface;
 
-        #endregion Public Properties
-
-        #region Public Methods
-
         public bool ConfirmEnemyshipWithTeam(AdvancedTeam at)
         {
             return (RoundEnderConfig.RequiredTeams.Contains(at.Name) || at.RoundEnderConfig.RequiredTeams.Contains(Name)) && !ConfirmRequiredshipWithTeam(at);
@@ -85,13 +71,13 @@ namespace ATCBB.TeamAPI
 
         public bool DoesExist()
         {
-            return TeamPlugin.Singleton.TeamEventHandler.Leaderboard.TeamLeaderboards.First(e => e.Team.Name == Name).PlayerPairs.Keys.Any();
+            return RespawnHelper.Leaderboard.TeamLeaderboards.First(e => e.Team.Name == Name).PlayerPairs.Keys.Any();
         }
 
         public AdvancedTeam[] GetAllFriendlyTeams()
         {
             List<AdvancedTeam> atlist = new List<AdvancedTeam>();
-            foreach (AdvancedTeam at in TeamPlugin.Singleton.Config.Teams)
+            foreach (AdvancedTeam at in UnitHelper.Teams)
             {
                 if (ConfirmFriendshipWithTeam(at) && !at.Spectator)
                 {
@@ -104,7 +90,7 @@ namespace ATCBB.TeamAPI
         public AdvancedTeam[] GetAllHostileTeams()
         {
             List<AdvancedTeam> atlist = new List<AdvancedTeam>();
-            foreach (AdvancedTeam at in TeamPlugin.Singleton.Config.Teams)
+            foreach (AdvancedTeam at in UnitHelper.Teams)
             {
                 if (ConfirmEnemyshipWithTeam(at) && !ConfirmFriendshipWithTeam(at) && !at.Spectator)
                 {
@@ -117,7 +103,7 @@ namespace ATCBB.TeamAPI
         public AdvancedTeam[] GetAllNeutralTeams()
         {
             List<AdvancedTeam> atlist = new List<AdvancedTeam>();
-            foreach (AdvancedTeam at in TeamPlugin.Singleton.Config.Teams)
+            foreach (AdvancedTeam at in UnitHelper.Teams)
             {
                 if (ConfirmNeutralshipWithTeam(at) && !at.Spectator)
                 {
@@ -130,7 +116,7 @@ namespace ATCBB.TeamAPI
         public AdvancedTeam[] GetAllRequiredTeams()
         {
             List<AdvancedTeam> atlist = new List<AdvancedTeam>();
-            foreach (AdvancedTeam at in TeamPlugin.Singleton.Config.Teams)
+            foreach (AdvancedTeam at in UnitHelper.Teams)
             {
                 if (ConfirmRequiredshipWithTeam(at) && !at.Spectator)
                 {
@@ -139,7 +125,5 @@ namespace ATCBB.TeamAPI
             }
             return atlist.ToArray();
         }
-
-        #endregion Public Methods
     }
 }

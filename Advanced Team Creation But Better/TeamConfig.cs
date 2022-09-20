@@ -1,4 +1,4 @@
-﻿using ATCBB.TeamAPI;
+﻿using AdvancedTeamCreation.TeamAPI;
 using Exiled.API.Features;
 using Exiled.API.Interfaces;
 using Exiled.CustomRoles.API.Features;
@@ -8,22 +8,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using AdvancedTeamCreation.TeamAPI.Helpers;
+using AdvancedTeamCreation.TeamAPI.CustomConfig;
 
-namespace ATCBB
+namespace AdvancedTeamCreation
 {
     public class TeamConfig : IConfig
     {
-        #region Public Fields
-
-        public List<AdvancedTeamSubclass> SubTeams = new List<AdvancedTeamSubclass>();
-        public List<AdvancedTeam> Teams = new List<AdvancedTeam>();
-        public List<CustomRole> DynamicRoles = new List<CustomRole>();
-
-        #endregion Public Fields
-
-        #region Public Properties
-
-        public ATCBB.TeamAPI.CustomConfig.AtcItems AtcItems { get; set; } = new TeamAPI.CustomConfig.AtcItems();
+        public AtcItems AtcItems { get; set; } = new TeamAPI.CustomConfig.AtcItems();
 
         [Description("Determines if Class D Personal are friends with other Class D and Chaos")]
         public bool ClassDFriendsWithChaos { get; set; } = true;
@@ -61,40 +53,6 @@ namespace ATCBB
         [Description("If Vanilla teams get the first chance to spawn instead of having the last chances to spawn")]
         public bool VanillaTeamsHavePriority { get; set; } = true;
 
-        #endregion Public Properties
-
-        #region Public Methods
-
-        public AdvancedTeamSubclass FindAST(string Team, string name)
-        {
-            foreach (AdvancedTeam at in Teams)
-            {
-                if (at.Name == Team)
-                {
-                    foreach (AdvancedTeamSubclass sb in SubTeams)
-                    {
-                        if (sb.Name == name && sb.AdvancedTeam == at.Name)
-                        {
-                            return sb;
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-
-        public AdvancedTeam FindAT(string name)
-        {
-            foreach (AdvancedTeam at in Teams)
-            {
-                if (at.Name == name)
-                {
-                    return at;
-                }
-            }
-            return null;
-        }
-
         public void LoadItems()
         {
             Log.Info("Registering custom items");
@@ -103,8 +61,7 @@ namespace ATCBB
 
         public void LoadTeamConfigs()
         {
-            Teams.Clear();
-            SubTeams.Clear();
+            UnitHelper.UnregisterTeams();
             if (!Directory.Exists(ConfigsFolder))
             {
                 Directory.CreateDirectory(ConfigsFolder);
@@ -112,24 +69,25 @@ namespace ATCBB
             foreach (Team t in Enum.GetValues(typeof(Team)).Cast<Team>())
             {
                 var at = OriginalToCustomTeamHelper.SetUpAfterOriginalTeam(t);
-                Teams.Add(at);
+                UnitHelper.RegisterTeam(at);
                 Log.Debug($"Referancing Team from vanilla game called {t} creating {at.Name} with Displayer of {at.DisplayName}", Debug);
             }
             foreach (string at in Directory.EnumerateDirectories(ConfigsFolder))
             {
                 var gh = Loader.Deserializer.Deserialize<AdvancedTeam>(File.ReadAllText(Path.Combine(at, "TeamConfig.yml")));
-                Teams.Add(gh);
                 Log.Debug($"Deserializing Team {at}", Debug);
+                List<AdvancedTeamSubclass> SubteamMan = new List<AdvancedTeamSubclass>();
                 foreach (string ast in Directory.EnumerateFiles(at))
                 {
                     if (!ast.Contains("TeamConfig.yml"))
                     {
                         var g = Loader.Deserializer.Deserialize<AdvancedTeamSubclass>(File.ReadAllText(ast));
                         g.AdvancedTeam = gh.Name;
-                        SubTeams.Add(g);
+                        SubteamMan.Add(g);
                         Log.Debug($"Deserializing SubTeam {ast}", Debug);
                     }
                 }
+                UnitHelper.RegisterTeam(gh, SubteamMan.ToArray());
             }
         }
 
@@ -137,7 +95,5 @@ namespace ATCBB
         {
             Exiled.CustomItems.API.Features.CustomItem.UnregisterItems();
         }
-
-        #endregion Public Methods
     }
 }

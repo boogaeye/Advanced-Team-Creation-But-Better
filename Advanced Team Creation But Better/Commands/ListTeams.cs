@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CommandSystem;
-using Exiled.Permissions.Extensions;
-using Exiled.Loader;
-using System.IO;
-using ATCBB.TeamAPI;
-using ATCBB.TeamAPI.Extentions;
+using AdvancedTeamCreation.TeamAPI;
 using Exiled.API.Features;
-using static ATCBB.TeamAPI.LeaderboardHelper;
+using AdvancedTeamCreation.TeamAPI.Helpers;
+using static AdvancedTeamCreation.TeamAPI.Helpers.LeaderboardHelper;
 
-namespace ATCBB.Commands
+namespace AdvancedTeamCreation.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     public class ListTeams : ICommand
@@ -23,11 +17,10 @@ namespace ATCBB.Commands
 
         public string Description => "Displays the list of teams";
 
-
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             string RHelper = "- Teams List -\n";
-            foreach (TeamLeaderboard tb in TeamPlugin.Singleton.TeamEventHandler.Leaderboard.TeamLeaderboards)
+            foreach (TeamLeaderboard tb in RespawnHelper.Leaderboard.TeamLeaderboards)
             {
                 RHelper += $"\n{tb.PlayerPairs.Count}< {tb.Team.Name} >";
                 foreach (KeyValuePair<Player, AdvancedTeamSubclass> p in tb.PlayerPairs)

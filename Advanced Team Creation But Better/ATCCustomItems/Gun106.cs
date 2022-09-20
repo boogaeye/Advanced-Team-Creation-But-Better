@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Exiled.API.Features.Spawn;
 using Exiled.CustomItems.API.Features;
-using Exiled.CustomItems.API.EventArgs;
 using Exiled.CustomItems.API;
-using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
 using CustomPlayerEffects;
 using Exiled.API.Features.Attributes;
-namespace ATCBB.ATCCustomItems
+
+namespace AdvancedTeamCreation.ATCCustomItems
 {
     [CustomItem(ItemType.GunRevolver)]
     public class Gun106 : CustomWeapon
@@ -27,6 +23,7 @@ namespace ATCBB.ATCCustomItems
         public int RandHumanPocket { get; set; } = 30;
         public override bool ShouldMessageOnGban => true;
         public override ItemType Type { get; set; } = ItemType.GunRevolver;
+
         protected override void OnHurting(HurtingEventArgs ev)
         {
             int rand = new Random().Next(0, 99);
@@ -46,14 +43,17 @@ namespace ATCBB.ATCCustomItems
             }
             base.OnHurting(ev);
         }
+
         protected override void SubscribeEvents()
         {
             base.SubscribeEvents();
         }
+
         protected override void UnsubscribeEvents()
         {
             base.UnsubscribeEvents();
         }
+
         protected override void OnReloading(ReloadingWeaponEventArgs ev)
         {
             ev.IsAllowed = false;

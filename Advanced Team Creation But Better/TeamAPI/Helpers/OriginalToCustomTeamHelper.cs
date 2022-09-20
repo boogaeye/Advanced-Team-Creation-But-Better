@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Exiled.API.Features;
-using Exiled;
 using Exiled.API.Extensions;
 
-namespace ATCBB.TeamAPI
+namespace AdvancedTeamCreation.TeamAPI.Helpers
 {
     public class OriginalToCustomTeamHelper
     {
@@ -106,7 +103,6 @@ namespace ATCBB.TeamAPI
                     {
                         "CDP",
                         "SCP",
-                        "MTF",
                         "CHI"
                     };
                     break;

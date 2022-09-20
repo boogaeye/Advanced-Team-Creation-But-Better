@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CommandSystem;
 using Exiled.Permissions.Extensions;
-using Exiled.Loader;
-using System.IO;
-using ATCBB.TeamAPI;
-using ATCBB.TeamAPI.Extentions;
+using AdvancedTeamCreation.TeamAPI.Extentions;
 using Exiled.API.Features;
+using AdvancedTeamCreation.TeamAPI.Helpers;
 
-namespace ATCBB.Commands
+namespace AdvancedTeamCreation.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     public class ChangeTeam : ICommand
@@ -22,7 +16,6 @@ namespace ATCBB.Commands
 
         public string Description => "Changes a player to a team for the game";
 
-
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             Player p = Player.Get(arguments.Array[1]);
@@ -32,12 +25,12 @@ namespace ATCBB.Commands
             {
                 try
                 {
-                    if (TeamPlugin.Singleton.Config.FindAT(Team).VanillaTeam)
+                    if (UnitHelper.FindAT(Team).VanillaTeam)
                     {
                         response = "This is a vanilla team use forceclass for this...";
                         return false;
                     }
-                    p.ChangeAdvancedRole(TeamPlugin.Singleton.Config.FindAT(Team), TeamPlugin.Singleton.Config.FindAST(Team, SubTeam));
+                    p.ChangeAdvancedRole(UnitHelper.FindAT(Team), UnitHelper.FindAST(Team, SubTeam));
                     response = "Changed Team";
 
                     return true;

@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Exiled.API.Features.Spawn;
+﻿using Exiled.API.Features.Spawn;
 using Exiled.CustomItems.API.Features;
-using Exiled.CustomItems.API.EventArgs;
-using Exiled.CustomItems.API;
-using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
-using CustomPlayerEffects;
 
-namespace ATCBB.ATCCustomItems
+namespace AdvancedTeamCreation.ATCCustomItems
 {
     [Exiled.API.Features.Attributes.CustomItem(ItemType.KeycardNTFOfficer)]
     public class AlaOfficerCard : CustomItem

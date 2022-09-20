@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ATCBB.ATCCustomItems;
+﻿using AdvancedTeamCreation.ATCCustomItems;
 
-namespace ATCBB.TeamAPI.CustomConfig
+namespace AdvancedTeamCreation.TeamAPI.CustomConfig
 {
     public class AtcItems
     {

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CommandSystem;
 using Exiled.Permissions.Extensions;
 
-namespace ATCBB.Commands
+namespace AdvancedTeamCreation.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     public class ATC : ParentCommand
@@ -28,14 +25,14 @@ namespace ATCBB.Commands
             {
                 if (arguments.Count == 0)
                 {
-                    response = "You need to enter an argument\n<b>forcenextteam</b>\n<b>forceteam</b>\n<b>teamsalive</b>\n<b>reload</b>";
+                    response = "You need to enter an argument\n<b>forcespawn (TeamName)</b>\n<b>ListTeams</b>\n<b>SimulateRoundEnd (TeamName)</b>\n<b>reload</b>\n<b>CreateTeam (TeamName NO SPACES)</b>\n<b>CreateSubteam (TeamName NO SPACES) (SubteamName NO SPACES)</b>\n<b>UpdateTeam (TeamName)</b>\n<b>UpdateSubteam (TeamName) (SubteamName)</b>";
                     return true;
                 }
                 else if (arguments.Contains("reload"))
                 {
                     if (sender.CheckPermission("ATC.reload"))
                     {
-                        TeamPlugin.Singleton.Config.LoadTeamConfigs();
+                        TeamPlugin.Singleton.OnReloaded();
                         response = "Done";
                         return true;
                     }

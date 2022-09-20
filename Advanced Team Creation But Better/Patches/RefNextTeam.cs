@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Exiled.API.Features;
 using HarmonyLib;
 
-namespace ATCBB.Patches
+namespace AdvancedTeamCreation.Patches
 {
     [HarmonyPatch(typeof(Respawning.RespawnTickets), nameof(Respawning.RespawnTickets.DrawRandomTeam))]
     public class RefNextTeam
@@ -22,7 +17,6 @@ namespace ATCBB.Patches
             }
             catch (Exception)
             {
-
             }
         }
     }

@@ -1,16 +1,9 @@
-﻿using System;
-using Footprinting;
-using GameCore;
-using Mirror;
+﻿using Footprinting;
 using PlayerStatsSystem;
-using Respawning;
-using Respawning.NamingRules;
 using Subtitles;
-using UnityEngine;
-using Utils.Networking;
 using Exiled.API.Features;
 
-namespace ATCBB.TeamAPI
+namespace AdvancedTeamCreation.TeamAPI
 {
     public class TeamDamageHandler : CustomReasonDamageHandler
     {

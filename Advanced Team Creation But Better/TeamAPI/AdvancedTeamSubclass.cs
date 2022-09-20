@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Exiled.CustomRoles.API.Features;
 
-namespace ATCBB.TeamAPI
+namespace AdvancedTeamCreation.TeamAPI
 {
     public class AdvancedTeamSubclass
     {

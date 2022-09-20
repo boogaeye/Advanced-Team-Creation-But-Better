@@ -1,11 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ATCBB.TeamAPI.CustomConfig
+namespace AdvancedTeamCreation.TeamAPI.CustomConfig
 {
     [Serializable]
     public class LeaderboardConfigHelper
@@ -19,6 +16,7 @@ namespace ATCBB.TeamAPI.CustomConfig
             "CDP",
             "RSC"
         };
+
         [Description("Required Teams are teams that need to be completely nonexistance in the game for this team to win\n# Can Contain Custom Teams")]
         public List<string> RequiredTeams { get; set; } = new List<string>()
         {

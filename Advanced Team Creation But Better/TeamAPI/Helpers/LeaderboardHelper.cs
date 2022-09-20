@@ -1,28 +1,28 @@
 ﻿using Exiled.API.Features;
-using Respawning;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static ATCBB.TeamAPI.CustomEventHelpers.CustomRoundEnder;
+using static AdvancedTeamCreation.TeamAPI.CustomEvents.CustomRoundEnder;
 
-namespace ATCBB.TeamAPI
+namespace AdvancedTeamCreation.TeamAPI.Helpers
 {
     public class LeaderboardHelper
     {
         public List<TeamLeaderboard> TeamLeaderboards = new List<TeamLeaderboard>();
         public static bool TeamsInstantiable = false;
+
         public class TeamLeaderboard
         {
             public static readonly AdvancedTeamSubclass DEFAULTSUBCLASS = new AdvancedTeamSubclass() { Name = "DEFAULT", AdvancedTeam = "DEFAULT" };
+
             public TeamLeaderboard(AdvancedTeam at)
             {
                 Team = at;
             }
+
             public AdvancedTeam Team;
             public Dictionary<Player, AdvancedTeamSubclass> PlayerPairs = new Dictionary<Player, AdvancedTeamSubclass>();
             public List<RoundEndStats> Stats = new List<RoundEndStats>();
+
             public void UpdateStat(string Name, string Value)
             {
                 foreach (RoundEndStats res in Stats)
@@ -36,6 +36,19 @@ namespace ATCBB.TeamAPI
                 }
                 Stats.Add(new RoundEndStats(Name, Value));
             }
+
+            public RoundEndStats GetStat(string Name)
+            {
+                foreach (RoundEndStats res in Stats)
+                {
+                    if (res.Name == Name)
+                    {
+                        return res;
+                    }
+                }
+                return null;
+            }
+
             public void AddPlayer(Player p, AdvancedTeamSubclass advancedTeamSubclass)
             {
                 PlayerPairs[p] = advancedTeamSubclass;
@@ -78,7 +91,7 @@ namespace ATCBB.TeamAPI
 
         public void SetUpTeamLeaders()
         {
-            foreach (AdvancedTeam at in TeamPlugin.Singleton.Config.Teams)
+            foreach (AdvancedTeam at in UnitHelper.Teams)
             {
                 TeamLeaderboards.Add(new TeamLeaderboard(at));
                 Log.Debug($"Made Team Leaderboard {at.Name}", TeamPlugin.Singleton.Config.Debug);

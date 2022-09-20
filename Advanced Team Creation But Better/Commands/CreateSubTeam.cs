@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CommandSystem;
 using Exiled.Permissions.Extensions;
 using Exiled.Loader;
 using System.IO;
-using ATCBB.TeamAPI;
+using AdvancedTeamCreation.TeamAPI;
 
-namespace ATCBB.Commands
+namespace AdvancedTeamCreation.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     public class CreateSubTeam : ICommand
@@ -19,7 +15,6 @@ namespace ATCBB.Commands
         public string[] Aliases { get; } = { "cst" };
 
         public string Description => "Creates a sub team for a team";
-
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {

@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CommandSystem;
 using Exiled.Permissions.Extensions;
 using Exiled.Loader;
 using System.IO;
-using ATCBB.TeamAPI;
+using AdvancedTeamCreation.TeamAPI;
+using AdvancedTeamCreation.TeamAPI.Helpers;
 
-namespace ATCBB.Commands
+namespace AdvancedTeamCreation.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     public class UpdateSubTeam : ICommand
@@ -20,7 +17,6 @@ namespace ATCBB.Commands
 
         public string Description => "Updates a sub team for a team";
 
-
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             string Team = arguments.Array[1];
@@ -30,7 +26,7 @@ namespace ATCBB.Commands
                 if (Directory.Exists(Path.Combine(TeamPlugin.Singleton.Config.ConfigsFolder, Team)))
                 {
                     response = $"Updated SubTeam Folder";
-                    AdvancedTeamSubclass at = TeamPlugin.Singleton.Config.FindAST(Team, SubTeamName);
+                    AdvancedTeamSubclass at = UnitHelper.FindAST(Team, SubTeamName);
                     File.WriteAllText(Path.Combine(TeamPlugin.Singleton.Config.ConfigsFolder, Team, SubTeamName + ".yml"), Loader.Serializer.Serialize(at));
                     return true;
                 }

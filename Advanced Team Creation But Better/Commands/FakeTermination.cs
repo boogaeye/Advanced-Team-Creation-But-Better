@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CommandSystem;
 using Exiled.Permissions.Extensions;
-using Exiled.Loader;
-using System.IO;
-using ATCBB.TeamAPI;
-using ATCBB.TeamAPI.Extentions;
-using Exiled.API.Features;
+using AdvancedTeamCreation.TeamAPI.Helpers;
 
-namespace ATCBB.Commands
+namespace AdvancedTeamCreation.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     public class FakeTermination : ICommand
@@ -26,12 +18,11 @@ namespace ATCBB.Commands
         {
             string Team = arguments.Array[1];
             string TermTeam = arguments.Array[2];
-            TeamConfig c = TeamPlugin.Singleton.Config;
             if (sender.CheckPermission("ATC.main"))
             {
                 try
                 {
-                    TeamPlugin.Singleton.TeamEventHandler.SlaughteredTeam(c.FindAT(Team), c.FindAT(TermTeam));
+                    MessageHelper.SlaughteredTeam(UnitHelper.FindAT(Team), UnitHelper.FindAT(TermTeam));
                     response = "Faked Team Termination";
 
                     return true;

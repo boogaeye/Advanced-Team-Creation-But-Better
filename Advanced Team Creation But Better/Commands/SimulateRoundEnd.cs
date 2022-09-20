@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CommandSystem;
 using Exiled.Permissions.Extensions;
-using Exiled.Loader;
-using System.IO;
-using ATCBB.TeamAPI;
-using ATCBB.TeamAPI.CustomEventHelpers;
+using AdvancedTeamCreation.TeamAPI;
+using AdvancedTeamCreation.TeamAPI.CustomEvents;
+using AdvancedTeamCreation.TeamAPI.Helpers;
 
-namespace ATCBB.Commands
+namespace AdvancedTeamCreation.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     public class SimulateRoundEnd : ICommand
@@ -21,14 +16,13 @@ namespace ATCBB.Commands
 
         public string Description => "if custom round ender is enabled it will simulate a round end event";
 
-
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             string teamName = arguments.Array[1];
             if (sender.CheckPermission("ATC.main"))
             {
                 response = $"Simulating Round Win for {arguments.Array[1]}";
-                AdvancedTeam at = TeamPlugin.Singleton.Config.FindAT(teamName);
+                AdvancedTeam at = UnitHelper.FindAT(teamName);
                 CustomRoundEnder.EndRound(at.DisplayName);
                 return true;
             }

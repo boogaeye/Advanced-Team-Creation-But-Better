@@ -7,11 +7,12 @@ using CommandSystem;
 using Exiled.Permissions.Extensions;
 using Exiled.Loader;
 using System.IO;
-using ATCBB.TeamAPI;
-using ATCBB.TeamAPI.Extentions;
+using AdvancedTeamCreation.TeamAPI;
+using AdvancedTeamCreation.TeamAPI.Extentions;
 using Exiled.API.Features;
+using AdvancedTeamCreation.TeamAPI.Helpers;
 
-namespace ATCBB.Commands
+namespace AdvancedTeamCreation.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     public class ForceSpawn : ICommand
@@ -25,19 +26,18 @@ namespace ATCBB.Commands
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             string Team = arguments.Array[1];
-            string SubTeam = arguments.Array[2];
-            if (sender.CheckPermission("ATC.main"))
+            if (sender.CheckPermission("ATC.forcespawn"))
             {
                 try
                 {
-                    if (TeamPlugin.Singleton.Config.FindAT(Team).VanillaTeam)
+                    if (UnitHelper.FindAT(Team).VanillaTeam)
                     {
                         response = "This is a vanilla team use forcespawn for this...";
                         return false;
                     }
 
-                    response = "Forced Spawn...";
-
+                    response = $"Next spawn will be {Team}";
+                    RespawnHelper.SetReferance(UnitHelper.FindAT(Team));
                     return true;
                 }
                 catch (Exception)
