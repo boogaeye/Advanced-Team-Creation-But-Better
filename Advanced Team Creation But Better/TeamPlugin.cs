@@ -23,7 +23,7 @@ namespace AdvancedTeamCreation
         public override string Name => "Advanced Team Creation";
         public override string Prefix => "ATC";
         public override Version RequiredExiledVersion => new Version(5, 3, 0, 0);
-        public override Version Version => new Version(2, 0, 0, 0);
+        public override Version Version => new Version(2, 0, 0, 1);
         public override PluginPriority Priority => PluginPriority.Last;
 
         public void CheckPlugins()

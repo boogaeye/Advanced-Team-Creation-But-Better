@@ -143,8 +143,6 @@ namespace AdvancedTeamCreation
                     if (e2.AdvancedTeam.CassieSlaughtered != string.Empty)
                     {
                         Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} sent Termination Cassie", plugin.Config.Debug);
-                        var Lead = RespawnHelper.Leaderboard.GetTeamLeaderboard(ev.Killer.GetAdvancedTeam().Name);
-                        Lead.UpdateStat(TeamPlugin.Singleton.Translation.TeamKillsStat.Replace("{Team}", ev.Killer.GetAdvancedTeam().Name), (int.Parse(Lead.GetStat(TeamPlugin.Singleton.Translation.TeamKillsStat.Replace("{Team}", ev.Killer.GetAdvancedTeam().Name)).Value) + 1).ToString());
                         MessageHelper.SlaughteredTeam(e2.AdvancedTeam, e2.TerminatingTeam);
                     }
                 }
