@@ -20,6 +20,7 @@ namespace AdvancedTeamCreation
         [Description("Determines if Class D Personal are friends with other Class D and Chaos")]
         public bool ClassDFriendsWithChaos { get; set; } = true;
 
+        public bool IgnoresRoundLock { get; set; } = false;
         public string ConfigsFolder { get; set; } = Path.Combine(Paths.Configs, "AdvancedTeamCreation");
 
         [Description("Recommended to keep this on this provides a custom handler to custom teams so they can win or you can switch it off to turn it back to the default round ender")]
@@ -78,7 +79,7 @@ namespace AdvancedTeamCreation
                 List<AdvancedTeamSubclass> SubteamMan = new List<AdvancedTeamSubclass>();
                 foreach (string ast in Directory.EnumerateFiles(at))
                 {
-                    if (!ast.Contains("TeamConfig.yml"))
+                    if (!ast.Contains("TeamConfig.yml") && ast.Contains(".yml"))
                     {
                         var g = Loader.Deserializer.Deserialize<AdvancedTeamSubclass>(File.ReadAllText(ast));
                         g.AdvancedTeam = gh.Name;
@@ -88,6 +89,8 @@ namespace AdvancedTeamCreation
                             gh.LastIndexSubclass = g;
                             Log.Debug($"{g.Name} is last spawn order", Debug);
                         }
+                        if (g.CustomKeycardConfig.RegisterKeycard)
+                            g.RegisterCustomKeycard();
                         SubteamMan.Add(g);
                         Log.Debug($"Deserializing SubTeam {ast} to Subclass {g.Name}", Debug);
                     }

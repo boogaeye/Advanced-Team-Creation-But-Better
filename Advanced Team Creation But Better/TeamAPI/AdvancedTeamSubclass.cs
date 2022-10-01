@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AdvancedTeamCreation.TeamAPI.CustomConfig;
+using Exiled.CustomItems.API;
 using Exiled.CustomRoles.API.Features;
 
 namespace AdvancedTeamCreation.TeamAPI
@@ -20,5 +22,16 @@ namespace AdvancedTeamCreation.TeamAPI
         public string[] AmmoInventory { get; set; } = { "Nato9:90", "Nato556:90", "Nato762:90", "Ammo12Gauge:90", "Ammo44Cal:90" };
         public string Hint { get; set; } = "You are {Team}, Good Luck {Role}";
         public string Color { get; set; } = "yellow";
+        public CustomKeycardConfig CustomKeycardConfig { get; set; } = new CustomKeycardConfig();
+
+        public void RegisterCustomKeycard()
+        {
+            CustomKeycardConfig.CustomKeycard.Register();
+        }
+
+        public void UnregisterCustomKeycard()
+        {
+            CustomKeycardConfig.CustomKeycard.Unregister();
+        }
     }
 }

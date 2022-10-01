@@ -43,17 +43,6 @@ namespace AdvancedTeamCreation.TeamAPI.Extentions
             return null;
         }
 
-        public static void Hurt(this Player ply, float damage, Player damager)
-        {
-            TeamDamageHandler tdh = new TeamDamageHandler(damager, "Enemy", damage);
-            ply.Hurt(tdh);
-        }
-
-        public static void Kill(this Player ply, string Reason, Player Damager, string Cassie = "")
-        {
-            ply.ReferenceHub.playerStats.KillPlayer(new TeamDamageHandler(Damager, Reason, float.MaxValue, Cassie));
-        }
-
         public static void ShowPlayerTeamDisplay(this Player ply, int sec = 3, bool ShowOnlyImportantTeams = false)
         {
             if (!TeamPlugin.Singleton.Config.ShowTeamsList) return;
