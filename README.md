@@ -10,4 +10,11 @@
 This is a plugin and maybe a framework for some plugins to create custom teams for SCPSL
 
 **Compatability**
+--
 - Respawn Timer
+- AudioPlayer
+
+**NOT COMPATABLE**
+--
+- RemoteKeycard
+- Any Team Plugin that does not use ATC API(Will probably not support them either)
