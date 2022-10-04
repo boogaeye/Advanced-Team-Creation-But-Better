@@ -18,3 +18,6 @@ This is a plugin and maybe a framework for some plugins to create custom teams f
 --
 - RemoteKeycard
 - Any Team Plugin that does not use ATC API(Will probably not support them either)
+
+Need Help?
+We have a discord: https://discord.gg/2r2vfG2st3
