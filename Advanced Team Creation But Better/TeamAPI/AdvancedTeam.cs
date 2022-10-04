@@ -75,6 +75,7 @@ namespace AdvancedTeamCreation.TeamAPI
 
         public bool DoesExist()
         {
+            if (RespawnHelper.Leaderboard.TeamLeaderboards.Count == 0) return false;
             return RespawnHelper.Leaderboard.TeamLeaderboards.First(e => e.Team.Name == Name).PlayerPairs.Keys.Any();
         }
 

@@ -78,9 +78,9 @@ namespace AdvancedTeamCreation.TeamAPI.CustomEvents
                     }
                     if (CanWin)
                     {
-                        var options = new TeamEvents.ATCRoundEndingEventArgs(TL.Team);
-                        options?.Invoke();
-                        EndRound(options.WinningTeam.DisplayName);
+                        //    var options = new TeamEvents.ATCRoundEndingEventArgs(TL.Team);
+                        //    options?.Invoke();
+                        EndRound(TL.Team.DisplayName);
                     }
                 }
             }

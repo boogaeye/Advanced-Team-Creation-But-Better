@@ -216,6 +216,7 @@ namespace AdvancedTeamCreation.TeamAPI.Extentions
                         Log.Error(e.StackTrace);
                     }
                 }
+                ply.IsGodModeEnabled = false;
             });
         }
 
