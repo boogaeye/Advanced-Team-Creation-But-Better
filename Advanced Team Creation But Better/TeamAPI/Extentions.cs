@@ -218,12 +218,14 @@ namespace AdvancedTeamCreation.TeamAPI.Extentions
                 }
                 ply.IsGodModeEnabled = false;
             });
+            Log.Debug($"{ply.Nickname} switched to {at.Name} : {ast.Name}", TeamPlugin.Singleton.Config.Debug);
         }
 
         public static void ChangeAdvancedTeam(this Player ply, AdvancedTeam at)
         {
             RespawnHelper.Leaderboard.ClearPlayerFromLeaderBoards(ply);
             RespawnHelper.Leaderboard.GetTeamLeaderboard(at.Name).AddPlayer(ply);
+            Log.Debug($"{ply.Nickname} switched to {at.Name} : {at.LastIndexSubclass.Name}", TeamPlugin.Singleton.Config.Debug);
         }
     }
 }

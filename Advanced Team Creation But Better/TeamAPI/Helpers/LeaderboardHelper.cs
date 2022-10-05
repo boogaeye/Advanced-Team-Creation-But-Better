@@ -57,11 +57,13 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
             public void AddPlayer(Player p)
             {
                 PlayerPairs[p] = SubclassDefault;
+                Log.Debug($"{p.Nickname} added to {Team.Name} Leaderboard", TeamPlugin.Singleton.Config.Debug);
             }
 
             public void RemovePlayer(Player p)
             {
                 PlayerPairs.Remove(p);
+                Log.Debug($"{p.Nickname} removed to {Team.Name} Leaderboard", TeamPlugin.Singleton.Config.Debug);
             }
         }
 
@@ -72,7 +74,7 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
             {
                 if (tldr.PlayerPairs.Keys.Contains(ply))
                 {
-                    tldr.PlayerPairs.Remove(ply);
+                    tldr.RemovePlayer(ply);
                 }
             }
         }

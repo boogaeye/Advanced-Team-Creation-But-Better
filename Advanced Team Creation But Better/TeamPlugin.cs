@@ -41,7 +41,7 @@ namespace AdvancedTeamCreation
                 else if (plugin.Name == "RemoteKeycard" && plugin.Config.IsEnabled)
                 {
                     assemblyRemoteKeycard = plugin.Assembly;
-                    RemoteKeycard.Handlers.Events.UsingKeycard += EventHandler.UsingKeycard;
+                    RemoteKeyEvents();
                     Log.Debug("RemoteKeycard assembly found", this.Config.Debug);
                 }
                 else if (plugin.Name == "AudioPlayer" && plugin.Config.IsEnabled)
@@ -50,6 +50,11 @@ namespace AdvancedTeamCreation
                     Log.Debug("AudioPlayer assembly found", this.Config.Debug);
                 }
             }
+        }
+
+        public void RemoteKeyEvents()
+        {
+            RemoteKeycard.Handlers.Events.UsingKeycard += EventHandler.UsingKeycard;
         }
 
         public override void OnDisabled()
