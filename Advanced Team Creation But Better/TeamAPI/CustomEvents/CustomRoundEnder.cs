@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MEC;
 using AdvancedTeamCreation.TeamAPI.Helpers;
+using AdvancedTeamCreation.TeamAPI.Events;
 
 namespace AdvancedTeamCreation.TeamAPI.CustomEvents
 {
@@ -43,9 +44,14 @@ namespace AdvancedTeamCreation.TeamAPI.CustomEvents
                 Log.Debug($"Preventing Round Ending because it hasn't been 10 seconds in the round", TeamPlugin.Singleton.Config.Debug);
                 return;
             }
-            if (Round.IsLocked || Player.List.Count() == 1)
+            if (Round.IsLocked && !TeamPlugin.Singleton.Config.IgnoresRoundLock)
             {
-                Log.Debug($"Round is locked or there is 1 player so preventing round end...", TeamPlugin.Singleton.Config.Debug);
+                Log.Debug($"Round is locked so preventing round end...", TeamPlugin.Singleton.Config.Debug);
+                return;
+            }
+            if (Player.List.Count() == 1)
+            {
+                Log.Debug($"There is 1 player so preventing round end...", TeamPlugin.Singleton.Config.Debug);
                 return;
             }
             foreach (LeaderboardHelper.TeamLeaderboard TL in RespawnHelper.Leaderboard.TeamLeaderboards)
@@ -72,6 +78,8 @@ namespace AdvancedTeamCreation.TeamAPI.CustomEvents
                     }
                     if (CanWin)
                     {
+                        //    var options = new TeamEvents.ATCRoundEndingEventArgs(TL.Team);
+                        //    options?.Invoke();
                         EndRound(TL.Team.DisplayName);
                     }
                 }

@@ -43,17 +43,6 @@ namespace AdvancedTeamCreation.TeamAPI.Extentions
             return null;
         }
 
-        public static void Hurt(this Player ply, float damage, Player damager)
-        {
-            TeamDamageHandler tdh = new TeamDamageHandler(damager, "Enemy", damage);
-            ply.Hurt(tdh);
-        }
-
-        public static void Kill(this Player ply, string Reason, Player Damager, string Cassie = "")
-        {
-            ply.ReferenceHub.playerStats.KillPlayer(new TeamDamageHandler(Damager, Reason, float.MaxValue, Cassie));
-        }
-
         public static void ShowPlayerTeamDisplay(this Player ply, int sec = 3, bool ShowOnlyImportantTeams = false)
         {
             if (!TeamPlugin.Singleton.Config.ShowTeamsList) return;
@@ -227,13 +216,16 @@ namespace AdvancedTeamCreation.TeamAPI.Extentions
                         Log.Error(e.StackTrace);
                     }
                 }
+                ply.IsGodModeEnabled = false;
             });
+            Log.Debug($"{ply.Nickname} switched to {at.Name} : {ast.Name}", TeamPlugin.Singleton.Config.Debug);
         }
 
         public static void ChangeAdvancedTeam(this Player ply, AdvancedTeam at)
         {
             RespawnHelper.Leaderboard.ClearPlayerFromLeaderBoards(ply);
             RespawnHelper.Leaderboard.GetTeamLeaderboard(at.Name).AddPlayer(ply);
+            Log.Debug($"{ply.Nickname} switched to {at.Name} : {at.LastIndexSubclass.Name}", TeamPlugin.Singleton.Config.Debug);
         }
     }
 }

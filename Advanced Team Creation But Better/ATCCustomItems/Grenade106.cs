@@ -12,7 +12,7 @@ namespace AdvancedTeamCreation.ATCCustomItems
     [CustomItem(ItemType.GrenadeHE)]
     public class Grenade106 : CustomGrenade
     {
-        public override uint Id { get; set; } = 10;
+        public override uint Id { get; set; } = 1;
         public override string Name { get; set; } = "106 Grenade";
         public override string Description { get; set; } = "Send players to the pocket dimension with a chance";
         public override float Weight { get; set; } = 1;

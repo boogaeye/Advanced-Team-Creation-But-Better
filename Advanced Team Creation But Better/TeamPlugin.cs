@@ -6,6 +6,8 @@ using System;
 using System.Reflection;
 using Exiled.CustomRoles.API.Features;
 using Exiled.API.Enums;
+using AdvancedTeamCreation.TeamAPI;
+using AdvancedTeamCreation.TeamAPI.Helpers;
 
 namespace AdvancedTeamCreation
 {
@@ -14,6 +16,7 @@ namespace AdvancedTeamCreation
         public static Assembly assemblyTimer;
         public static Assembly assemblyAudioPlayer;
         public static Assembly assemblyTkInfo;
+        public static Assembly assemblyRemoteKeycard;
         public static TeamPlugin Singleton;
         public Harmony Harmony;
         public EventHandler EventHandler;
@@ -35,17 +38,23 @@ namespace AdvancedTeamCreation
                     assemblyTimer = plugin.Assembly;
                     Log.Debug("RespawnTimer assembly found", this.Config.Debug);
                 }
-                else if (plugin.Name == "TKInfo" && plugin.Config.IsEnabled)
+                else if (plugin.Name == "RemoteKeycard" && plugin.Config.IsEnabled)
                 {
-                    assemblyTkInfo = plugin.Assembly;
-                    Log.Debug("TKInfo assembly found", this.Config.Debug);
+                    assemblyRemoteKeycard = plugin.Assembly;
+                    RemoteKeyEvents();
+                    Log.Debug("RemoteKeycard assembly found", this.Config.Debug);
                 }
                 else if (plugin.Name == "AudioPlayer" && plugin.Config.IsEnabled)
                 {
                     assemblyAudioPlayer = plugin.Assembly;
-                    Log.Debug("TKInfo assembly found", this.Config.Debug);
+                    Log.Debug("AudioPlayer assembly found", this.Config.Debug);
                 }
             }
+        }
+
+        public void RemoteKeyEvents()
+        {
+            RemoteKeycard.Handlers.Events.UsingKeycard += EventHandler.UsingKeycard;
         }
 
         public override void OnDisabled()
@@ -64,7 +73,14 @@ namespace AdvancedTeamCreation
             Exiled.Events.Handlers.Player.EnteringFemurBreaker -= EventHandler.Scp106FemurBreakerPreventer;
             Exiled.Events.Handlers.Scp106.Containing -= EventHandler.Scp106DistressHelper;
             Exiled.Events.Handlers.Player.SpawningRagdoll -= EventHandler.RagdollSpawn;
+            if (assemblyRemoteKeycard != null)
+                RemoteKeycard.Handlers.Events.UsingKeycard -= EventHandler.UsingKeycard;
             Config.UnloadItems();
+            foreach (AdvancedTeamSubclass ats in UnitHelper.Subteams)
+            {
+                if (ats.CustomKeycardConfig.RegisterKeycard)
+                    ats.UnregisterCustomKeycard();
+            }
             Harmony.UnpatchAll("BoogaEye.TeamStuff.Bruh");
             EventHandler = null;
             TeamEventHandler = null;

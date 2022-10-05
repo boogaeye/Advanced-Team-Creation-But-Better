@@ -40,6 +40,15 @@ namespace AdvancedTeamCreation
             { Team.MTF, "You are the <color=blue>Mobile Task Force</color>,:take out <color=red>SCP Subjects</color>:Terminate <color=green>Hostile</color> Forces:Help <color=yellow>Scientists</color> escape..." },
         };
 
+        public Dictionary<Team, string> TeamDisplayers { get; set; } = new Dictionary<Team, string>()
+        {
+            { Team.CDP, "<color=orange>Class D Personal Escapee's</color>" },
+            { Team.RSC, "<color=yellow>Research Personal Escapee's</color>" },
+            { Team.SCP, "<color=red>SCP's</color>" },
+            { Team.CHI, "<color=green>The Insurgency</color>" },
+            { Team.MTF, "<color=blue>Mobile Task Force</color> and <color=grey>Facility Forces</color>" },
+        };
+
         public Dictionary<Team, string> TeamCassieSlaughter { get; set; } = new Dictionary<Team, string>()
         {
             { Team.CDP, "pitch_0.5 .g4 .g4 .g4 pitch_1 all {Terminated} terminated by {Terminating} . allremaining awaitingrecontainment jam_1_5 {SCPLeft} scpsubjects" },

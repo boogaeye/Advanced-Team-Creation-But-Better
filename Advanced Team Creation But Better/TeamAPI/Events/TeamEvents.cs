@@ -14,6 +14,8 @@ namespace AdvancedTeamCreation.TeamAPI.Events
         /// </summary>
         public static event TeamEvents<ReferancingTeamEventArgs> ReferancingTeam;
 
+        public static event TeamEvents<ATCRoundEndingEventArgs> ATCRoundEnding;
+
         /// <summary>
         /// When a player gets set to a team
         /// </summary>
@@ -103,6 +105,23 @@ namespace AdvancedTeamCreation.TeamAPI.Events
             private void Invoke()
             {
                 ReferancingTeam.Invoke(this);
+            }
+        }
+
+        public class ATCRoundEndingEventArgs : EventArgs
+        {
+            public ATCRoundEndingEventArgs(AdvancedTeam win)
+            {
+                WinningTeam = win;
+                IsAllowed = true;
+            }
+
+            public bool IsAllowed { get; set; } = true;
+            public AdvancedTeam WinningTeam { get; set; }
+
+            public void Invoke()
+            {
+                ATCRoundEnding.Invoke(this);
             }
         }
 

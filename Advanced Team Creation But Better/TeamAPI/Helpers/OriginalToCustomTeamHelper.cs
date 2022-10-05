@@ -58,7 +58,8 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
             {
                 Name = t.ToString(),
                 VanillaTeam = true,
-                Chance = 1
+                Chance = 1,
+                EscapableClasses = new RoleType[] { },
             };
             if (TeamPlugin.Singleton.Translation.TeamDescriptions.ContainsKey(t))
             {
@@ -67,6 +68,14 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
             else
             {
                 at.LastIndexSubclass = new AdvancedTeamSubclass() { Name = "DEFAULT", AdvancedTeam = "DEFAULT", Description = "Contact Server Owner for Desc...." };
+            }
+            if (TeamPlugin.Singleton.Translation.TeamDisplayers.ContainsKey(t))
+            {
+                at.DisplayName = TeamPlugin.Singleton.Translation.TeamDisplayers[t];
+            }
+            else
+            {
+                at.DisplayName = t.ToString();
             }
             if (TeamPlugin.Singleton.Translation.TeamCassieSlaughter.ContainsKey(t))
             {
@@ -82,7 +91,6 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
             {
                 case Team.CDP:
                     at.Color = "orange";
-                    at.DisplayName = "<color=orange>Class D Personal Escapee's</color>";
                     at.SaidName = "Class D";
                     at.RoundEnderConfig.FriendlyTeams = new List<string>();
                     at.RoundEnderConfig.RequiredTeams = new List<string>()
@@ -99,7 +107,6 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
                     break;
 
                 case Team.RSC:
-                    at.DisplayName = "<color=yellow>Research Personal Escapee's</color>";
                     at.Color = "yellow";
                     at.SaidName = "Scientist";
                     at.RoundEnderConfig.FriendlyTeams = new List<string>()
@@ -116,7 +123,6 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
                     break;
 
                 case Team.SCP:
-                    at.DisplayName = "<color=red>SCP's</color>";
                     at.Color = "red";
                     at.SaidName = "SCPSubjects";
                     at.RoundEnderConfig.FriendlyTeams = new List<string>()
@@ -134,7 +140,6 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
                     break;
 
                 case Team.CHI:
-                    at.DisplayName = "<color=green>The Insurgency</color>";
                     at.Color = "green";
                     at.SaidName = "Chaos Insurgency";
                     at.RoundEnderConfig.FriendlyTeams = new List<string>()
@@ -159,7 +164,6 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
                     break;
 
                 case Team.MTF:
-                    at.DisplayName = "<color=blue>Mobile Task Force</color> and <color=grey>Facility Forces</color>";
                     at.Color = "blue";
                     at.SaidName = "MTFUnit";
                     at.RoundEnderConfig.FriendlyTeams = new List<string>()

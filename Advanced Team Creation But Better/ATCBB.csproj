@@ -42,62 +42,53 @@
     <Reference Include="Assembly-CSharp-Publicized, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Serv\servers\3\serverfiles\SCPSL_Data\Managed\Assembly-CSharp-Publicized.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="AudioPlayer">
       <HintPath>..\..\..\..\Downloads\AudioPlayer.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="CommandSystem.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\EXILED.5.3.0\lib\net472\CommandSystem.Core.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\EXILED.5.3.1\lib\net472\CommandSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="CustomItems, Version=1.8.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CustomItems.1.8.2\lib\net472\CustomItems.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Exiled.API, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.API.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Exiled.API, Version=5.3.1.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EXILED.5.3.1\lib\net472\Exiled.API.dll</HintPath>
     </Reference>
-    <Reference Include="Exiled.Bootstrap, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.Bootstrap.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Exiled.Bootstrap, Version=5.3.1.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EXILED.5.3.1\lib\net472\Exiled.Bootstrap.dll</HintPath>
     </Reference>
-    <Reference Include="Exiled.CreditTags, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.CreditTags.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Exiled.CreditTags, Version=5.3.1.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EXILED.5.3.1\lib\net472\Exiled.CreditTags.dll</HintPath>
     </Reference>
-    <Reference Include="Exiled.CustomItems, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.CustomItems.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Exiled.CustomItems, Version=5.3.1.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EXILED.5.3.1\lib\net472\Exiled.CustomItems.dll</HintPath>
     </Reference>
-    <Reference Include="Exiled.CustomRoles, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.CustomRoles.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Exiled.CustomRoles, Version=5.3.1.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EXILED.5.3.1\lib\net472\Exiled.CustomRoles.dll</HintPath>
     </Reference>
-    <Reference Include="Exiled.Events, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.Events.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Exiled.Events, Version=5.3.1.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EXILED.5.3.1\lib\net472\Exiled.Events.dll</HintPath>
     </Reference>
-    <Reference Include="Exiled.Loader, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.Loader.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Exiled.Loader, Version=5.3.1.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EXILED.5.3.1\lib\net472\Exiled.Loader.dll</HintPath>
     </Reference>
-    <Reference Include="Exiled.Permissions, Version=5.3.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.Permissions.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Exiled.Permissions, Version=5.3.1.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\EXILED.5.3.1\lib\net472\Exiled.Permissions.dll</HintPath>
     </Reference>
     <Reference Include="Exiled.Updater, Version=3.1.1.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\EXILED.5.3.0\lib\net472\Exiled.Updater.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\EXILED.5.3.1\lib\net472\Exiled.Updater.dll</HintPath>
     </Reference>
     <Reference Include="Mirror">
       <HintPath>..\..\..\Serv\servers\3\serverfiles\SCPSL_Data\Managed\Mirror.dll</HintPath>
     </Reference>
     <Reference Include="NorthwoodLib, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\EXILED.5.3.0\lib\net472\NorthwoodLib.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\EXILED.5.3.1\lib\net472\NorthwoodLib.dll</HintPath>
+    </Reference>
+    <Reference Include="RemoteKeycard">
+      <HintPath>..\..\..\..\Downloads\RemoteKeycard.dll</HintPath>
     </Reference>
     <Reference Include="RespawnTimer_publicized, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -132,27 +123,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ATCCustomItems\CustomKeycard.cs" />
     <Compile Include="ATCCustomItems\Grenade106.cs" />
-    <Compile Include="ATCCustomItems\TtaCard.cs" />
-    <Compile Include="ATCCustomItems\AlaCommanderCard.cs" />
-    <Compile Include="ATCCustomItems\AlaOfficerCard.cs" />
-    <Compile Include="ATCCustomItems\AlaFirstCard.cs" />
-    <Compile Include="ATCCustomItems\AlaCard.cs" />
-    <Compile Include="ATCCustomItems\GruCard.cs" />
-    <Compile Include="ATCCustomItems\SerpentsHandCard.cs" />
     <Compile Include="Commands\FakeTermination.cs" />
     <Compile Include="Commands\ForceSpawn.cs" />
     <Compile Include="Commands\UpdateSubTeam.cs" />
     <Compile Include="Commands\SimulateRoundEnd.cs" />
+    <Compile Include="Commands\UpdateAll.cs" />
     <Compile Include="Commands\UpdateTeam.cs" />
     <Compile Include="Commands\ListTeams.cs" />
     <Compile Include="Commands\CreateSubTeam.cs" />
     <Compile Include="Commands\ChangeTeam.cs" />
     <Compile Include="Commands\CreateTeam.cs" />
     <Compile Include="Commands\ATC.cs" />
-    <Compile Include="ATCCustomItems\GruCommanderCard.cs" />
-    <Compile Include="ATCCustomItems\SerpentsHandCommanderCard.cs" />
     <Compile Include="ATCCustomItems\Gun106.cs" />
+    <Compile Include="TeamAPI\CustomConfig\CustomKeycardConfig.cs" />
     <Compile Include="TeamAPI\Helpers\MessageHelper.cs" />
     <Compile Include="TeamAPI\CustomConfig\AtcItems.cs" />
     <Compile Include="TeamAPI\CustomConfig\LeaderboardConfigHelper.cs" />
@@ -167,7 +152,6 @@
     <Compile Include="TeamAPI\Helpers\LeaderboardHelper.cs" />
     <Compile Include="TeamAPI\Helpers\OriginalToCustomTeamHelper.cs" />
     <Compile Include="TeamAPI\Helpers\RespawnHelper.cs" />
-    <Compile Include="TeamAPI\TeamDamageHandler.cs" />
     <Compile Include="TeamAPI\Helpers\UnitHelper.cs" />
     <Compile Include="TeamEventHandler.cs" />
     <Compile Include="Translations.cs" />
@@ -182,6 +166,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TeamAPI\TeamEffects\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
