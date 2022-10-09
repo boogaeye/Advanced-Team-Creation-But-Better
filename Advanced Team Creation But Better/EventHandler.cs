@@ -19,6 +19,7 @@ using Exiled.CustomItems.API.Features;
 using Exiled.API.Features.Items;
 using Exiled.Loader;
 using System.Diagnostics;
+using Exiled.API.Features.DamageHandlers;
 
 namespace AdvancedTeamCreation
 {
@@ -124,6 +125,8 @@ namespace AdvancedTeamCreation
 
         public void PlayerDead(DyingEventArgs ev)
         {
+            //This does not work
+            //ev.Handler = new CustomDamageHandler(ev.Target, new CustomReasonDamageHandler("Test", ev.Handler.Damage));
             if (ev.Killer == null)
             {
                 Log.Debug($"There is no Killer so using Target instead", plugin.Config.Debug);
@@ -207,17 +210,12 @@ namespace AdvancedTeamCreation
                     }
                     else
                     {
-                        if (ev.Target.ArtificialHealth < ev.Amount)
-                        {
-                            ev.Target.Health -= ev.Amount;
-                        }
+                        if (ev.Attacker.CurrentItem != null)
+                            ev.Target.Hurt(new CustomReasonDamageHandler($"(Enemy)Killed with {ev.Attacker.CurrentItem.Type}", ev.Handler.Damage));
                         else
-                        {
-                            ev.Target.ArtificialHealth -= ev.Amount;
-                            ev.Target.Health -= ev.Amount * 0.1f;
-                        }
-                        //ev.Target.Hurt(new CustomReasonDamageHandler($"(Enemy)Killed with {ev.Attacker.CurrentItem.Type}", ev.Handler.Damage));
+                            ev.Target.Hurt(new CustomReasonDamageHandler("(Enemy)Killed with No Item", ev.Handler.Damage));
                     }
+                    ev.IsAllowed = false;
                     Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their opposing teams", TeamPlugin.Singleton.Config.Debug);
                 }
             }
@@ -231,24 +229,22 @@ namespace AdvancedTeamCreation
                         Log.Debug("Testing for friendly hitbox in vanilla team", TeamPlugin.Singleton.Config.Debug);
                         if (ServerConsole.FriendlyFire)
                         {
-                            ev.Handler.Damage *= 0.3f;
-                            //ev.Target.Hurt(new CustomReasonDamageHandler($"(Friendly)Killed with {ev.Attacker.CurrentItem.Type}", ev.Handler.Damage));
+                            if (ev.Target != ev.Attacker)
+                                ev.Handler.Damage *= 0.3f;
 
                             Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their friendly teams (vanilla)", TeamPlugin.Singleton.Config.Debug);
                         }
-                        ev.IsAllowed = ServerConsole.FriendlyFire;
                     }
                     else
                     {
                         Log.Debug("Testing for friendly hitbox for custom team", TeamPlugin.Singleton.Config.Debug);
                         if (ServerConsole.FriendlyFire)
                         {
-                            ev.Handler.Damage *= 0.3f;
-                            //ev.Target.Hurt(new CustomReasonDamageHandler($"(Friendly)Killed with {ev.Attacker.CurrentItem.Type}", ev.Handler.Damage));
+                            if (ev.Target != ev.Attacker)
+                                ev.Handler.Damage *= 0.3f;
 
                             Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their friendly teams", TeamPlugin.Singleton.Config.Debug);
                         }
-                        ev.IsAllowed = ServerConsole.FriendlyFire;
                     }
                 }
             }

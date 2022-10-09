@@ -137,6 +137,7 @@
     <Compile Include="Commands\CreateTeam.cs" />
     <Compile Include="Commands\ATC.cs" />
     <Compile Include="ATCCustomItems\Gun106.cs" />
+    <Compile Include="TeamAPI\CustomConfig\CustomStartRoundSpawnConfig.cs" />
     <Compile Include="TeamAPI\CustomConfig\CustomKeycardConfig.cs" />
     <Compile Include="TeamAPI\Helpers\MessageHelper.cs" />
     <Compile Include="TeamAPI\CustomConfig\AtcItems.cs" />
