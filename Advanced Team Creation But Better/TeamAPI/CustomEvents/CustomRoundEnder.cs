@@ -59,6 +59,7 @@ namespace AdvancedTeamCreation.TeamAPI.CustomEvents
                 if (TL.Team.DoesExist())
                 {
                     bool CanWin = true;
+                    bool CanStalemate = false;
                     Log.Debug($"Team {TL.Team.Name} does exist in current round", TeamPlugin.Singleton.Config.Debug);
                     foreach (LeaderboardHelper.TeamLeaderboard TL2 in RespawnHelper.Leaderboard.TeamLeaderboards)
                     {
@@ -70,11 +71,21 @@ namespace AdvancedTeamCreation.TeamAPI.CustomEvents
                                 Log.Debug($"Team {TL.Team.Name} is enemies with {TL2.Team.Name}. They can no longer win.", TeamPlugin.Singleton.Config.Debug);
                                 break;
                             }
+                            if (TL.Team.ConfirmNeutralshipWithTeam(TL2.Team) && TL2.Team.DoesExist() && !TL2.Team.Spectator)
+                            {
+                                Log.Debug($"Team {TL.Team.Name} is neutral with {TL2.Team.Name}. They can stalemate...", TeamPlugin.Singleton.Config.Debug);
+                                CanStalemate = true;
+                            }
                         }
                     }
                     if (TL.Team.Spectator)
                     {
                         CanWin = false;
+                    }
+                    if (CanStalemate)
+                    {
+                        EndRound(TeamPlugin.Singleton.Translation.Stalemate);
+                        return;
                     }
                     if (CanWin)
                     {

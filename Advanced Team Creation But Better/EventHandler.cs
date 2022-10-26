@@ -194,6 +194,12 @@ namespace AdvancedTeamCreation
                 if (o._deathReason.Contains("(Enemy)")) return;
                 if (o._deathReason.Contains("(Friendly)")) return;
             }
+
+            if ((plugin.Config.SCPTeamsCantHurtEachotherWithFF && (ev.Attacker.IsScp || ev.Target.IsScp)) && (ev.Attacker.GetAdvancedTeam().Name == "SCP" || ev.Target.GetAdvancedTeam().Name == "SCP"))
+            {
+                ev.IsAllowed = false;
+                return;
+            }
             Log.Debug("Death reason is not Enemy or Friendly", TeamPlugin.Singleton.Config.Debug);
             if (!IndividualFriendlyFire.CheckFriendlyFirePlayerHitbox(ev.Attacker.ReferenceHub, ev.Target.ReferenceHub))
             {
@@ -259,10 +265,10 @@ namespace AdvancedTeamCreation
         public void RoleChange(ChangingRoleEventArgs ev)
         {
             PlayerTimesAlive[ev.Player] = Round.ElapsedTime;
-            if (ev.Reason == SpawnReason.RoundStart)
-            {
-                return;
-            }
+            //if (ev.Reason == SpawnReason.RoundStart)
+            //{
+            //    return;
+            //}
             if (ev.Reason != Exiled.API.Enums.SpawnReason.Respawn && ev.Reason != Exiled.API.Enums.SpawnReason.Escaped)
             {
                 ev.Player.ChangeAdvancedTeam(UnitHelper.FindAT(ev.NewRole.GetTeam().ToString()));

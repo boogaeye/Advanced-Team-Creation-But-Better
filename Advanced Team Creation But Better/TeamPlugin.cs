@@ -73,6 +73,7 @@ namespace AdvancedTeamCreation
             Exiled.Events.Handlers.Player.EnteringFemurBreaker -= EventHandler.Scp106FemurBreakerPreventer;
             Exiled.Events.Handlers.Scp106.Containing -= EventHandler.Scp106DistressHelper;
             Exiled.Events.Handlers.Player.SpawningRagdoll -= EventHandler.RagdollSpawn;
+            Exiled.Events.Handlers.Player.EnteringPocketDimension -= EventHandler.Scp106NoTeamKill;
             //if (assemblyRemoteKeycard != null)
             //    RemoteKeycard.Handlers.Events.UsingKeycard -= EventHandler.UsingKeycard;
             Config.UnloadItems();
@@ -101,6 +102,7 @@ namespace AdvancedTeamCreation
             Exiled.Events.Handlers.Map.AnnouncingNtfEntrance += EventHandler.MtfRespawnCassie;
             Exiled.Events.Handlers.Player.ChangingRole += EventHandler.RoleChange;
             Exiled.Events.Handlers.Player.Escaping += EventHandler.EscapingEvent;
+            Exiled.Events.Handlers.Player.EnteringPocketDimension += EventHandler.Scp106NoTeamKill;
             Exiled.Events.Handlers.Player.Hurting += EventHandler.PlayerHurt;
             Exiled.Events.Handlers.Player.Dying += EventHandler.PlayerDead;
             Exiled.Events.Handlers.Map.AnnouncingScpTermination += EventHandler.ScpTermination;
