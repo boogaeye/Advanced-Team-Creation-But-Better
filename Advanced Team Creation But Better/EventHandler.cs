@@ -182,8 +182,6 @@ namespace AdvancedTeamCreation
         {
             if (ev.Attacker == null) return;
             Log.Debug("Attacker is not null", TeamPlugin.Singleton.Config.Debug);
-            if (ev.Attacker.IsScp) return;
-            Log.Debug("Attacker is not SCP", TeamPlugin.Singleton.Config.Debug);
             if (!ev.Attacker.IsConnected && !ev.Target.IsConnected) return;
             Log.Debug("Attacker and Target are connected", TeamPlugin.Singleton.Config.Debug);
             if (ev.Attacker.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()))
@@ -261,18 +259,18 @@ namespace AdvancedTeamCreation
         public void RoleChange(ChangingRoleEventArgs ev)
         {
             PlayerTimesAlive[ev.Player] = Round.ElapsedTime;
+            if (ev.Reason == SpawnReason.RoundStart)
+            {
+                return;
+            }
             if (ev.Reason != Exiled.API.Enums.SpawnReason.Respawn && ev.Reason != Exiled.API.Enums.SpawnReason.Escaped)
             {
-                RespawnHelper.Leaderboard.ClearPlayerFromLeaderBoards(ev.Player);
                 ev.Player.ChangeAdvancedTeam(UnitHelper.FindAT(ev.NewRole.GetTeam().ToString()));
                 ev.Player.CustomInfo = null;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Nickname;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Role;
-                if (ev.Reason != Exiled.API.Enums.SpawnReason.RoundStart)
-                {
-                    MEC.Timing.CallDelayed(0.1f, () =>
+                MEC.Timing.CallDelayed(0.1f, () =>
                     CustomRoundEnder.UpdateRoundStatus());
-                }
             }
         }
 
@@ -289,6 +287,7 @@ namespace AdvancedTeamCreation
             ev.IsAllowed = false;
         }
 
+        //Removing once Mimicry Comes Out?
         public void Scp106DistressHelper(ContainingEventArgs ev)
         {
             if (ev.Player.GetAdvancedTeam().ConfirmFriendshipWithTeam(UnitHelper.FindAT("SCP")))
@@ -298,6 +297,7 @@ namespace AdvancedTeamCreation
             }
         }
 
+        //Removing once Mimicry Comes Out?
         public void Scp106FemurBreakerPreventer(EnteringFemurBreakerEventArgs ev)
         {
             if (ev.Player.GetAdvancedTeam().SpawnRoom == RoomType.Hcz106 || ev.Player.GetAdvancedTeam().ConfirmFriendshipWithTeam(UnitHelper.FindAT("SCP")))
