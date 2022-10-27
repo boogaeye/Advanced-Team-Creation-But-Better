@@ -28,6 +28,7 @@ namespace AdvancedTeamCreation
         public string RoundsStat { get; set; } = "Rounds Completed";
         public string RoundWonStat { get; set; } = "{TeamWon} Wins\n\n- Stats -\n";
         public string TeamKillsStat { get; set; } = "{Team} killed";
+        public string Stalemate { get; set; } = "STALEMATE";
         public string InterferenceText { get; set; } = "<color=black>INTERFERENCE</color>";
 
         [Description(": makes the words after it goto the next line")]

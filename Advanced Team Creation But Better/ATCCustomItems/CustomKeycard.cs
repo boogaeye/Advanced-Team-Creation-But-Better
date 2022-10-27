@@ -9,6 +9,7 @@ using RemoteKeycard.API.EventArgs;
 using RemoteKeycard.Handlers;
 using System.Collections;
 using System.Linq;
+using Exiled.API.Features;
 
 namespace AdvancedTeamCreation.ATCCustomItems
 {
@@ -25,31 +26,34 @@ namespace AdvancedTeamCreation.ATCCustomItems
 
         protected override void SubscribeEvents()
         {
-            if (TeamPlugin.assemblyRemoteKeycard == null)
-            {
-                Exiled.Events.Handlers.Player.InteractingDoor += DoorOpening;
-                Exiled.Events.Handlers.Player.ActivatingWarheadPanel += ActivatingWarhead;
-                Exiled.Events.Handlers.Player.InteractingLocker += InteractingLocker;
-                Exiled.Events.Handlers.Player.UnlockingGenerator += UnlockingGenerator;
-            }
+            Exiled.Events.Handlers.Player.InteractingDoor += DoorOpening;
+            Exiled.Events.Handlers.Player.ActivatingWarheadPanel += ActivatingWarhead;
+            Exiled.Events.Handlers.Player.InteractingLocker += InteractingLocker;
+            Exiled.Events.Handlers.Player.UnlockingGenerator += UnlockingGenerator;
             base.SubscribeEvents();
         }
 
         protected override void UnsubscribeEvents()
         {
-            if (TeamPlugin.assemblyRemoteKeycard == null)
-            {
-                Exiled.Events.Handlers.Player.InteractingDoor -= DoorOpening;
-                Exiled.Events.Handlers.Player.ActivatingWarheadPanel -= ActivatingWarhead;
-                Exiled.Events.Handlers.Player.InteractingLocker -= InteractingLocker;
-                Exiled.Events.Handlers.Player.UnlockingGenerator -= UnlockingGenerator;
-            }
+            Exiled.Events.Handlers.Player.InteractingDoor -= DoorOpening;
+            Exiled.Events.Handlers.Player.ActivatingWarheadPanel -= ActivatingWarhead;
+            Exiled.Events.Handlers.Player.InteractingLocker -= InteractingLocker;
+            Exiled.Events.Handlers.Player.UnlockingGenerator -= UnlockingGenerator;
             base.UnsubscribeEvents();
         }
 
         public static bool CheckPerms(KeycardPermissions[] kp, params KeycardPermissions[] kp2)
         {
-            return kp2.All(e => kp.Contains(e));
+            foreach (KeycardPermissions k in kp2)
+            {
+                Log.Info($"Checking Perm {k}");
+                if (kp.Contains(k))
+                {
+                    Log.Info($"Has Perm {k}");
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void UnlockingGenerator(UnlockingGeneratorEventArgs ev)
@@ -89,16 +93,23 @@ namespace AdvancedTeamCreation.ATCCustomItems
         {
             if (TryGet(ev.Player, out CustomItem ci))
             {
+                Log.Info($"Using item {ci.Name} for {ev.Player.Nickname}");
                 if (ci.Id == Id)
                 {
-                    if (ev.Door.RequiredPermissions.RequiredPermissions != Interactables.Interobjects.DoorUtils.KeycardPermissions.None)
-                        ev.IsAllowed = false;
+                    if (ev.Door.RequiredPermissions.RequiredPermissions == Interactables.Interobjects.DoorUtils.KeycardPermissions.None)
+                    {
+                        ev.IsAllowed = true;
+                        Log.Info("No Perms");
+                        return;
+                    }
+
                     foreach (DoorType dt in DoorAccess)
                     {
                         if (ev.Door.Type == dt)
                         {
                             ev.IsAllowed = true;
-                            break;
+                            Log.Info("Got Door");
+                            return;
                         }
                     }
                     ev.IsAllowed = CheckPerms(KeycardPermissions, ev.Door.RequiredPermissions.RequiredPermissions);

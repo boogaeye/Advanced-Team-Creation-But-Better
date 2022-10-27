@@ -19,6 +19,7 @@ using Exiled.CustomItems.API.Features;
 using Exiled.API.Features.Items;
 using Exiled.Loader;
 using System.Diagnostics;
+using Exiled.API.Features.DamageHandlers;
 
 namespace AdvancedTeamCreation
 {
@@ -124,6 +125,8 @@ namespace AdvancedTeamCreation
 
         public void PlayerDead(DyingEventArgs ev)
         {
+            //This does not work
+            //ev.Handler = new CustomDamageHandler(ev.Target, new CustomReasonDamageHandler("Test", ev.Handler.Damage));
             if (ev.Killer == null)
             {
                 Log.Debug($"There is no Killer so using Target instead", plugin.Config.Debug);
@@ -179,8 +182,6 @@ namespace AdvancedTeamCreation
         {
             if (ev.Attacker == null) return;
             Log.Debug("Attacker is not null", TeamPlugin.Singleton.Config.Debug);
-            if (ev.Attacker.IsScp) return;
-            Log.Debug("Attacker is not SCP", TeamPlugin.Singleton.Config.Debug);
             if (!ev.Attacker.IsConnected && !ev.Target.IsConnected) return;
             Log.Debug("Attacker and Target are connected", TeamPlugin.Singleton.Config.Debug);
             if (ev.Attacker.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()))
@@ -192,6 +193,12 @@ namespace AdvancedTeamCreation
             {
                 if (o._deathReason.Contains("(Enemy)")) return;
                 if (o._deathReason.Contains("(Friendly)")) return;
+            }
+
+            if ((plugin.Config.SCPTeamsCantHurtEachotherWithFF && (ev.Attacker.IsScp || ev.Target.IsScp)) && (ev.Attacker.GetAdvancedTeam().Name == "SCP" || ev.Target.GetAdvancedTeam().Name == "SCP"))
+            {
+                ev.IsAllowed = false;
+                return;
             }
             Log.Debug("Death reason is not Enemy or Friendly", TeamPlugin.Singleton.Config.Debug);
             if (!IndividualFriendlyFire.CheckFriendlyFirePlayerHitbox(ev.Attacker.ReferenceHub, ev.Target.ReferenceHub))
@@ -207,17 +214,12 @@ namespace AdvancedTeamCreation
                     }
                     else
                     {
-                        if (ev.Target.ArtificialHealth < ev.Amount)
-                        {
-                            ev.Target.Health -= ev.Amount;
-                        }
+                        if (ev.Attacker.CurrentItem != null)
+                            ev.Target.Hurt(new CustomReasonDamageHandler($"(Enemy)Killed with {ev.Attacker.CurrentItem.Type}", ev.Handler.Damage));
                         else
-                        {
-                            ev.Target.ArtificialHealth -= ev.Amount;
-                            ev.Target.Health -= ev.Amount * 0.1f;
-                        }
-                        //ev.Target.Hurt(new CustomReasonDamageHandler($"(Enemy)Killed with {ev.Attacker.CurrentItem.Type}", ev.Handler.Damage));
+                            ev.Target.Hurt(new CustomReasonDamageHandler("(Enemy)Killed with No Item", ev.Handler.Damage));
                     }
+                    ev.IsAllowed = false;
                     Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their opposing teams", TeamPlugin.Singleton.Config.Debug);
                 }
             }
@@ -231,24 +233,22 @@ namespace AdvancedTeamCreation
                         Log.Debug("Testing for friendly hitbox in vanilla team", TeamPlugin.Singleton.Config.Debug);
                         if (ServerConsole.FriendlyFire)
                         {
-                            ev.Handler.Damage *= 0.3f;
-                            //ev.Target.Hurt(new CustomReasonDamageHandler($"(Friendly)Killed with {ev.Attacker.CurrentItem.Type}", ev.Handler.Damage));
+                            if (ev.Target != ev.Attacker)
+                                ev.Handler.Damage *= 0.3f;
 
                             Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their friendly teams (vanilla)", TeamPlugin.Singleton.Config.Debug);
                         }
-                        ev.IsAllowed = ServerConsole.FriendlyFire;
                     }
                     else
                     {
                         Log.Debug("Testing for friendly hitbox for custom team", TeamPlugin.Singleton.Config.Debug);
                         if (ServerConsole.FriendlyFire)
                         {
-                            ev.Handler.Damage *= 0.3f;
-                            //ev.Target.Hurt(new CustomReasonDamageHandler($"(Friendly)Killed with {ev.Attacker.CurrentItem.Type}", ev.Handler.Damage));
+                            if (ev.Target != ev.Attacker)
+                                ev.Handler.Damage *= 0.3f;
 
                             Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their friendly teams", TeamPlugin.Singleton.Config.Debug);
                         }
-                        ev.IsAllowed = ServerConsole.FriendlyFire;
                     }
                 }
             }
@@ -265,18 +265,18 @@ namespace AdvancedTeamCreation
         public void RoleChange(ChangingRoleEventArgs ev)
         {
             PlayerTimesAlive[ev.Player] = Round.ElapsedTime;
+            //if (ev.Reason == SpawnReason.RoundStart)
+            //{
+            //    return;
+            //}
             if (ev.Reason != Exiled.API.Enums.SpawnReason.Respawn && ev.Reason != Exiled.API.Enums.SpawnReason.Escaped)
             {
-                RespawnHelper.Leaderboard.ClearPlayerFromLeaderBoards(ev.Player);
                 ev.Player.ChangeAdvancedTeam(UnitHelper.FindAT(ev.NewRole.GetTeam().ToString()));
                 ev.Player.CustomInfo = null;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Nickname;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Role;
-                if (ev.Reason != Exiled.API.Enums.SpawnReason.RoundStart)
-                {
-                    MEC.Timing.CallDelayed(0.1f, () =>
+                MEC.Timing.CallDelayed(0.1f, () =>
                     CustomRoundEnder.UpdateRoundStatus());
-                }
             }
         }
 
@@ -293,6 +293,7 @@ namespace AdvancedTeamCreation
             ev.IsAllowed = false;
         }
 
+        //Removing once Mimicry Comes Out?
         public void Scp106DistressHelper(ContainingEventArgs ev)
         {
             if (ev.Player.GetAdvancedTeam().ConfirmFriendshipWithTeam(UnitHelper.FindAT("SCP")))
@@ -302,6 +303,7 @@ namespace AdvancedTeamCreation
             }
         }
 
+        //Removing once Mimicry Comes Out?
         public void Scp106FemurBreakerPreventer(EnteringFemurBreakerEventArgs ev)
         {
             if (ev.Player.GetAdvancedTeam().SpawnRoom == RoomType.Hcz106 || ev.Player.GetAdvancedTeam().ConfirmFriendshipWithTeam(UnitHelper.FindAT("SCP")))

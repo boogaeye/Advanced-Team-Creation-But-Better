@@ -20,6 +20,9 @@ namespace AdvancedTeamCreation
         [Description("Determines if Class D Personal are friends with other Class D and Chaos")]
         public bool ClassDFriendsWithChaos { get; set; } = true;
 
+        [Description("Defines if SCP Friendly teams can hurt eachother even with Friendly Fire on")]
+        public bool SCPTeamsCantHurtEachotherWithFF { get; set; } = true;
+
         public bool IgnoresRoundLock { get; set; } = false;
         public string ConfigsFolder { get; set; } = Path.Combine(Paths.Configs, "AdvancedTeamCreation");
 

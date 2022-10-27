@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Exiled.API.Enums;
 using Exiled.API.Features;
 
 namespace AdvancedTeamCreation.TeamAPI.Helpers
@@ -86,12 +87,19 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
                 if (TeamPlugin.Singleton.Config.TeamsListPromptsAtAnnouncement)
                     HudHelper.ShowAllPlayersTeamDisplay(10);
                 Cassie.MessageTranslated(at.CassieAnnouncement.Replace("{SCPLeft}", MessageHelper.ScpsLeft.ToString()).Replace("{Unit}", $"Nato_{Nato[0]}").Replace("{UnitNum}", Number.ToString()), at.CassieAnnouncementSubtitles.Replace("{SCPLeft}", MessageHelper.ScpsLeft.ToString()).Replace("{Unit}", Nato).Replace("{UnitNum}", Number.ToString()));
-                var path = Path.Combine(TeamPlugin.Singleton.Config.ConfigsFolder, at.Name, "theme.mp3");
-                if (TeamPlugin.assemblyAudioPlayer != null && File.Exists(path))
-                    AudioPlayer.API.AudioController.PlayFromFile(Path.Combine(TeamPlugin.Singleton.Config.ConfigsFolder, at.Name, "theme.mp3"), 50);
+                if (TeamPlugin.assemblyAudioPlayer != null)
+                {
+                    PlayAnnounceAudio(at);
+                }
             }
-
             PlayedAlready = true;
+        }
+
+        public static void PlayAnnounceAudio(AdvancedTeam at)
+        {
+            var path = Path.Combine(TeamPlugin.Singleton.Config.ConfigsFolder, at.Name, "theme.mp3");
+            if (File.Exists(path))
+                AudioPlayer.API.AudioController.PlayFromFile(Path.Combine(TeamPlugin.Singleton.Config.ConfigsFolder, at.Name, "theme.mp3"), 50);
         }
 
         public static void ResetTeamAnnouncement()

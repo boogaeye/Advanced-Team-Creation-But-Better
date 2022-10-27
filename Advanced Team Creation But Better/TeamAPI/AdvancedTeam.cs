@@ -51,31 +51,26 @@ namespace AdvancedTeamCreation.TeamAPI
 
         public bool ConfirmEnemyshipWithTeam(AdvancedTeam at)
         {
-            if (RoundEnderConfig == null || RoundEnderConfig.RequiredTeams == null) return false;
             return (RoundEnderConfig.RequiredTeams.Contains(at.Name) || at.RoundEnderConfig.RequiredTeams.Contains(Name)) && !ConfirmRequiredshipWithTeam(at);
         }
 
         public bool ConfirmFriendshipWithTeam(AdvancedTeam at)
         {
-            if (RoundEnderConfig == null || RoundEnderConfig.FriendlyTeams == null) return false;
             return (RoundEnderConfig.FriendlyTeams.Contains(at.Name) || at.RoundEnderConfig.FriendlyTeams.Contains(Name) || at.Name == Name) && !ConfirmRequiredshipWithTeam(at);
         }
 
         public bool ConfirmNeutralshipWithTeam(AdvancedTeam at)
         {
-            if (RoundEnderConfig == null || (RoundEnderConfig.FriendlyTeams == null || RoundEnderConfig.RequiredTeams == null)) return false;
             return !(RoundEnderConfig.RequiredTeams.Contains(at.Name) || at.RoundEnderConfig.RequiredTeams.Contains(Name)) && !(RoundEnderConfig.FriendlyTeams.Contains(at.Name) || at.RoundEnderConfig.FriendlyTeams.Contains(Name) || at.Name == Name);
         }
 
         public bool ConfirmRequiredshipWithTeam(AdvancedTeam at)
         {
-            if (RoundEnderConfig == null || (RoundEnderConfig.FriendlyTeams == null && RoundEnderConfig.RequiredTeams == null)) return false;
             return (RoundEnderConfig.RequiredTeams.Contains(at.Name) || at.RoundEnderConfig.RequiredTeams.Contains(Name)) && (RoundEnderConfig.FriendlyTeams.Contains(at.Name) || at.RoundEnderConfig.FriendlyTeams.Contains(Name) || at.Name == Name);
         }
 
         public bool DoesExist()
         {
-            if (RespawnHelper.Leaderboard.TeamLeaderboards.Count == 0) return false;
             return RespawnHelper.Leaderboard.TeamLeaderboards.First(e => e.Team.Name == Name).PlayerPairs.Keys.Any();
         }
 
