@@ -5,6 +5,7 @@ using System.ComponentModel;
 using AdvancedTeamCreation.TeamAPI.CustomConfig;
 using Respawning;
 using AdvancedTeamCreation.TeamAPI.Helpers;
+using PlayerRoles;
 
 namespace AdvancedTeamCreation.TeamAPI
 {
@@ -33,7 +34,7 @@ namespace AdvancedTeamCreation.TeamAPI
         public string DisplayName { get; set; } = "<color=black>NAN</color>";
 
         [Description("Defines what classes are able to escape if they are not then they will become whatever teams escape default is (Chaos, NTF Specialist)")]
-        public RoleType[] EscapableClasses { get; set; } = { RoleType.Scientist, RoleType.ClassD };
+        public RoleTypeId[] EscapableClasses { get; set; } = { RoleTypeId.Scientist, RoleTypeId.ClassD };
 
         [Description("Defines what class an escapee will become when escaping")]
         public string EscapeClass { get; set; } = "Cadet";

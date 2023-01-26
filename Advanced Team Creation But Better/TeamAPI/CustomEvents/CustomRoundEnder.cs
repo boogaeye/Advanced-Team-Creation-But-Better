@@ -82,7 +82,7 @@ namespace AdvancedTeamCreation.TeamAPI.CustomEvents
                     {
                         CanWin = false;
                     }
-                    if (CanStalemate)
+                    if (CanStalemate && CanWin)
                     {
                         EndRound(TeamPlugin.Singleton.Translation.Stalemate);
                         return;
