@@ -22,7 +22,6 @@ namespace AdvancedTeamCreation.Commands
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            bool Debug = TeamPlugin.Singleton.Config.Debug;
             if (sender.CheckPermission("ATC.main"))
             {
                 response = $"Updated All Folders";
@@ -34,10 +33,10 @@ namespace AdvancedTeamCreation.Commands
                         if (ast.AdvancedTeam == at.Name)
                         {
                             File.WriteAllText(Path.Combine(TeamPlugin.Singleton.Config.ConfigsFolder, at.Name, ast.Name + ".yml"), Loader.Serializer.Serialize(ast));
-                            Log.Debug($"Updating Subteam {ast.Name}", Debug);
+                            Log.Debug($"Updating Subteam {ast.Name}");
                         }
                     }
-                    Log.Debug($"Updating Team {at.Name}", Debug);
+                    Log.Debug($"Updating Team {at.Name}");
                     return true;
                 }
 

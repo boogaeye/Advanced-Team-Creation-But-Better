@@ -6,6 +6,7 @@ using AdvancedTeamCreation.TeamAPI.CustomConfig;
 using Respawning;
 using AdvancedTeamCreation.TeamAPI.Helpers;
 using PlayerRoles;
+using CustomPlayerEffects;
 
 namespace AdvancedTeamCreation.TeamAPI
 {

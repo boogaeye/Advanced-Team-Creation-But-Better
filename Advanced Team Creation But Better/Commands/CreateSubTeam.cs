@@ -4,6 +4,7 @@ using Exiled.Permissions.Extensions;
 using Exiled.Loader;
 using System.IO;
 using AdvancedTeamCreation.TeamAPI;
+using PlayerRoles;
 
 namespace AdvancedTeamCreation.Commands
 {
@@ -25,7 +26,7 @@ namespace AdvancedTeamCreation.Commands
                 if (Directory.Exists(Path.Combine(TeamPlugin.Singleton.Config.ConfigsFolder, Team)))
                 {
                     response = $"Created SubTeam Folder";
-                    AdvancedTeamSubclass at = new AdvancedTeamSubclass() { Name = SubTeamName, HP = 100, MaxHP = 100, Model = RoleType.ClassD };
+                    AdvancedTeamSubclass at = new AdvancedTeamSubclass() { Name = SubTeamName, HP = 100, MaxHP = 100, Model = RoleTypeId.ClassD };
                     Directory.CreateDirectory(Path.Combine(TeamPlugin.Singleton.Config.ConfigsFolder, Team));
                     File.Create(Path.Combine(TeamPlugin.Singleton.Config.ConfigsFolder, Team, SubTeamName + ".yml")).Close();
                     File.WriteAllText(Path.Combine(TeamPlugin.Singleton.Config.ConfigsFolder, Team, SubTeamName + ".yml"), Loader.Serializer.Serialize(at));

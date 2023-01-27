@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using AdvancedTeamCreation.TeamAPI.Helpers;
 using AdvancedTeamCreation.TeamAPI.CustomConfig;
+using PlayerRoles;
 
 namespace AdvancedTeamCreation
 {
@@ -78,7 +79,7 @@ namespace AdvancedTeamCreation
             {
                 var gh = Loader.Deserializer.Deserialize<AdvancedTeam>(File.ReadAllText(Path.Combine(at, "TeamConfig.yml")));
                 gh.Name = Path.GetFileName(at);
-                Log.Debug($"Deserializing Team {at} to Team {gh.Name}", Debug);
+                Log.Debug($"Deserializing Team {at} to Team {gh.Name}");
                 List<AdvancedTeamSubclass> SubteamMan = new List<AdvancedTeamSubclass>();
                 foreach (string ast in Directory.EnumerateFiles(at))
                 {
@@ -90,12 +91,12 @@ namespace AdvancedTeamCreation
                         if (gh.SpawnOrder.Last().Split(':')[0] == g.Name)
                         {
                             gh.LastIndexSubclass = g;
-                            Log.Debug($"{g.Name} is last spawn order", Debug);
+                            Log.Debug($"{g.Name} is last spawn order");
                         }
                         if (g.CustomKeycardConfig.RegisterKeycard)
                             g.RegisterCustomKeycard();
                         SubteamMan.Add(g);
-                        Log.Debug($"Deserializing SubTeam {ast} to Subclass {g.Name}", Debug);
+                        Log.Debug($"Deserializing SubTeam {ast} to Subclass {g.Name}");
                     }
                 }
                 UnitHelper.RegisterTeam(gh, SubteamMan.ToArray());

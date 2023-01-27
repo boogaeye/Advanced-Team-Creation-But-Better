@@ -57,13 +57,13 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
             public void AddPlayer(Player p)
             {
                 PlayerPairs[p] = SubclassDefault;
-                Log.Debug($"{p.Nickname} added to {Team.Name} Leaderboard", TeamPlugin.Singleton.Config.Debug);
+                Log.Debug($"{p.Nickname} added to {Team.Name} Leaderboard");
             }
 
             public void RemovePlayer(Player p)
             {
                 PlayerPairs.Remove(p);
-                Log.Debug($"{p.Nickname} removed to {Team.Name} Leaderboard", TeamPlugin.Singleton.Config.Debug);
+                Log.Debug($"{p.Nickname} removed to {Team.Name} Leaderboard");
             }
         }
 
@@ -96,7 +96,7 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
             foreach (AdvancedTeam at in UnitHelper.Teams)
             {
                 TeamLeaderboards.Add(new TeamLeaderboard(at));
-                Log.Debug($"Made Team Leaderboard {at.Name}", TeamPlugin.Singleton.Config.Debug);
+                Log.Debug($"Made Team Leaderboard {at.Name}");
             }
             TeamsInstantiable = true;
         }
@@ -104,7 +104,7 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
         public void DestroyTeamLeaders()
         {
             TeamLeaderboards.Clear();
-            Log.Debug("Cleared Team Leaderboards", TeamPlugin.Singleton.Config.Debug);
+            Log.Debug("Cleared Team Leaderboards");
             TeamsInstantiable = false;
         }
     }
