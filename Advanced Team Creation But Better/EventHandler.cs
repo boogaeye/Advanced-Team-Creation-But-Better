@@ -295,12 +295,11 @@ namespace AdvancedTeamCreation
             RespawnHelper.Leaderboard.DestroyTeamLeaders();
         }
 
-        // Preventing conflicts with plugins like EndConditions
+        // Preventing conflicts with plugins like EndConditions //Hopefully
         public void RoundEnding(EndingRoundEventArgs ev)
         {
             if (!plugin.Config.CustomRoundEnder) return;
-            ev.IsRoundEnded = false;
-            ev.IsAllowed = false;
+            ev.IsRoundEnded = false; //Okay Exiled
         }
 
         public void Scp106NoTeamKill(EnteringPocketDimensionEventArgs ev)

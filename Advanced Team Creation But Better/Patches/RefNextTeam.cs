@@ -21,7 +21,7 @@ namespace AdvancedTeamCreation.Patches
     {
         public static bool Prefix(RespawnManager __instance)
         {
-            ReferancingTeamEventArgs ev = null;
+            ReferancingTeamEventArgs ev = new ReferancingTeamEventArgs(__instance.NextKnownTeam);
             if (__instance.NextKnownTeam == Respawning.SpawnableTeamType.NineTailedFox)
                 ev = new TeamAPI.Events.TeamEvents.ReferancingTeamEventArgs(Respawning.SpawnableTeamType.NineTailedFox);
             else if (__instance.NextKnownTeam == Respawning.SpawnableTeamType.ChaosInsurgency)

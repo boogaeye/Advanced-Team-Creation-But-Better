@@ -202,7 +202,7 @@ namespace AdvancedTeamCreation.TeamAPI.Extentions
                         {
                             ci.Give(ply, false);
                         }
-                        else if (int.TryParse(item, out int _i) && ItemConversionHelper.TryGetCustomItemTypeFromInt(_i, out Exiled.CustomItems.API.Features.CustomItem _ci))
+                        else if (uint.TryParse(item, out uint _i) && ItemConversionHelper.TryGetCustomItemTypeFromInt(_i, out Exiled.CustomItems.API.Features.CustomItem _ci))
                         {
                             ci.Give(ply, false);
                         }
@@ -297,7 +297,7 @@ namespace AdvancedTeamCreation.TeamAPI.Extentions
                         {
                             ci.Give(ply, false);
                         }
-                        else if (int.TryParse(item, out int _i) && ItemConversionHelper.TryGetCustomItemTypeFromInt(_i, out Exiled.CustomItems.API.Features.CustomItem _ci))
+                        else if (uint.TryParse(item, out uint _i) && ItemConversionHelper.TryGetCustomItemTypeFromInt(_i, out Exiled.CustomItems.API.Features.CustomItem _ci))
                         {
                             ci.Give(ply, false);
                         }

@@ -18,7 +18,7 @@ namespace AdvancedTeamCreation.ATCCustomItems
         public override string Name { get; set; } = "106 Grenade";
         public override string Description { get; set; } = "Send players to the pocket dimension with a chance";
         public override float Weight { get; set; } = 1;
-        public override SpawnProperties SpawnProperties { get; set; } = new SpawnProperties() { Limit = 1, DynamicSpawnPoints = new List<DynamicSpawnPoint>() { new DynamicSpawnPoint() { Chance = 25, Location = SpawnLocationType.InsideServersBottom }, new DynamicSpawnPoint() { Chance = 25, Location = SpawnLocationType.Inside012 }, new DynamicSpawnPoint() { Chance = 25, Location = SpawnLocationType.Inside096 } } };
+        public override SpawnProperties SpawnProperties { get; set; } = new SpawnProperties() { Limit = 1, DynamicSpawnPoints = new List<DynamicSpawnPoint>() { new DynamicSpawnPoint() { Chance = 25, Location = SpawnLocationType.InsideServersBottom }, new DynamicSpawnPoint() { Chance = 25, Location = SpawnLocationType.Inside049Armory }, new DynamicSpawnPoint() { Chance = 25, Location = SpawnLocationType.Inside096 } } };
         public int RandScpPocket { get; set; } = 5;
         public int RandHumanPocket { get; set; } = 30;
         public override bool ShouldMessageOnGban => true;
