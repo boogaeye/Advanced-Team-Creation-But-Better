@@ -15,6 +15,9 @@ namespace AdvancedTeamCreation.TeamAPI.Events
         /// </summary>
         public static event TeamEvents<ReferancingTeamEventArgs> ReferancingTeam;
 
+        /// <summary>
+        /// When the round ends used for API reasons.
+        /// </summary>
         public static event TeamEvents<ATCRoundEndingEventArgs> ATCRoundEnding;
 
         /// <summary>
@@ -27,6 +30,9 @@ namespace AdvancedTeamCreation.TeamAPI.Events
         /// </summary>
         public static event TeamEvents<AdvancedTeamSlaughteredEventArgs> AdvancedTeamSlaughtered;
 
+        /// <summary>
+        /// When a player Dies
+        /// </summary>
         public static event TeamEvents<AdvancedTeamDeadPlayerEventArgs> AdvancedTeamDeadPlayer;
 
         public class ReferancingTeamEventArgs : EventArgs
