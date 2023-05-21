@@ -45,7 +45,7 @@ namespace AdvancedTeamCreation.TeamAPI
 
         public LeaderboardConfigHelper RoundEnderConfig { get; set; } = new LeaderboardConfigHelper();
 
-        [Description("Used for when and Scp gets terminated by this team typically if it was the global occult coalition it would look like 'G O C'")]
+        [Description("Used for when an Scp gets terminated by this team typically if it was the global occult coalition it would look like 'G O C'")]
         public string SaidName { get; set; } = "Unspecified";
 
         public string[] SpawnOrder { get; set; } = { "Commander:1", "Officer:3", "Cadet:5" };

@@ -25,8 +25,8 @@ namespace AdvancedTeamCreation
         public override string Author => "SCP Fazbear"; //Adopting my current username
         public override string Name => "Advanced Team Creation";
         public override string Prefix => "ATC";
-        public override Version RequiredExiledVersion => new Version(5, 3, 0, 0);
-        public override Version Version => new Version(3, 0, 0, 0);
+        public override Version RequiredExiledVersion => new Version(7, 0, 0, 0);
+        public override Version Version => new Version(4, 0, 0, 0);
         public override PluginPriority Priority => PluginPriority.Last;
 
         //public void CheckPlugins()
@@ -80,7 +80,7 @@ namespace AdvancedTeamCreation
                 if (ats.CustomKeycardConfig.RegisterKeycard)
                     ats.UnregisterCustomKeycard();
             }
-            Harmony.UnpatchAll("BoogaEye.TeamStuff.Bruh");
+            Harmony.UnpatchAll("ScpFaz.TeamPlugin.Co");
             EventHandler = null;
             TeamEventHandler = null;
             Harmony = null;
@@ -89,7 +89,7 @@ namespace AdvancedTeamCreation
 
         public override void OnEnabled()
         {
-            Harmony = new Harmony("BoogaEye.TeamStuff.Bruh");
+            Harmony = new Harmony("ScpFaz.TeamPlugin.Co");
             Singleton = this;
             EventHandler = new EventHandler(this);
             TeamEventHandler = new TeamEventHandler(this);
