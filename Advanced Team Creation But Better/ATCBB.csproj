@@ -154,8 +154,5 @@
   <ItemGroup>
     <Folder Include="TeamAPI\TeamEffects\" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assembly-CSharp_publicized.dll" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
