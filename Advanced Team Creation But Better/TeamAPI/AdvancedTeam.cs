@@ -30,7 +30,10 @@ namespace AdvancedTeamCreation.TeamAPI
         public string CassieSlaughteredSubtitles { get; set; } = "{Terminated} terminated by {Terminating}";
 
         public int Chance { get; set; } = 75;
+
+        [Description("When it rolls for chance it will also roll for this. This will hide the team that spawned from the MTF and not play its Cassie Announcement.")]
         public int ChanceForHiddenMtfNato { get; set; } = 0;
+
         public string Color { get; set; } = "yellow";
         public string DisplayName { get; set; } = "<color=black>NAN</color>";
 
@@ -48,7 +51,10 @@ namespace AdvancedTeamCreation.TeamAPI
         [Description("Used for when an Scp gets terminated by this team typically if it was the global occult coalition it would look like 'G O C'")]
         public string SaidName { get; set; } = "Unspecified";
 
+        [Description("The spawn order goes from top to bottom. It goes by this [The Custom Role you want to spawn: How many] so it would go to the Custom Commander Role spawn one then spawn 3 officers and so on...")]
         public string[] SpawnOrder { get; set; } = { "Commander:1", "Officer:3", "Cadet:5" };
+
+        [Description("This is the room that the team spawns in, if the room is in an area that is restricted(like decontaminated light containment, or nuke) the team will spawn on surface")]
         public RoomType SpawnRoom { get; set; } = RoomType.Surface;
 
         public bool ConfirmEnemyshipWithTeam(AdvancedTeam at)
