@@ -20,6 +20,10 @@ using Exiled.API.Features.Items;
 using Exiled.Loader;
 using System.Diagnostics;
 using Exiled.API.Features.DamageHandlers;
+using PlayerRoles;
+using Exiled.Events.EventArgs.Server;
+using Exiled.Events.EventArgs.Map;
+using Exiled.Events.EventArgs.Player;
 
 namespace AdvancedTeamCreation
 {
@@ -61,7 +65,7 @@ namespace AdvancedTeamCreation
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Role;
                 MEC.Timing.CallDelayed(0.1f, () =>
                     {
-                        ev.Player.ChangeAdvancedTeam(UnitHelper.FindAT(ev.NewRole.GetTeam().ToString()));
+                        ev.Player.ChangeAdvancedTeam(UnitHelper.FindAT(ev.Player.Role.Team.ToString()));
                         ev.Player.ShowPlayerTeamDisplay();
                         CustomRoundEnder.UpdateRoundStatus();
                     }
@@ -80,15 +84,16 @@ namespace AdvancedTeamCreation
             MessageHelper.ResetSpawns();
             RespawnHelper.SetReferance(null);
             RespawnHelper.ResetCassie();
-            MEC.Timing.CallDelayed(1, () =>
-            {
-                if (TeamPlugin.assemblyTimer != null)
-                {
-                    HudHelper.NormalTime = RespawnTimer.API.API.TimerView;
-                    Log.Debug($"Caught Normal Timer {HudHelper.NormalTime.DuringRespawnString.Length}", plugin.Config.Debug);
-                    HudHelper.LoadTimerConfig(null);
-                }
-            });
+            //TODO NOT SUPPORTED
+            //MEC.Timing.CallDelayed(1, () =>
+            //{
+            //    if (TeamPlugin.assemblyTimer != null)
+            //    {
+            //        HudHelper.NormalTime = RespawnTimer.API.API.TimerView;
+            //        Log.Debug($"Caught Normal Timer {HudHelper.NormalTime.DuringRespawnString.Length}", plugin.Config.Debug);
+            //        HudHelper.LoadTimerConfig(null);
+            //    }
+            //});
         }
 
         public void MtfRespawnCassie(AnnouncingNtfEntranceEventArgs ev)
@@ -96,7 +101,7 @@ namespace AdvancedTeamCreation
             MessageHelper.IncrementSpawns();
             if (RespawnHelper.CassieHelper != null && !RespawnHelper.CassieHelper.VanillaTeam)
             {
-                Log.Debug("Cassie Helper is stable", plugin.Config.Debug);
+                Log.Debug("Cassie Helper is stable");
                 if (RespawnHelper.CassieHelper.ChanceForHiddenMtfNato < MessageHelper.HiddenInterference)
                 {
                     UnitHelper.ChangeUnitNameOnAdvancedTeam(MessageHelper.Spawns, RespawnHelper.CassieHelper, $"{ev.UnitName}-{ev.UnitNumber}");
@@ -112,7 +117,7 @@ namespace AdvancedTeamCreation
             if (RespawnHelper.CassieHelper != null && RespawnHelper.CassieHelper.CassieAnnouncement != AdvancedTeam.DEFAULTAnnounce)
             {
                 ev.IsAllowed = false;
-                Log.Debug("Playing Team Announcement from MtfCassie!", plugin.Config.Debug);
+                Log.Debug("Playing Team Announcement from MtfCassie!");
                 MessageHelper.PlayTeamAnnouncement(RespawnHelper.CassieHelper, ev.UnitName, ev.UnitNumber);
                 MessageHelper.ResetTeamAnnouncement();
             }
@@ -127,140 +132,145 @@ namespace AdvancedTeamCreation
         {
             //This does not work
             //ev.Handler = new CustomDamageHandler(ev.Target, new CustomReasonDamageHandler("Test", ev.Handler.Damage));
-            if (ev.Killer == null)
+            if (ev.Attacker == null)
             {
-                Log.Debug($"There is no Killer so using Target instead", plugin.Config.Debug);
-                Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} how many players are left {RespawnHelper.Leaderboard.GetTeamLeaderboard(ev.Target.GetAdvancedTeam().Name).PlayerPairs.Count - 1}", plugin.Config.Debug);
-                if (RespawnHelper.Leaderboard.GetTeamLeaderboard(ev.Target.GetAdvancedTeam().Name).PlayerPairs.Count - 1 == 0)
+                Log.Debug($"There is no Killer so using Target instead");
+                Log.Debug($"The team {ev.Player.GetAdvancedTeam().Name} how many players are left {RespawnHelper.Leaderboard.GetTeamLeaderboard(ev.Player.GetAdvancedTeam().Name).PlayerPairs.Count - 1}");
+                if (RespawnHelper.Leaderboard.GetTeamLeaderboard(ev.Player.GetAdvancedTeam().Name).PlayerPairs.Count - 1 == 0)
                 {
-                    var e2 = new TeamEvents.AdvancedTeamSlaughteredEventArgs(ev.Target.GetAdvancedTeam(), ev.Target.GetAdvancedTeam());
+                    var e2 = new TeamEvents.AdvancedTeamSlaughteredEventArgs(ev.Player.GetAdvancedTeam(), ev.Player.GetAdvancedTeam());
                     e2.Slaughter();
-                    Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} sent slaughter event", plugin.Config.Debug);
-                    if (e2.IsAllowed && ev.Target.GetAdvancedTeam().Name != "SCP")
+                    Log.Debug($"The team {ev.Player.GetAdvancedTeam().Name} sent slaughter event");
+                    if (e2.IsAllowed && ev.Player.GetAdvancedTeam().Name != "SCP")
                     {
                         if (e2.AdvancedTeam.CassieSlaughtered != string.Empty)
                         {
-                            Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} sent Termination Cassie", plugin.Config.Debug);
+                            Log.Debug($"The team {ev.Player.GetAdvancedTeam().Name} sent Termination Cassie");
                             MessageHelper.SlaughteredTeam(e2.AdvancedTeam, e2.TerminatingTeam);
                         }
                     }
                 }
                 return;
             }
-            if (!ev.Killer.IsConnected && !ev.Target.IsConnected) return;
-            Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} how many players are left {RespawnHelper.Leaderboard.GetTeamLeaderboard(ev.Target.GetAdvancedTeam().Name).PlayerPairs.Count - 1}", plugin.Config.Debug);
-            if (RespawnHelper.Leaderboard.GetTeamLeaderboard(ev.Target.GetAdvancedTeam().Name).PlayerPairs.Count - 1 == 0)
+            if (!ev.Attacker.IsConnected && !ev.Player.IsConnected) return;
+            Log.Debug($"The team {ev.Player.GetAdvancedTeam().Name} how many players are left {RespawnHelper.Leaderboard.GetTeamLeaderboard(ev.Player.GetAdvancedTeam().Name).PlayerPairs.Count - 1}");
+            if (RespawnHelper.Leaderboard.GetTeamLeaderboard(ev.Player.GetAdvancedTeam().Name).PlayerPairs.Count - 1 == 0)
             {
-                var e2 = new TeamEvents.AdvancedTeamSlaughteredEventArgs(ev.Target.GetAdvancedTeam(), ev.Killer.GetAdvancedTeam());
+                var e2 = new TeamEvents.AdvancedTeamSlaughteredEventArgs(ev.Player.GetAdvancedTeam(), ev.Attacker.GetAdvancedTeam());
                 e2.Slaughter();
-                Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} sent slaughter event", plugin.Config.Debug);
-                if (e2.IsAllowed && ev.Target.GetAdvancedTeam().Name != "SCP")
+                Log.Debug($"The team {ev.Player.GetAdvancedTeam().Name} sent slaughter event");
+                if (e2.IsAllowed && ev.Player.GetAdvancedTeam().Name != "SCP")
                 {
                     if (e2.AdvancedTeam.CassieSlaughtered != string.Empty)
                     {
-                        Log.Debug($"The team {ev.Target.GetAdvancedTeam().Name} sent Termination Cassie", plugin.Config.Debug);
+                        Log.Debug($"The team {ev.Player.GetAdvancedTeam().Name} sent Termination Cassie");
                         MessageHelper.SlaughteredTeam(e2.AdvancedTeam, e2.TerminatingTeam);
                     }
                 }
             }
-            var e1 = new TeamEvents.AdvancedTeamDeadPlayerEventArgs(ev.Target.GetAdvancedTeam(), ev.Target, ev.Killer);
+            var e1 = new TeamEvents.AdvancedTeamDeadPlayerEventArgs(ev.Player.GetAdvancedTeam(), ev.Player, ev.Attacker);
             e1.Kill();
             if (!e1.IsAllowed)
             {
                 ev.IsAllowed = false;
                 return;
             }
-            nickHelper = $"{ev.Target.Nickname}({ev.Target.GetAdvancedTeam().DisplayName})";
-            if (ev.Target.IsScp)
+            nickHelper = $"{ev.Player.Nickname}({ev.Player.GetAdvancedTeam().DisplayName})";
+            if (ev.Player.IsScp)
             {
-                NineTailedFoxAnnouncer.ConvertSCP(ev.Target.Role.Type, out string nSpace, out string wSpace);
-                MessageHelper.CustomTeamScpTermination(wSpace, ev.Killer.GetAdvancedTeam());
+                NineTailedFoxAnnouncer.ConvertSCP(ev.Player.Role.Type, out string nSpace, out string wSpace);
+                MessageHelper.CustomTeamScpTermination(wSpace, ev.Attacker.GetAdvancedTeam());
             }
         }
 
         public void PlayerHurt(HurtingEventArgs ev)
         {
             if (ev.Attacker == null) return;
-            Log.Debug("Attacker is not null", TeamPlugin.Singleton.Config.Debug);
-            if (!ev.Attacker.IsConnected && !ev.Target.IsConnected) return;
-            Log.Debug("Attacker and Target are connected", TeamPlugin.Singleton.Config.Debug);
-            if (ev.Attacker.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Target.GetAdvancedTeam()))
+            Log.Debug("Attacker is not null");
+            if (!ev.Attacker.IsConnected && !ev.Player.IsConnected) return;
+            Log.Debug("Attacker and Target are connected");
+            if (ev.Attacker.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Player.GetAdvancedTeam()))
             {
                 ev.Attacker.ShowHint("<color=red>Don't damage a friendly team</color>");
             }
-            Log.Debug("Passed Confirm Friendly Team", TeamPlugin.Singleton.Config.Debug);
-            if (ev.Handler.Is<CustomReasonDamageHandler>(out CustomReasonDamageHandler o))
+            Log.Debug("Passed Confirm Friendly Team");
+            if (ev.DamageHandler.Is<TeamDamageHandler>(out TeamDamageHandler o))
             {
-                if (o._deathReason.Contains("(Enemy)")) return;
-                if (o._deathReason.Contains("(Friendly)")) return;
+                return;
             }
 
-            if ((plugin.Config.SCPTeamsCantHurtEachotherWithFF && (ev.Attacker.IsScp || ev.Target.IsScp)) && (ev.Attacker.GetAdvancedTeam().Name == "SCP" || ev.Target.GetAdvancedTeam().Name == "SCP"))
+            if ((plugin.Config.SCPTeamsCantHurtEachotherWithFF && ev.Player.GetAdvancedTeam().ConfirmFriendshipWithTeam(UnitHelper.FindAT("SCP")) && ev.Attacker.GetAdvancedTeam().ConfirmFriendshipWithTeam(UnitHelper.FindAT("SCP"))))
             {
                 ev.IsAllowed = false;
                 return;
             }
-            Log.Debug("Death reason is not Enemy or Friendly", TeamPlugin.Singleton.Config.Debug);
-            if (!IndividualFriendlyFire.CheckFriendlyFirePlayerHitbox(ev.Attacker.ReferenceHub, ev.Target.ReferenceHub))
+            Log.Debug("Death reason is not Enemy or Friendly");
+            if (!IndividualFriendlyFire.CheckFriendlyFirePlayerHitbox(ev.Attacker.ReferenceHub, ev.Player.ReferenceHub))
             {
-                Log.Debug("Testing for friendly hitbox", TeamPlugin.Singleton.Config.Debug);
-                if (ev.Target.GetAdvancedTeam().ConfirmEnemyshipWithTeam(ev.Attacker.GetAdvancedTeam()))
+                Log.Debug("Testing for friendly hitbox");
+                if ((ev.Player.GetAdvancedTeam().ConfirmEnemyshipWithTeam(ev.Attacker.GetAdvancedTeam()) || ev.Player.GetAdvancedTeam().ConfirmNeutralshipWithTeam(ev.Attacker.GetAdvancedTeam())) && !ev.Player.GetAdvancedTeam().ConfirmRequiredshipWithTeam(ev.Attacker.GetAdvancedTeam()))
                 {
-                    Log.Debug("Testing for enemy hitbox in custom team", TeamPlugin.Singleton.Config.Debug);
+                    Log.Debug("Testing for enemy hitbox in custom team");
                     ev.Attacker.ShowHitMarker();
-                    if (ev.Amount >= ev.Target.Health)
+                    if (ev.Attacker.CurrentItem != null)
+                        ev.Player.Hurt(new TeamDamageHandler(ev.Player, ev.Attacker, $"(Enemy)Killed with {ev.Attacker.CurrentItem.Type}", ev.DamageHandler.Damage));
+                    else
+                        ev.Player.Hurt(new TeamDamageHandler(ev.Player, ev.Attacker, "(Enemy)Killed with No Item", ev.DamageHandler.Damage));
+                    ev.IsAllowed = false;
+                    Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Player.Nickname} because of their opposing teams");
+                }
+                else if (ev.Player.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Attacker.GetAdvancedTeam()))
+                {
+                    if (ServerConsole.FriendlyFire)
                     {
-                        ev.Target.Kill("Enemy");
+                        if (ev.Player != ev.Attacker)
+                            ev.DamageHandler.Damage *= 0.3f;
+
+                        Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Player.Nickname} because of their friendly teams (vanilla)");
                     }
                     else
-                    {
-                        if (ev.Attacker.CurrentItem != null)
-                            ev.Target.Hurt(new CustomReasonDamageHandler($"(Enemy)Killed with {ev.Attacker.CurrentItem.Type}", ev.Handler.Damage));
-                        else
-                            ev.Target.Hurt(new CustomReasonDamageHandler("(Enemy)Killed with No Item", ev.Handler.Damage));
-                    }
-                    ev.IsAllowed = false;
-                    Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their opposing teams", TeamPlugin.Singleton.Config.Debug);
+                        ev.IsAllowed = false;
                 }
             }
             else
             {
-                Log.Debug("Team is not friendly in hitbox mode", TeamPlugin.Singleton.Config.Debug);
-                if (ev.Target.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Attacker.GetAdvancedTeam()))
+                Log.Debug("Team is not friendly in hitbox mode");
+                if (ev.Player.GetAdvancedTeam().ConfirmFriendshipWithTeam(ev.Attacker.GetAdvancedTeam()))
                 {
-                    if (ev.Target.GetAdvancedTeam().VanillaTeam)
+                    if (ev.Player.GetAdvancedTeam().VanillaTeam)
                     {
-                        Log.Debug("Testing for friendly hitbox in vanilla team", TeamPlugin.Singleton.Config.Debug);
+                        Log.Debug("Testing for friendly hitbox in vanilla team");
                         if (ServerConsole.FriendlyFire)
                         {
-                            if (ev.Target != ev.Attacker)
-                                ev.Handler.Damage *= 0.3f;
+                            if (ev.Player != ev.Attacker)
+                                ev.DamageHandler.Damage *= 0.3f;
 
-                            Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their friendly teams (vanilla)", TeamPlugin.Singleton.Config.Debug);
+                            Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Player.Nickname} because of their friendly teams (vanilla)");
                         }
                     }
                     else
                     {
-                        Log.Debug("Testing for friendly hitbox for custom team", TeamPlugin.Singleton.Config.Debug);
+                        Log.Debug("Testing for friendly hitbox for custom team");
                         if (ServerConsole.FriendlyFire)
                         {
-                            if (ev.Target != ev.Attacker)
-                                ev.Handler.Damage *= 0.3f;
+                            if (ev.Player != ev.Attacker)
+                                ev.DamageHandler.Damage *= 0.3f;
 
-                            Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Target.Nickname} because of their friendly teams", TeamPlugin.Singleton.Config.Debug);
+                            Log.Debug($"Allowing {ev.Attacker.Nickname} to damage {ev.Player.Nickname} because of their friendly teams");
                         }
                     }
                 }
             }
         }
 
-        public void RagdollSpawn(SpawningRagdollEventArgs ev)
-        {
-            if (ev.Owner.GetAdvancedTeam().VanillaTeam) return;
-            ev.IsAllowed = false;
-            var LatestestRagdollInfo = new RagdollInfo(Server.Host.ReferenceHub, ev.DamageHandlerBase, ev.Role, ev.Position, ev.Rotation, nickHelper, ev.CreationTime);
-            new Exiled.API.Features.Ragdoll(LatestestRagdollInfo, true);
-        }
+        //TODO Get Ragdolls fixed
+        //public void RagdollSpawn(SpawningRagdollEventArgs ev)
+        //{
+        //    if (ev.Owner.GetAdvancedTeam().VanillaTeam) return;
+        //    ev.IsAllowed = false;
+        //    var LatestestRagdollInfo = new RagdollInfo(Server.Host.ReferenceHub, ev.DamageHandlerBase, ev.Role, ev.Position, ev.Rotation, nickHelper, ev.CreationTime);
+        //    new Exiled.API.Features.Ragdoll(LatestestRagdollInfo, true);
+        //}
 
         public void RoleChange(ChangingRoleEventArgs ev)
         {
@@ -271,7 +281,7 @@ namespace AdvancedTeamCreation
             //}
             if (ev.Reason != Exiled.API.Enums.SpawnReason.Respawn && ev.Reason != Exiled.API.Enums.SpawnReason.Escaped)
             {
-                ev.Player.ChangeAdvancedTeam(UnitHelper.FindAT(ev.NewRole.GetTeam().ToString()));
+                ev.Player.ChangeAdvancedTeam(UnitHelper.FindAT(RoleExtensions.GetTeam(ev.NewRole).ToString()));
                 ev.Player.CustomInfo = null;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Nickname;
                 ev.Player.ReferenceHub.nicknameSync.ShownPlayerInfo |= PlayerInfoArea.Role;
@@ -285,31 +295,11 @@ namespace AdvancedTeamCreation
             RespawnHelper.Leaderboard.DestroyTeamLeaders();
         }
 
-        // Preventing conflicts with plugins like EndConditions
+        // Preventing conflicts with plugins like EndConditions //Hopefully
         public void RoundEnding(EndingRoundEventArgs ev)
         {
             if (!plugin.Config.CustomRoundEnder) return;
-            ev.IsRoundEnded = false;
-            ev.IsAllowed = false;
-        }
-
-        //Removing once Mimicry Comes Out?
-        public void Scp106DistressHelper(ContainingEventArgs ev)
-        {
-            if (ev.Player.GetAdvancedTeam().ConfirmFriendshipWithTeam(UnitHelper.FindAT("SCP")))
-            {
-                if (!Server.FriendlyFire) return;
-                ev.IsAllowed = false;
-            }
-        }
-
-        //Removing once Mimicry Comes Out?
-        public void Scp106FemurBreakerPreventer(EnteringFemurBreakerEventArgs ev)
-        {
-            if (ev.Player.GetAdvancedTeam().SpawnRoom == RoomType.Hcz106 || ev.Player.GetAdvancedTeam().ConfirmFriendshipWithTeam(UnitHelper.FindAT("SCP")))
-            {
-                ev.IsAllowed = false;
-            }
+            ev.IsRoundEnded = false; //Okay Exiled
         }
 
         public void Scp106NoTeamKill(EnteringPocketDimensionEventArgs ev)
@@ -322,13 +312,13 @@ namespace AdvancedTeamCreation
 
         public void ScpTermination(AnnouncingScpTerminationEventArgs ev)
         {
-            if (ev.Killer == null) return;
-            if (ev.Handler.TargetFootprint.Role.GetTeam() != Team.SCP) return;
+            if (ev.Attacker == null) return;
+            if (RoleExtensions.GetTeam(ev.DamageHandler.TargetFootprint.Role) != Team.SCPs) return;
             if (plugin.Config.TeamsListPromptsAtAnnouncement)
             {
                 HudHelper.ShowAllPlayersTeamDisplay(10);
             }
-            if (!ev.Killer.GetAdvancedTeam().VanillaTeam)
+            if (!ev.Attacker.GetAdvancedTeam().VanillaTeam)
             {
                 ev.IsAllowed = false;
             }
@@ -343,7 +333,7 @@ namespace AdvancedTeamCreation
             }
             if (RespawnHelper.ReferancedTeam.VanillaTeam || RespawnHelper.ReferancedTeam == null)
             {
-                HudHelper.LoadTimerConfig(null);
+                //HudHelper.LoadTimerConfig(null);
                 foreach (Player p in ev.Players)
                 {
                     switch (ev.NextKnownTeam)
@@ -363,7 +353,7 @@ namespace AdvancedTeamCreation
             }
             if (!RespawnHelper.ReferancedTeam.PlayBeforeSpawning && !RespawnHelper.ReferancedTeam.VanillaTeam && ev.NextKnownTeam != Respawning.SpawnableTeamType.NineTailedFox)
             {
-                Log.Debug("Playing Team Announcement from Team Spawn!", plugin.Config.Debug);
+                Log.Debug("Playing Team Announcement from Team Spawn!");
                 MessageHelper.PlayTeamAnnouncement(RespawnHelper.ReferancedTeam);
             }
 
@@ -376,7 +366,7 @@ namespace AdvancedTeamCreation
             {
                 if (Helper.Values.Count == 0)
                 {
-                    p.SetRole(RoleType.Spectator, SpawnReason.Died);
+                    p.RoleManager.ServerSetRole(RoleTypeId.Spectator, RoleChangeReason.Revived);
                     p.Broadcast(new Exiled.API.Features.Broadcast("You couldn't be respawned because this team has limited players", 5), true);
                     break;
                 }
@@ -393,7 +383,7 @@ namespace AdvancedTeamCreation
             RespawnHelper.SetReferance(null);
             if (TeamPlugin.assemblyTimer != null)
             {
-                HudHelper.LoadTimerConfig(null);
+                //HudHelper.LoadTimerConfig(null);
             }
             MessageHelper.ResetTeamAnnouncement();
         }

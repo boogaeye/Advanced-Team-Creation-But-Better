@@ -1,13 +1,14 @@
 ﻿using Exiled.API.Features;
 using AdvancedTeamCreation.TeamAPI.Extentions;
-using RespawnTimer.API.Features;
-using RespawnTimer;
+
+//using RespawnTimer.API.Features;
+//using RespawnTimer;
 
 namespace AdvancedTeamCreation.TeamAPI.Helpers
 {
     public class HudHelper
     {
-        public static TimerView NormalTime;
+        //public static TimerView NormalTime;
 
         public static void RaycastHelper(Player ply)
         {
@@ -48,13 +49,13 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
             }
         }
 
-        public static void LoadTimerConfig(AdvancedTeam team)
-        {
-            if (TeamPlugin.assemblyTimer == null) return;
-            if (team != null)
-                RespawnTimer.API.API.TimerView = new TimerView(NormalTime.BeforeRespawnString, NormalTime.DuringRespawnString.Replace("{team}", $"<color={team.Color}>{team.Name}</color>"), NormalTime.Properties);
-            else
-                RespawnTimer.API.API.TimerView = NormalTime;
-        }
+        //public static void LoadTimerConfig(AdvancedTeam team)
+        //{
+        //    if (TeamPlugin.assemblyTimer == null) return;
+        //    if (team != null)
+        //        RespawnTimer.API.API.TimerView = new TimerView(NormalTime.BeforeRespawnString, NormalTime.DuringRespawnString.Replace("{team}", $"<color={team.Color}>{team.Name}</color>"), NormalTime.Properties);
+        //    else
+        //        RespawnTimer.API.API.TimerView = NormalTime;
+        //}
     }
 }

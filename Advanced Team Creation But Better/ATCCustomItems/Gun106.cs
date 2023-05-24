@@ -6,6 +6,8 @@ using Exiled.CustomItems.API;
 using Exiled.Events.EventArgs;
 using CustomPlayerEffects;
 using Exiled.API.Features.Attributes;
+using Exiled.Events.EventArgs.Player;
+using Exiled.API.Enums;
 
 namespace AdvancedTeamCreation.ATCCustomItems
 {
@@ -16,7 +18,7 @@ namespace AdvancedTeamCreation.ATCCustomItems
         public override string Name { get; set; } = "106 Gun";
         public override string Description { get; set; } = "Send players to the pocket dimension with a chance";
         public override float Weight { get; set; } = 1;
-        public override SpawnProperties SpawnProperties { get; set; } = new SpawnProperties() { Limit = 1, DynamicSpawnPoints = new List<DynamicSpawnPoint>() { new DynamicSpawnPoint() { Chance = 25, Location = SpawnLocation.InsideServersBottom }, new DynamicSpawnPoint() { Chance = 25, Location = SpawnLocation.Inside012 }, new DynamicSpawnPoint() { Chance = 25, Location = SpawnLocation.Inside096 } } };
+        public override SpawnProperties SpawnProperties { get; set; } = new SpawnProperties() { Limit = 1, DynamicSpawnPoints = new List<DynamicSpawnPoint>() { new DynamicSpawnPoint() { Chance = 25, Location = SpawnLocationType.InsideServersBottom }, new DynamicSpawnPoint() { Chance = 25, Location = SpawnLocationType.Inside049Armory }, new DynamicSpawnPoint() { Chance = 25, Location = SpawnLocationType.Inside096 } } };
         public override float Damage { get; set; } = 40;
         public override byte ClipSize { get; set; } = 10;
         public int RandScpPocket { get; set; } = 5;
@@ -27,18 +29,18 @@ namespace AdvancedTeamCreation.ATCCustomItems
         protected override void OnHurting(HurtingEventArgs ev)
         {
             int rand = new Random().Next(0, 99);
-            if (ev.Target.IsScp)
+            if (ev.Player.IsScp)
             {
                 if (rand < RandScpPocket)
                 {
-                    ev.Target.EnableEffect<Corroding>();
+                    ev.Player.EnableEffect<Corroding>();
                 }
             }
             else
             {
                 if (rand < RandHumanPocket)
                 {
-                    ev.Target.EnableEffect<Corroding>();
+                    ev.Player.EnableEffect<Corroding>();
                 }
             }
             base.OnHurting(ev);

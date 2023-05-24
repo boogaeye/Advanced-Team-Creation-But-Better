@@ -25,32 +25,32 @@ namespace AdvancedTeamCreation
         public override string Author => "SCP Fazbear"; //Adopting my current username
         public override string Name => "Advanced Team Creation";
         public override string Prefix => "ATC";
-        public override Version RequiredExiledVersion => new Version(5, 3, 0, 0);
-        public override Version Version => new Version(2, 0, 0, 1);
+        public override Version RequiredExiledVersion => new Version(7, 0, 0, 0);
+        public override Version Version => new Version(4, 0, 0, 0);
         public override PluginPriority Priority => PluginPriority.Last;
 
-        public void CheckPlugins()
-        {
-            foreach (IPlugin<IConfig> plugin in Exiled.Loader.Loader.Plugins)
-            {
-                if (plugin.Name == "RespawnTimer" && plugin.Config.IsEnabled)
-                {
-                    assemblyTimer = plugin.Assembly;
-                    Log.Debug("RespawnTimer assembly found", this.Config.Debug);
-                }
-                //else if (plugin.Name == "RemoteKeycard" && plugin.Config.IsEnabled)
-                //{
-                //    assemblyRemoteKeycard = plugin.Assembly;
-                //    RemoteKeyEvents();
-                //    Log.Debug("RemoteKeycard assembly found", this.Config.Debug);
-                //}
-                else if (plugin.Name == "AudioPlayer" && plugin.Config.IsEnabled)
-                {
-                    assemblyAudioPlayer = plugin.Assembly;
-                    Log.Debug("AudioPlayer assembly found", this.Config.Debug);
-                }
-            }
-        }
+        //public void CheckPlugins()
+        //{
+        //    foreach (IPlugin<IConfig> plugin in Exiled.Loader.Loader.Plugins)
+        //    {
+        //        if (plugin.Name == "RespawnTimer" && plugin.Config.IsEnabled)
+        //        {
+        //            assemblyTimer = plugin.Assembly;
+        //            Log.Debug("RespawnTimer assembly found", this.Config.Debug);
+        //        }
+        //        //else if (plugin.Name == "RemoteKeycard" && plugin.Config.IsEnabled)
+        //        //{
+        //        //    assemblyRemoteKeycard = plugin.Assembly;
+        //        //    RemoteKeyEvents();
+        //        //    Log.Debug("RemoteKeycard assembly found", this.Config.Debug);
+        //        //}
+        //        else if (plugin.Name == "AudioPlayer" && plugin.Config.IsEnabled)
+        //        {
+        //            assemblyAudioPlayer = plugin.Assembly;
+        //            Log.Debug("AudioPlayer assembly found", this.Config.Debug);
+        //        }
+        //    }
+        //}
 
         public void RemoteKeyEvents()
         {
@@ -70,9 +70,7 @@ namespace AdvancedTeamCreation
             Exiled.Events.Handlers.Map.AnnouncingScpTermination -= EventHandler.ScpTermination;
             TeamEvents.ReferancingTeam -= TeamEventHandler.ReferancingTeam;
             Exiled.Events.Handlers.Player.Dying -= EventHandler.PlayerDead;
-            Exiled.Events.Handlers.Player.EnteringFemurBreaker -= EventHandler.Scp106FemurBreakerPreventer;
-            Exiled.Events.Handlers.Scp106.Containing -= EventHandler.Scp106DistressHelper;
-            Exiled.Events.Handlers.Player.SpawningRagdoll -= EventHandler.RagdollSpawn;
+            //Exiled.Events.Handlers.Player.SpawningRagdoll -= EventHandler.RagdollSpawn;
             Exiled.Events.Handlers.Player.EnteringPocketDimension -= EventHandler.Scp106NoTeamKill;
             //if (assemblyRemoteKeycard != null)
             //    RemoteKeycard.Handlers.Events.UsingKeycard -= EventHandler.UsingKeycard;
@@ -82,7 +80,7 @@ namespace AdvancedTeamCreation
                 if (ats.CustomKeycardConfig.RegisterKeycard)
                     ats.UnregisterCustomKeycard();
             }
-            Harmony.UnpatchAll("BoogaEye.TeamStuff.Bruh");
+            Harmony.UnpatchAll("ScpFaz.TeamPlugin.Co");
             EventHandler = null;
             TeamEventHandler = null;
             Harmony = null;
@@ -91,7 +89,7 @@ namespace AdvancedTeamCreation
 
         public override void OnEnabled()
         {
-            Harmony = new Harmony("BoogaEye.TeamStuff.Bruh");
+            Harmony = new Harmony("ScpFaz.TeamPlugin.Co");
             Singleton = this;
             EventHandler = new EventHandler(this);
             TeamEventHandler = new TeamEventHandler(this);
@@ -107,15 +105,14 @@ namespace AdvancedTeamCreation
             Exiled.Events.Handlers.Player.Dying += EventHandler.PlayerDead;
             Exiled.Events.Handlers.Map.AnnouncingScpTermination += EventHandler.ScpTermination;
             TeamEvents.ReferancingTeam += TeamEventHandler.ReferancingTeam;
-            Exiled.Events.Handlers.Player.EnteringFemurBreaker += EventHandler.Scp106FemurBreakerPreventer;
-            Exiled.Events.Handlers.Scp106.Containing += EventHandler.Scp106DistressHelper;
-            Exiled.Events.Handlers.Player.SpawningRagdoll += EventHandler.RagdollSpawn;
+            //Exiled.Events.Handlers.Player.SpawningRagdoll += EventHandler.RagdollSpawn;
             if (Config.UseCustomItemsFromATC)
             {
                 Config.LoadItems();
             }
             Harmony.PatchAll();
-            CheckPlugins();
+            //No Support
+            //CheckPlugins();
             base.OnEnabled();
         }
 

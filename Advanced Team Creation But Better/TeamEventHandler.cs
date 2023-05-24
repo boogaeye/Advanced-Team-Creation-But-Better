@@ -14,7 +14,7 @@ namespace AdvancedTeamCreation
 
         public void ReferancingTeam(TeamEvents.ReferancingTeamEventArgs ev)
         {
-            Log.Debug($"Got Referance {ev.AdvancedTeam.Name}", plugin.Config.Debug);
+            Log.Debug($"Got Referance {ev.AdvancedTeam.Name}");
             if (!ev.IsAllowed)
             {
                 return;
@@ -27,7 +27,7 @@ namespace AdvancedTeamCreation
             RespawnHelper.SetReferance(ev.AdvancedTeam);
             if (plugin.Config.TeamSpawnsOnlyIfEnemiesExist)
             {
-                Log.Debug("Checking if team meets enemy conditions", plugin.Config.Debug);
+                Log.Debug("Checking if team meets enemy conditions");
                 bool CanSpawn = false;
                 foreach (AdvancedTeam at in UnitHelper.Teams)
                 {
@@ -36,32 +36,32 @@ namespace AdvancedTeamCreation
                         if (RespawnHelper.ReferancedTeam.ConfirmEnemyshipWithTeam(at))
                         {
                             CanSpawn = true;
-                            Log.Debug("Allowing team spawn because it has a common enemy", plugin.Config.Debug);
+                            Log.Debug("Allowing team spawn because it has a common enemy");
                             break;
                         }
                     }
                 }
                 if (CanSpawn)
                 {
-                    Log.Debug($"Team Spawn Check has been allowed! Allowing the Spawning team {RespawnHelper.ReferancedTeam.Name}", plugin.Config.Debug);
+                    Log.Debug($"Team Spawn Check has been allowed! Allowing the Spawning team {RespawnHelper.ReferancedTeam.Name}");
                 }
                 else
                 {
-                    Log.Debug($"Team Spawn Check has been denied! {RespawnHelper.ReferancedTeam.Name} doesn't have a common enemy spawning normal team...", plugin.Config.Debug);
+                    Log.Debug($"Team Spawn Check has been denied! {RespawnHelper.ReferancedTeam.Name} doesn't have a common enemy spawning normal team...");
                     RespawnHelper.SetReferance(null);
                     return;
                 }
             }
             if (RespawnHelper.ReferancedTeam.PlayBeforeSpawning && !RespawnHelper.ReferancedTeam.VanillaTeam)
             {
-                Log.Debug("Playing Team Announcement from Referance!", plugin.Config.Debug);
+                Log.Debug("Playing Team Announcement from Referance!");
                 MessageHelper.PlayTeamAnnouncement(RespawnHelper.ReferancedTeam);
             }
 
             if (TeamPlugin.assemblyTimer != null && !ev.AdvancedTeam.VanillaTeam && ev.SupposedTeam != Respawning.SpawnableTeamType.None)
             {
-                Log.Debug("Loading Timer Config(Respawn Timer Support)", plugin.Config.Debug);
-                HudHelper.LoadTimerConfig(RespawnHelper.ReferancedTeam);
+                Log.Debug("Loading Timer Config(Respawn Timer Support)");
+                //HudHelper.LoadTimerConfig(RespawnHelper.ReferancedTeam);
             }
         }
 

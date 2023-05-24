@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Exiled.API.Features;
 using System.Xml.Linq;
+using PlayerRoles;
 
 namespace AdvancedTeamCreation.TeamAPI.Helpers
 {
@@ -19,21 +20,22 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
         //public static List<AdvancedTeam> AdvancedTeamsMtf => RegisteredTeams.Where(e => !e.VanillaTeam && e.BindedTeam == SpawnableTeamType.NineTailedFox || e.BindedTeam == SpawnableTeamType.None).ToList();
         public static List<AdvancedTeam> AdvancedTeamsOnly => RegisteredTeams.Where(e => !e.VanillaTeam).ToList();
 
+        //TODO Unit Naming Convension
         public static void AddUnitNameOnAdvancedTeam(AdvancedTeam Name, string UnitName)
         {
-            UnitNamingRules.AllNamingRules[SpawnableTeamType.NineTailedFox].AddCombination($"<color={Name.Color}>{Name.Name}-{UnitName}</color>", SpawnableTeamType.NineTailedFox);
+            //UnitNamingRules.AllNamingRules[SpawnableTeamType.NineTailedFox].AddCombination($"<color={Name.Color}>{Name.Name}-{UnitName}</color>", SpawnableTeamType.NineTailedFox);
         }
 
         public static void ChangeUnitNameOnAdvancedTeam(int index, AdvancedTeam Name, string UnitName)
         {
-            RespawnManager.Singleton.NamingManager.AllUnitNames.Remove(RespawnManager.Singleton.NamingManager.AllUnitNames[index]);
-            UnitNamingRules.AllNamingRules[SpawnableTeamType.NineTailedFox].AddCombination($"<color={Name.Color}>{Name.Name}-{UnitName}</color>", SpawnableTeamType.NineTailedFox);
+            //RespawnManager.Singleton.NamingManager.AllUnitNames.Remove(RespawnManager.Singleton.NamingManager.AllUnitNames[index]);
+            //UnitNamingRules.AllNamingRules[SpawnableTeamType.NineTailedFox].AddCombination($"<color={Name.Color}>{Name.Name}-{UnitName}</color>", SpawnableTeamType.NineTailedFox);
         }
 
         public static void ChangeUnitNameOnAdvancedTeam(int index, string UnitName)
         {
-            RespawnManager.Singleton.NamingManager.AllUnitNames.Remove(RespawnManager.Singleton.NamingManager.AllUnitNames[index]);
-            UnitNamingRules.AllNamingRules[SpawnableTeamType.NineTailedFox].AddCombination(UnitName, SpawnableTeamType.NineTailedFox);
+            //RespawnManager.Singleton.NamingManager.AllUnitNames.Remove(RespawnManager.Singleton.NamingManager.AllUnitNames[index]);
+            //UnitNamingRules.AllNamingRules[SpawnableTeamType.NineTailedFox].AddCombination(UnitName, SpawnableTeamType.NineTailedFox);
         }
 
         public static AdvancedTeamSubclass FindAST(string Team, string name)

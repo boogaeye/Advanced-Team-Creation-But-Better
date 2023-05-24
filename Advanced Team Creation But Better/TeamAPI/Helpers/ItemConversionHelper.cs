@@ -48,7 +48,7 @@ namespace AdvancedTeamCreation.TeamAPI.Helpers
             }
         }
 
-        public static bool TryGetCustomItemTypeFromInt(this int Weapon, out Exiled.CustomItems.API.Features.CustomItem Custom)
+        public static bool TryGetCustomItemTypeFromInt(this uint Weapon, out Exiled.CustomItems.API.Features.CustomItem Custom)
         {
             if (Exiled.CustomItems.API.Features.CustomItem.TryGet(Weapon, out Exiled.CustomItems.API.Features.CustomItem item))
             {

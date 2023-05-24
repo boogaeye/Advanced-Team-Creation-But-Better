@@ -36,22 +36,22 @@ namespace AdvancedTeamCreation.TeamAPI.CustomEvents
         {
             if (!TeamPlugin.Singleton.Config.CustomRoundEnder)
             {
-                Log.Debug("Preventing UpdateRoundStatus CustomRoundEnder is false", TeamPlugin.Singleton.Config.Debug);
+                Log.Debug("Preventing UpdateRoundStatus CustomRoundEnder is false");
                 return;
             }
             if (Round.ElapsedTime.TotalSeconds < 10)
             {
-                Log.Debug($"Preventing Round Ending because it hasn't been 10 seconds in the round", TeamPlugin.Singleton.Config.Debug);
+                Log.Debug($"Preventing Round Ending because it hasn't been 10 seconds in the round");
                 return;
             }
             if (Round.IsLocked && !TeamPlugin.Singleton.Config.IgnoresRoundLock)
             {
-                Log.Debug($"Round is locked so preventing round end...", TeamPlugin.Singleton.Config.Debug);
+                Log.Debug($"Round is locked so preventing round end...");
                 return;
             }
             if (Player.List.Count() == 1)
             {
-                Log.Debug($"There is 1 player so preventing round end...", TeamPlugin.Singleton.Config.Debug);
+                Log.Debug($"There is 1 player so preventing round end...");
                 return;
             }
             foreach (LeaderboardHelper.TeamLeaderboard TL in RespawnHelper.Leaderboard.TeamLeaderboards)
@@ -60,7 +60,7 @@ namespace AdvancedTeamCreation.TeamAPI.CustomEvents
                 {
                     bool CanWin = true;
                     bool CanStalemate = false;
-                    Log.Debug($"Team {TL.Team.Name} does exist in current round", TeamPlugin.Singleton.Config.Debug);
+                    Log.Debug($"Team {TL.Team.Name} does exist in current round");
                     foreach (LeaderboardHelper.TeamLeaderboard TL2 in RespawnHelper.Leaderboard.TeamLeaderboards)
                     {
                         if (!TL2.Team.Spectator)
@@ -68,12 +68,12 @@ namespace AdvancedTeamCreation.TeamAPI.CustomEvents
                             if (TL.Team.ConfirmEnemyshipWithTeam(TL2.Team) && TL2.Team.DoesExist())
                             {
                                 CanWin = false;
-                                Log.Debug($"Team {TL.Team.Name} is enemies with {TL2.Team.Name}. They can no longer win.", TeamPlugin.Singleton.Config.Debug);
+                                Log.Debug($"Team {TL.Team.Name} is enemies with {TL2.Team.Name}. They can no longer win.");
                                 break;
                             }
                             if (TL.Team.ConfirmNeutralshipWithTeam(TL2.Team) && TL2.Team.DoesExist() && !TL2.Team.Spectator)
                             {
-                                Log.Debug($"Team {TL.Team.Name} is neutral with {TL2.Team.Name}. They can stalemate...", TeamPlugin.Singleton.Config.Debug);
+                                Log.Debug($"Team {TL.Team.Name} is neutral with {TL2.Team.Name}. They can stalemate...");
                                 CanStalemate = true;
                             }
                         }
@@ -82,7 +82,7 @@ namespace AdvancedTeamCreation.TeamAPI.CustomEvents
                     {
                         CanWin = false;
                     }
-                    if (CanStalemate)
+                    if (CanStalemate && CanWin)
                     {
                         EndRound(TeamPlugin.Singleton.Translation.Stalemate);
                         return;
@@ -101,14 +101,15 @@ namespace AdvancedTeamCreation.TeamAPI.CustomEvents
         {
             if (!TeamPlugin.Singleton.Config.CustomRoundEnder)
             {
-                Log.Debug("Preventing Custom Round end CustomRoundEnder is false", TeamPlugin.Singleton.Config.Debug);
+                Log.Debug("Preventing Custom Round end CustomRoundEnder is false");
                 return;
             }
             var tran = TeamPlugin.Singleton.Translation;
             RoundEnded = true;
             RespawnHelper.Leaderboard.DestroyTeamLeaders();
-            if (TeamPlugin.assemblyTimer != null)
-                Timing.KillCoroutines(RespawnTimer.EventHandler._timerCoroutine);
+            //TODO
+            //if (TeamPlugin.assemblyTimer != null)
+            //    Timing.KillCoroutines(RespawnTimer.EventHandler._timerCoroutine);
             LeaderboardStats.Add(new RoundEndStats(tran.ElapsedTimeStat, Round.ElapsedTime.ToString()));
             LeaderboardStats.Add(new RoundEndStats(tran.ScpKillsStat, Round.KillsByScp.ToString()));
             LeaderboardStats.Add(new RoundEndStats(tran.KillsStat, Round.Kills.ToString()));

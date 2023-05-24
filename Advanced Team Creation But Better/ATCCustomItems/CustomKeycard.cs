@@ -10,6 +10,7 @@ using RemoteKeycard.Handlers;
 using System.Collections;
 using System.Linq;
 using Exiled.API.Features;
+using Exiled.Events.EventArgs.Player;
 
 namespace AdvancedTeamCreation.ATCCustomItems
 {
@@ -93,13 +94,11 @@ namespace AdvancedTeamCreation.ATCCustomItems
         {
             if (TryGet(ev.Player, out CustomItem ci))
             {
-                Log.Info($"Using item {ci.Name} for {ev.Player.Nickname}");
                 if (ci.Id == Id)
                 {
                     if (ev.Door.RequiredPermissions.RequiredPermissions == Interactables.Interobjects.DoorUtils.KeycardPermissions.None)
                     {
                         ev.IsAllowed = true;
-                        Log.Info("No Perms");
                         return;
                     }
 
@@ -108,7 +107,6 @@ namespace AdvancedTeamCreation.ATCCustomItems
                         if (ev.Door.Type == dt)
                         {
                             ev.IsAllowed = true;
-                            Log.Info("Got Door");
                             return;
                         }
                     }

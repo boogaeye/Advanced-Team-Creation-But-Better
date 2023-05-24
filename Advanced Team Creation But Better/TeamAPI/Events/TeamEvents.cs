@@ -1,5 +1,6 @@
 ﻿using AdvancedTeamCreation.TeamAPI.Helpers;
 using Exiled.API.Features;
+using PlayerRoles;
 using System;
 using Random = UnityEngine.Random;
 
@@ -14,6 +15,9 @@ namespace AdvancedTeamCreation.TeamAPI.Events
         /// </summary>
         public static event TeamEvents<ReferancingTeamEventArgs> ReferancingTeam;
 
+        /// <summary>
+        /// When the round ends used for API reasons.
+        /// </summary>
         public static event TeamEvents<ATCRoundEndingEventArgs> ATCRoundEnding;
 
         /// <summary>
@@ -26,6 +30,9 @@ namespace AdvancedTeamCreation.TeamAPI.Events
         /// </summary>
         public static event TeamEvents<AdvancedTeamSlaughteredEventArgs> AdvancedTeamSlaughtered;
 
+        /// <summary>
+        /// When a player Dies
+        /// </summary>
         public static event TeamEvents<AdvancedTeamDeadPlayerEventArgs> AdvancedTeamDeadPlayer;
 
         public class ReferancingTeamEventArgs : EventArgs
@@ -36,12 +43,12 @@ namespace AdvancedTeamCreation.TeamAPI.Events
                 if (RespawnHelper.ReferancedTeam != null)
                 {
                     AdvancedTeam = RespawnHelper.ReferancedTeam;
-                    Log.Debug($"Team {AdvancedTeam} already referanced", TeamPlugin.Singleton.Config.Debug);
+                    Log.Debug($"Team {AdvancedTeam} already referanced");
                     return;
                 }
                 if (TeamPlugin.Singleton.Config.VanillaTeamsHavePriority)
                 {
-                    Log.Debug("Vanilla Teams Have Priority", TeamPlugin.Singleton.Config.Debug);
+                    Log.Debug("Vanilla Teams Have Priority");
                     foreach (AdvancedTeam at in UnitHelper.Teams)
                     {
                         if (DetectChance(at))
@@ -62,16 +69,16 @@ namespace AdvancedTeamCreation.TeamAPI.Events
                         }
                     }
                 }
-                Log.Debug("No More Teams to choose from...", TeamPlugin.Singleton.Config.Debug);
+                Log.Debug("No More Teams to choose from...");
 
                 switch (team)
                 {
                     case Respawning.SpawnableTeamType.ChaosInsurgency:
-                        AdvancedTeam = UnitHelper.FindAT(Team.CHI.ToString());
+                        AdvancedTeam = UnitHelper.FindAT(Team.ChaosInsurgency.ToString());
                         break;
 
                     case Respawning.SpawnableTeamType.NineTailedFox:
-                        AdvancedTeam = UnitHelper.FindAT(Team.MTF.ToString());
+                        AdvancedTeam = UnitHelper.FindAT(Team.FoundationForces.ToString());
                         break;
                 }
             }
