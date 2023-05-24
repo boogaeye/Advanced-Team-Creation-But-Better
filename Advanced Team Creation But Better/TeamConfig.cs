@@ -94,7 +94,9 @@ namespace AdvancedTeamCreation
                             Log.Debug($"{g.Name} is last spawn order");
                         }
                         if (g.CustomKeycardConfig.RegisterKeycard)
-                            g.RegisterCustomKeycard();
+                        {
+                            //g.RegisterCustomKeycard(); //TODO Fix
+                        }
                         SubteamMan.Add(g);
                         Log.Debug($"Deserializing SubTeam {ast} to Subclass {g.Name}");
                     }
